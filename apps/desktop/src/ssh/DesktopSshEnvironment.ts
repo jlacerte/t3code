@@ -80,7 +80,7 @@ function discoverDesktopSshHostsEffect(input?: { readonly homeDir?: string }) {
 
 export function isDesktopSshPasswordPromptCancellation(
   error: unknown,
-): error is SshPasswordPromptError {
+): error is SshPasswordPromptRequestError {
   return (
     isSshPasswordPromptError(error) &&
     isSshPasswordPromptRequestError(error) &&
