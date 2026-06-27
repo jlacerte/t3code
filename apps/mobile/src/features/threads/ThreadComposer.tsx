@@ -210,6 +210,7 @@ export const ThreadComposer = memo(function ThreadComposer(props: ThreadComposer
   const [isFocused, setIsFocused] = useState(false);
   const wasExpandedBeforePreviewRef = useRef(false);
   const sendInFlightRef = useRef(false);
+  const sendGenerationRef = useRef(0);
   const { onExpandedChange } = props;
 
   const [previewImageUri, setPreviewImageUri] = useState<string | null>(null);
@@ -218,6 +219,7 @@ export const ThreadComposer = memo(function ThreadComposer(props: ThreadComposer
   const canSend = hasContent;
 
   useEffect(() => {
+    sendGenerationRef.current++;
     sendInFlightRef.current = false;
   }, [props.selectedThread.id]);
 
@@ -456,10 +458,13 @@ export const ThreadComposer = memo(function ThreadComposer(props: ThreadComposer
   const handleSend = useCallback(async () => {
     if (!canSend || sendInFlightRef.current) return;
     sendInFlightRef.current = true;
+    const generation = sendGenerationRef.current;
     try {
       await onSendMessage();
     } finally {
-      sendInFlightRef.current = false;
+      if (sendGenerationRef.current === generation) {
+        sendInFlightRef.current = false;
+      }
     }
   }, [canSend, onSendMessage]);
   const handleCommandSelect = useCallback(
