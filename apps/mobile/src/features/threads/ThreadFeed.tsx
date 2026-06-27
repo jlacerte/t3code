@@ -1128,6 +1128,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
   const foldSettleSecondFrameRef = useRef<number | null>(null);
   const disclosureAnchorKeyRef = useRef<string | null>(null);
   const headerMaterialVisibleRef = useRef(false);
+  const listScrollOffsetRef = useRef<number | null>(null);
   const listContentHeightRef = useRef(0);
   const listViewportHeightRef = useRef(0);
   const previousLatestTurnRef = useRef(props.latestTurn);
@@ -1230,11 +1231,16 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
   );
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      listScrollOffsetRef.current = event.nativeEvent.contentOffset.y;
       reportHeaderMaterialVisibility(event.nativeEvent.contentOffset.y + topContentInset > 6);
     },
     [reportHeaderMaterialVisibility, topContentInset],
   );
   const reportInitialHeaderMaterialVisibility = useCallback(() => {
+    if (listScrollOffsetRef.current !== null) {
+      reportHeaderMaterialVisibility(listScrollOffsetRef.current + topContentInset > 6);
+      return;
+    }
     const topInsetContribution = props.usesAutomaticContentInsets ? topContentInset : 0;
     reportHeaderMaterialVisibility(
       listContentHeightRef.current - listViewportHeightRef.current + topInsetContribution > 6,
@@ -1265,6 +1271,7 @@ export const ThreadFeed = memo(function ThreadFeed(props: ThreadFeedProps) {
 
   useEffect(() => {
     listContentHeightRef.current = 0;
+    listScrollOffsetRef.current = null;
     reportHeaderMaterialVisibility(false);
   }, [props.threadId, reportHeaderMaterialVisibility]);
 
