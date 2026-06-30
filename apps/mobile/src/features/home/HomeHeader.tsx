@@ -8,6 +8,7 @@ import { useCallback, useRef } from "react";
 import { Platform } from "react-native";
 import type { SearchBarCommands } from "react-native-screens";
 
+import { nativeTopScrollEdgeEffect } from "../../lib/native-scroll-edge-effect";
 import { useThemeColor } from "../../lib/useThemeColor";
 import { useHardwareKeyboardCommand } from "../keyboard/hardwareKeyboardCommands";
 import type { HomeProjectSortOrder } from "./homeThreadList";
@@ -21,6 +22,12 @@ import {
   PROJECT_SORT_OPTIONS,
   THREAD_SORT_OPTIONS,
 } from "./home-list-options";
+
+const TOP_SCROLL_EDGE_EFFECT = nativeTopScrollEdgeEffect(Platform.OS, Platform.Version);
+
+function noop() {
+  return false;
+}
 
 export type HomeHeaderEnvironment = HomeListFilterMenuEnvironment;
 
@@ -45,7 +52,10 @@ export function HomeHeader(props: {
     searchBarRef.current?.focus();
     return searchBarRef.current !== null;
   }, []);
-  useHardwareKeyboardCommand("focusSearch", focusSearch);
+  useHardwareKeyboardCommand(
+    "focusSearch",
+    Platform.OS === "ios" ? noop : focusSearch,
+  );
   const filterMenu = buildHomeListFilterMenu(props);
 
   return (
@@ -65,6 +75,10 @@ export function HomeHeader(props: {
             fontSize: 18,
             fontWeight: "800",
           },
+          scrollEdgeEffects:
+            Platform.OS === "ios"
+              ? { top: TOP_SCROLL_EDGE_EFFECT, bottom: "hidden", left: "hidden", right: "hidden" }
+              : undefined,
           unstable_navigationItemStyle: Platform.OS === "ios" ? "editor" : undefined,
           unstable_headerRightItems:
             Platform.OS === "ios"
