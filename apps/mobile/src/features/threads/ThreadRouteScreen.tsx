@@ -60,6 +60,7 @@ import {
   useAdaptiveWorkspaceLayout,
   useAdaptiveWorkspacePaneRole,
 } from "../layout/AdaptiveWorkspaceLayout";
+import { WorkspaceSidebarToolbar } from "../layout/workspace-sidebar-toolbar";
 import { ThreadFileNavigatorPane } from "../files/thread-file-navigator-pane";
 import {
   ThreadInspectorContentStack,
@@ -629,6 +630,7 @@ function ThreadRouteContent(
     onPull: gitActions.onPullSelectedThreadBranch,
     onRunAction: gitActions.onRunSelectedThreadGitAction,
   };
+  const usesNativeHeaderControls = layout.usesSplitView && Platform.OS === "ios";
   const threadRightHeaderItems = useThreadGitRightHeaderItems(threadGitControlProps);
   const splitLeftHeaderItems = useMemo<NativeHeaderItems>(
     () => [
@@ -729,12 +731,12 @@ function ThreadRouteContent(
                 placement: "integratedButton",
               }
             : undefined,
-          unstable_headerLeftItems:
-            layout.usesSplitView && Platform.OS === "ios" ? () => splitLeftHeaderItems : undefined,
-          unstable_headerRightItems:
-            layout.usesSplitView && Platform.OS === "ios"
-              ? () => threadRightHeaderItems
-              : undefined,
+          unstable_headerLeftItems: usesNativeHeaderControls
+            ? () => splitLeftHeaderItems
+            : undefined,
+          unstable_headerRightItems: usesNativeHeaderControls
+            ? () => threadRightHeaderItems
+            : undefined,
           unstable_navigationItemStyle: usesNativeHeaderGlass ? "editor" : undefined,
         }}
       />
@@ -750,7 +752,28 @@ function ThreadRouteContent(
         </Stack.Screen.Title>
       )}
 
-      <ThreadGitControls {...threadGitControlProps} showActionControls={!layout.usesSplitView} />
+      {usesNativeHeaderControls ? null : (
+        <WorkspaceSidebarToolbar
+          afterSidebarButton={
+            <Stack.Toolbar.Button
+              accessibilityLabel="New task"
+              icon="square.and.pencil"
+              onPress={() => router.push("/new")}
+              separateBackground
+            />
+          }
+        >
+          {props.onReturnToThread ? (
+            <Stack.Toolbar.Button
+              accessibilityLabel="Return to chat"
+              icon="chevron.left"
+              onPress={props.onReturnToThread}
+            />
+          ) : null}
+        </WorkspaceSidebarToolbar>
+      )}
+
+      <ThreadGitControls {...threadGitControlProps} showActionControls={!usesNativeHeaderControls} />
 
       <GitActionProgressOverlay progress={gitActionProgress} onDismiss={dismissGitActionResult} />
 
