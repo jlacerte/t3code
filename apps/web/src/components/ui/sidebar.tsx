@@ -376,8 +376,8 @@ function SidebarRail({
   } | null>(null);
   const resolvedResizable = sidebarInstance?.resizable ?? null;
   const canResize = resolvedResizable !== null && open;
-  const railLabel = canResize ? "Resize Sidebar" : "Toggle Sidebar";
-  const railTitle = canResize ? "Drag to resize sidebar" : "Toggle Sidebar";
+  const railLabel = canResize ? "Redimensionner la barre latérale" : "Basculer la barre latérale";
+  const railTitle = canResize ? "Glisser pour redimensionner la barre latérale" : "Basculer la barre latérale";
 
   const stopResize = React.useCallback(
     (pointerId: number) => {

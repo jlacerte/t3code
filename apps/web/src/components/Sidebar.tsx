@@ -3095,7 +3095,7 @@ const SidebarProjectsContent = memo(function SidebarProjectsContent(
 
         {projectsLength === 0 && (
           <div className="px-2 pt-4 text-center text-xs text-muted-foreground/60">
-            No projects yet
+            Aucun projet pour l'instant
           </div>
         )}
       </SidebarGroup>
