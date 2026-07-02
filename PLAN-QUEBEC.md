@@ -67,8 +67,18 @@ Un balayage complet du périmètre desktop a révélé plus de résidus anglais 
 - **Messages diagnostiques « borderline »** (généralement `console.error`/`.message` d'erreurs loggées, pas de l'UI traduite) : `schemaJson.ts`, getters `.message` des `TaggedError` (`ElectronDialog.ts`, `previewAutomationErrors.ts`, `Net.ts`, `openTerminalLinkInPreview.ts`), `ChatView.tsx` L1974.
 - **`ui/` (primitives shadcn) et fichiers `.test`** : hors scope. ⚠️ Voir la note sur les tests ci-dessous.
 
-### Note sur les tests (`vp test`)
-Les fichiers `.test` assertent encore les chaînes **anglaises** d'origine et divergent donc de la source déjà traduite (dérive introduite dès le 1er commit de traduction, pas par la passe 2). État actuel : **93 tests en échec / 1185 passés**, tous dus à cette dérive de chaînes (aucune régression de logique). Options : (a) laisser tel quel (tests hors scope, prototype) ; (b) mettre à jour les assertions vers le français. `vp check`/`typecheck` — le vrai gate d'AGENTS.md pour la correction du code — **passe**.
+### Note sur les tests (`vp test`) — ✅ corrigés (2026-07-02)
+Les fichiers `.test` assertaient encore les chaînes **anglaises** d'origine (dérive dès le 1er commit de traduction). **Corrigé** : assertions alignées sur la sortie française (commit `98fa31e68`). État final : **web 1278/1278 · desktop entièrement vert · shared OK**. Restent **5 échecs shared pré-existants et environnementaux** (`relayClient` = binaire cloudflared/chemins Windows ; `logging` = rotation de fichier) — aucun lien avec la traduction, déjà rouges au tout premier run.
+
+### Passe 3 (2026-07-02) — exécution & vérification en direct ✅
+- **Commits poussés** sur `jlacerte/t3code` (`main`) : `bd2d4d2cc` (traductions passe 2) + `98fa31e68` (tests FR).
+- **Environnement dev réparé** (voir la mémoire `t3code-quebec` pour les commandes exactes) :
+  - Node du système = v22 (trop vieux pour `dev-runner.ts` et corepack) → **Node 24.18 installé via `fnm`**.
+  - `pnpm` installé via `npm -g` (corepack cassé) ; binding natif `vp` Windows ajouté localement (NON committé).
+  - Le stack complet démarre avec `pnpm dev` **sous Node 24** (serveur back-end `:13773` + web Vite `:5733`), câblage de ports par `dev-runner`.
+  - L'app exige un **jumelage** : ouvrir `http://localhost:5733/pair#token=<TOKEN>` (le token est dans le log serveur ; change à chaque redémarrage `--watch`).
+- **Vérification visuelle réussie** : app pairée, interface FR confirmée en production. Le pill « fournisseur encore désuet » (Codex) rend correctement en français — validation bout-en-bout d'une zone traduite.
+- **Chrome DevTools MCP installé** (scope utilisateur, `~/.claude.json`) mais nécessite un **redémarrage de session** pour être chargé → permettra d'inspecter la console navigateur et de screenshoter l'app côté client (le point aveugle du log serveur).
 
 ### Ajustements au glossaire (décidés en cours de traduction)
 - "Worktree" : gardé en anglais (jargon git, comme "branch"/"commit").
