@@ -239,8 +239,13 @@ export const make = Effect.gen(function* PortDiscoveryMake() {
     }
     if (hostPlatform === "win32") {
       const recoverWindowsProbeFailure = recoverProcessProbeFailure("windows-listeners");
+      // Récupère la table PID -> nom en une seule passe `Get-Process`, puis la joint
+      // aux connexions. L'ancienne version relançait `Get-Process -Id` pour chaque
+      // listener (N+1) : ~2,9 s pour 31 listeners, contre ~1,2 s ici — utile pour
+      // rester bien sous WINDOWS_LISTENER_TIMEOUT_MS et éviter le repli sur les
+      // seuls ports courants.
       const command =
-        'Get-NetTCPConnection -State Listen -ErrorAction Stop | ForEach-Object { $processName = (Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName; Write-Output "$($_.LocalAddress)|$($_.LocalPort)|$($_.OwningProcess)|$processName" }';
+        '$procs = @{}; Get-Process -ErrorAction SilentlyContinue | ForEach-Object { $procs[$_.Id] = $_.ProcessName }; Get-NetTCPConnection -State Listen -ErrorAction Stop | ForEach-Object { $processName = $procs[[int]$_.OwningProcess]; Write-Output "$($_.LocalAddress)|$($_.LocalPort)|$($_.OwningProcess)|$processName" }';
       const listeners = yield* processRunner
         .run({
           command: "powershell.exe",
