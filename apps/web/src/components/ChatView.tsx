@@ -2512,7 +2512,7 @@ function ChatViewContent(props: ChatViewProps) {
           const error = squashAtomCommandFailure(openResult);
           setThreadError(
             activeThreadId,
-            error instanceof Error ? error.message : `Failed to run script "${script.name}".`,
+            error instanceof Error ? error.message : `Échec de l'exécution du script « ${script.name} ».`,
           );
         }
         return;
@@ -2641,7 +2641,7 @@ function ChatViewContent(props: ChatViewProps) {
       }
       const existingScript = activeProject.scripts.find((script) => script.id === scriptId);
       if (!existingScript) {
-        return AsyncResult.failure(Cause.fail(new Error("Script not found.")));
+        return AsyncResult.failure(Cause.fail(new Error("Script introuvable.")));
       }
 
       const updatedScript: ProjectScript = {

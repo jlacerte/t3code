@@ -64,8 +64,8 @@ export async function openTerminalLinkInPreview<E>(
   try {
     choice = await input.localApi.contextMenu.show(
       [
-        { id: "open-in-preview", label: "Open in preview" },
-        { id: "open-in-browser", label: "Open in browser" },
+        { id: "open-in-preview", label: "Ouvrir dans l'aperçu" },
+        { id: "open-in-browser", label: "Ouvrir dans le navigateur" },
       ],
       input.position,
     );

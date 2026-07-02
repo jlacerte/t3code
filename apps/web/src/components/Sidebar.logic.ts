@@ -48,6 +48,23 @@ const THREAD_STATUS_PRIORITY: Record<ThreadStatusPill["label"], number> = {
   Completed: 1,
 };
 
+// `ThreadStatusPill["label"]` reste une clé anglaise stable (union type, priorité,
+// tests). Le texte affiché à l'utilisateur passe par ce mappage vers le français
+// québécois — appelé à chaque point de rendu (tooltip, aria-label, texte inline).
+const THREAD_STATUS_DISPLAY_LABELS: Record<ThreadStatusPill["label"], string> = {
+  "Pending Approval": "Approbation requise",
+  "Awaiting Input": "En attente",
+  Working: "En cours",
+  Connecting: "Connexion…",
+  "Plan Ready": "Plan prêt",
+  Completed: "Terminé",
+};
+
+/** Libellé français québécois affiché pour un statut de fil de discussion. */
+export function getThreadStatusDisplayLabel(label: ThreadStatusPill["label"]): string {
+  return THREAD_STATUS_DISPLAY_LABELS[label];
+}
+
 type ThreadStatusInput = Pick<
   SidebarThreadSummary,
   | "hasActionableProposedPlan"

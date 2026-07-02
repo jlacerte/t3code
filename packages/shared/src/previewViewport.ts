@@ -175,7 +175,7 @@ export function resolvePreviewViewport(
 }
 
 export function previewViewportLabel(viewport: PreviewViewportSetting): string {
-  return viewport._tag === "fill" ? "Fill panel" : `${viewport.width} × ${viewport.height}`;
+  return viewport._tag === "fill" ? "Remplir le panneau" : `${viewport.width} × ${viewport.height}`;
 }
 
 export function previewViewportPresetOrientation(

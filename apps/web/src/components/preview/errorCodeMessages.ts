@@ -8,5 +8,5 @@ export function describePreviewError(code: number, description: string): string 
   const friendly = PREVIEW_ERROR_CODE_MESSAGES[description];
   if (friendly) return friendly;
   if (description.length > 0) return description;
-  return `Network error (${code})`;
+  return `Erreur réseau (${code})`;
 }

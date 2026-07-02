@@ -48,12 +48,27 @@ Adapter T3 Code (GUI desktop pour agents de codage IA : Codex, Claude, Cursor, O
 
 **Total traduit à ce jour : ~1227 chaînes.**
 
-### Reste à couvrir (petits résidus, non bloquants pour un prototype)
-- `Sidebar.logic.ts` : labels de statut ("Working", "Completed", etc.) non traduits — servent aussi de clés internes et sont référencés dans un test ; les traduire demande une refactorisation mineure, pas juste du texte.
-- `getProviderUpdateSidebarPillView` (fichier logique non localisé précisément) et `errorCodeMessages` (messages d'erreur preview) : pas encore traduits, découverts en cours de route.
-- `ChatView.logic.ts` : accord pluriel imparfait dans un message généré dynamiquement (`buildExpiredTerminalContextToastCopy`) — cosmétique, à corriger plus tard si besoin.
-- `packages/shared/terminalLabels.ts` : 1 chaîne (`Terminal ${N}`) pas encore traduite.
-- `ui/` (primitives shadcn, ~12 chaînes estimées) et fichiers `.test.tsx` : jamais couverts (hors scope, tests non affichés à l'utilisateur).
+### Passe 2 (2026-07-02) — résidus traités ✅
+Un balayage complet du périmètre desktop a révélé plus de résidus anglais que prévu (le tableau « Lot 4 ~100% » était optimiste). Tous traités et **typecheck vert** (web + shared + desktop) :
+- `Sidebar.logic.ts` : labels de statut traduits via une fonction de mappage `getThreadStatusDisplayLabel` (clé anglaise gardée stable pour la logique/tests) ; appliquée dans `ThreadStatusIndicators.tsx` et `Sidebar.tsx`.
+- `ProviderUpdateLaunchNotification.logic.ts` : chaînes de secours anglaises (`Provider update failed`) traduites.
+- `errorCodeMessages` / `previewConstants.ts` : messages d'erreur Chromium de l'aperçu traduits.
+- `ChatView.logic.ts` : accord pluriel corrigé dans `buildExpiredTerminalContextToastCopy` (verbe + pronoms).
+- `Sidebar.tsx` : bloc de connexion des backends secondaires (`Connecting`/`Couldn't connect`/`The backend didn't respond`).
+- `packages/shared` : `agentAwareness.ts` (headlines de statut agent), `toolActivity.ts` (résumés timeline), `previewViewport.ts` (`Fill panel`).
+- Fichiers entièrement anglais : `settings/providerStatus.ts`, `desktop/SshPasswordPromptDialog.tsx`, `preview/fileExplorerLabel.ts`, `preview/openTerminalLinkInPreview.ts` (labels de menu).
+- `ChatMarkdown.tsx` : bloc complet (aria-labels tableau/code, menus Copier, toasts « Impossible d'ouvrir », labels de menu contextuel).
+- Divers : `MessagesTimeline.tsx` (alt), `ProviderUpdateEnvironmentRows.tsx`, `ChatView.tsx` (erreurs de script), `SidebarUpdatePill.tsx` (« Build » → « Version »).
+- Desktop natif : `DesktopWindow.ts` (menu contextuel clic droit), `DesktopServerExposure.ts` (labels de points d'accès).
+
+### Reste à couvrir (non bloquant)
+- **`Terminal ${N}`** (`terminalLabels.ts`) : « Terminal » identique en français — laissé tel quel (jargon).
+- **Labels de groupe de fournisseurs** `DesktopServerExposure.ts` : `"Desktop"` (L50) et `"Manual"` (L57) — faible confiance qu'ils soient affichés ; à trancher.
+- **Messages diagnostiques « borderline »** (généralement `console.error`/`.message` d'erreurs loggées, pas de l'UI traduite) : `schemaJson.ts`, getters `.message` des `TaggedError` (`ElectronDialog.ts`, `previewAutomationErrors.ts`, `Net.ts`, `openTerminalLinkInPreview.ts`), `ChatView.tsx` L1974.
+- **`ui/` (primitives shadcn) et fichiers `.test`** : hors scope. ⚠️ Voir la note sur les tests ci-dessous.
+
+### Note sur les tests (`vp test`)
+Les fichiers `.test` assertent encore les chaînes **anglaises** d'origine et divergent donc de la source déjà traduite (dérive introduite dès le 1er commit de traduction, pas par la passe 2). État actuel : **93 tests en échec / 1185 passés**, tous dus à cette dérive de chaînes (aucune régression de logique). Options : (a) laisser tel quel (tests hors scope, prototype) ; (b) mettre à jour les assertions vers le français. `vp check`/`typecheck` — le vrai gate d'AGENTS.md pour la correction du code — **passe**.
 
 ### Ajustements au glossaire (décidés en cours de traduction)
 - "Worktree" : gardé en anglais (jargon git, comme "branch"/"commit").

@@ -261,7 +261,7 @@ export function ProviderUpdateEnvironmentRows({
         inFlightEnvironmentsRef.current.delete(environmentId);
         clearPending(environmentId);
         setErrorByEnvironment((previous) =>
-          new Map(previous).set(environmentId, "Update timed out — try again."),
+          new Map(previous).set(environmentId, "Délai de mise à jour dépassé — réessaie."),
         );
       }, PENDING_EXPIRY_MS);
       try {
@@ -308,7 +308,7 @@ export function ProviderUpdateEnvironmentRows({
           setErrorByEnvironment((previous) =>
             new Map(previous).set(
               environmentId,
-              "This environment isn’t connected — try again once it reconnects.",
+              "Cet environnement n'est pas connecté — réessaie une fois qu'il sera reconnecté.",
             ),
           );
           return;

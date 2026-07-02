@@ -157,11 +157,11 @@ const resolveDesktopCoreAdvertisedEndpoints = (
   const endpoints: AdvertisedEndpoint[] = [
     createDesktopEndpoint({
       id: `desktop-loopback:${input.port}`,
-      label: "This machine",
+      label: "Cet appareil",
       httpBaseUrl: input.exposure.localHttpUrl,
       reachability: "loopback",
       status: "available",
-      description: "Loopback endpoint for this desktop app.",
+      description: "Point d'accès loopback pour cette application de bureau.",
     }),
   ];
 
@@ -169,12 +169,12 @@ const resolveDesktopCoreAdvertisedEndpoints = (
     endpoints.push(
       createDesktopEndpoint({
         id: `desktop-lan:${input.exposure.endpointUrl}`,
-        label: "Local network",
+        label: "Réseau local",
         httpBaseUrl: input.exposure.endpointUrl,
         reachability: "lan",
         status: "available",
         isDefault: true,
-        description: "Reachable from devices on the same network.",
+        description: "Accessible depuis les appareils sur le même réseau.",
       }),
     );
   }
@@ -185,14 +185,14 @@ const resolveDesktopCoreAdvertisedEndpoints = (
       endpoints.push(
         createManualEndpoint({
           id: `manual:${customEndpointUrl}`,
-          label: isHttpsEndpoint ? "Custom HTTPS" : "Custom endpoint",
+          label: isHttpsEndpoint ? "HTTPS personnalisé" : "Point d'accès personnalisé",
           httpBaseUrl: customEndpointUrl,
           reachability: "public",
           ...(isHttpsEndpoint ? ({ hostedHttpsCompatibility: "compatible" } as const) : {}),
           status: "unknown",
           description: isHttpsEndpoint
-            ? "User-configured HTTPS endpoint for this desktop backend."
-            : "User-configured endpoint for this desktop backend.",
+            ? "Point d'accès HTTPS configuré par l'utilisateur pour ce serveur de bureau."
+            : "Point d'accès configuré par l'utilisateur pour ce serveur de bureau.",
         }),
       );
     } catch {

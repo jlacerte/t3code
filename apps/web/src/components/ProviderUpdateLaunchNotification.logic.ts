@@ -378,7 +378,7 @@ export function firstFailedProviderUpdateMessage(
     return null;
   }
   const error = squashAtomCommandFailure(failed);
-  return error instanceof Error ? error.message : "Provider update failed.";
+  return error instanceof Error ? error.message : "Échec de la mise à jour du fournisseur.";
 }
 
 function getUpdateFinishedAt(provider: ServerProvider): string | null {
@@ -607,7 +607,9 @@ export function firstRejectedProviderUpdateMessage(
   if (!rejected) {
     return null;
   }
-  return rejected.reason instanceof Error ? rejected.reason.message : "Provider update failed.";
+  return rejected.reason instanceof Error
+    ? rejected.reason.message
+    : "Échec de la mise à jour du fournisseur.";
 }
 
 /**

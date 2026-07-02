@@ -201,7 +201,7 @@ export function deriveToolActivityPresentation(
 ): ToolActivityPresentation {
   const title = asTrimmedString(input.title);
   const detail = stripTrailingExitCode(asTrimmedString(input.detail));
-  const fallbackSummary = asTrimmedString(input.fallbackSummary) ?? "Tool";
+  const fallbackSummary = asTrimmedString(input.fallbackSummary) ?? "Outil";
   const data = asRecord(input.data);
   const command = extractToolCommand(data, title);
   const primaryPath = extractPrimaryPath(data);
@@ -213,7 +213,7 @@ export function deriveToolActivityPresentation(
 
   if (action === "command") {
     return {
-      summary: "Ran command",
+      summary: "Commande exécutée",
       ...(command ? { detail: command } : {}),
     };
   }
@@ -221,18 +221,18 @@ export function deriveToolActivityPresentation(
   if (action === "read") {
     if (primaryPath) {
       return {
-        summary: "Read file",
+        summary: "Fichier lu",
         detail: primaryPath,
       };
     }
     return {
-      summary: "Read file",
+      summary: "Fichier lu",
     };
   }
 
   if (action === "file_change") {
     return {
-      summary: "Changed files",
+      summary: "Fichiers modifiés",
       ...(primaryPath ? { detail: primaryPath } : {}),
     };
   }
@@ -243,7 +243,7 @@ export function deriveToolActivityPresentation(
       asTrimmedString(asRecord(data?.rawInput)?.pattern) ??
       asTrimmedString(asRecord(data?.rawInput)?.searchTerm);
     return {
-      summary: "Searched files",
+      summary: "Recherche dans les fichiers",
       ...(query ? { detail: query } : {}),
     };
   }

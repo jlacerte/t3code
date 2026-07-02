@@ -31,52 +31,54 @@ export type ProviderStatusKey = keyof typeof PROVIDER_STATUS_STYLES;
 export function getProviderSummary(provider: ServerProvider | undefined) {
   if (!provider) {
     return {
-      headline: "Checking provider status",
-      detail: "Waiting for the server to report installation and authentication details.",
+      headline: "Vérification du statut du fournisseur",
+      detail: "En attente des détails d'installation et d'authentification du serveur.",
     };
   }
   if (!provider.enabled) {
     return {
-      headline: "Disabled",
+      headline: "Désactivé",
       detail:
-        provider.message ?? "This provider is installed but disabled for new sessions in T3 Code.",
+        provider.message ??
+        "Ce fournisseur est installé mais désactivé pour les nouvelles sessions dans T3 Code.",
     };
   }
   if (!provider.installed) {
     return {
-      headline: "Not found",
-      detail: provider.message ?? "CLI not detected on PATH.",
+      headline: "Introuvable",
+      detail: provider.message ?? "CLI non détecté dans le PATH.",
     };
   }
   if (provider.auth.status === "authenticated") {
     const authLabel = provider.auth.label ?? provider.auth.type;
     return {
-      headline: authLabel ? `Authenticated · ${authLabel}` : "Authenticated",
+      headline: authLabel ? `Authentifié · ${authLabel}` : "Authentifié",
       detail: provider.message ?? null,
     };
   }
   if (provider.auth.status === "unauthenticated") {
     return {
-      headline: "Not authenticated",
+      headline: "Non authentifié",
       detail: provider.message ?? null,
     };
   }
   if (provider.status === "warning") {
     return {
-      headline: "Needs attention",
+      headline: "Attention requise",
       detail:
-        provider.message ?? "The provider is installed, but the server could not fully verify it.",
+        provider.message ??
+        "Le fournisseur est installé, mais le serveur n'a pas pu le vérifier complètement.",
     };
   }
   if (provider.status === "error") {
     return {
-      headline: "Unavailable",
-      detail: provider.message ?? "The provider failed its startup checks.",
+      headline: "Indisponible",
+      detail: provider.message ?? "Le fournisseur a échoué à ses vérifications de démarrage.",
     };
   }
   return {
-    headline: "Available",
-    detail: provider.message ?? "Installed and ready, but authentication could not be verified.",
+    headline: "Disponible",
+    detail: provider.message ?? "Installé et prêt, mais l'authentification n'a pas pu être vérifiée.",
   };
 }
 
@@ -101,7 +103,7 @@ export function getProviderVersionAdvisoryPresentation(
     return null;
   }
 
-  const label = "Update available";
+  const label = "Mise à jour disponible";
   const version = advisory.latestVersion;
   const versionLabel = getProviderVersionLabel(version);
 
@@ -109,8 +111,8 @@ export function getProviderVersionAdvisoryPresentation(
     detail:
       advisory.message ??
       (versionLabel
-        ? `${label}: install ${versionLabel}.`
-        : `${label}: install the latest provider version.`),
+        ? `${label} : installe ${versionLabel}.`
+        : `${label} : installe la dernière version du fournisseur.`),
     updateCommand: advisory.updateCommand,
     emphasis: "normal" as const,
   };

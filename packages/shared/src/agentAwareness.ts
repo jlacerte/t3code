@@ -109,19 +109,19 @@ function resolveThreadAwarenessPhase(
 function headlineForPhase(phase: AgentAwarenessPhase): string {
   switch (phase) {
     case "starting":
-      return "Starting agent";
+      return "Démarrage de l'agent";
     case "running":
-      return "Agent is working";
+      return "L'agent travaille";
     case "waiting_for_approval":
-      return "Approval needed";
+      return "Approbation requise";
     case "waiting_for_input":
-      return "Waiting for input";
+      return "En attente d'une réponse";
     case "completed":
-      return "Agent finished";
+      return "Agent terminé";
     case "failed":
-      return "Agent failed";
+      return "Échec de l'agent";
     case "stale":
-      return "Update delayed";
+      return "Mise à jour retardée";
   }
 }
 
@@ -133,10 +133,10 @@ function detailForPhase(
     return thread.session?.lastError ?? undefined;
   }
   if (phase === "completed") {
-    return "Review the completed task.";
+    return "Passe en revue la tâche terminée.";
   }
   if (phase === "running" && thread.session?.providerName) {
-    return `${thread.session.providerName} is active.`;
+    return `${thread.session.providerName} est actif.`;
   }
   return undefined;
 }

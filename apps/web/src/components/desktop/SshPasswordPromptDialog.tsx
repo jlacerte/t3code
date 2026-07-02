@@ -22,9 +22,9 @@ function formatRemainingSeconds(seconds: number): string {
 }
 
 function getPromptErrorMessage(error: unknown): string {
-  const message = error instanceof Error ? error.message : "SSH password prompt failed.";
+  const message = error instanceof Error ? error.message : "Échec de la demande de mot de passe SSH.";
   return message.includes("expired") || message.includes("no longer pending")
-    ? "This SSH password prompt expired. Try connecting again."
+    ? "Cette demande de mot de passe SSH a expiré. Réessaie de te connecter."
     : message;
 }
 
@@ -101,7 +101,7 @@ function ActiveSshPasswordPrompt({
   const remainingLabel =
     remainingSeconds === null ? null : formatRemainingSeconds(remainingSeconds);
   const visibleResponseError = isExpired
-    ? "This SSH password prompt expired. Try connecting again."
+    ? "Cette demande de mot de passe SSH a expiré. Réessaie de te connecter."
     : responseError;
 
   const respond = async (nextPassword: string | null) => {
@@ -111,7 +111,7 @@ function ActiveSshPasswordPrompt({
 
     const requestId = request.requestId;
     if (nextPassword !== null && isExpired) {
-      setResponseError("This SSH password prompt expired. Try connecting again.");
+      setResponseError("Cette demande de mot de passe SSH a expiré. Réessaie de te connecter.");
       return;
     }
 
@@ -158,10 +158,11 @@ function ActiveSshPasswordPrompt({
     >
       <DialogPopup className="max-w-md" showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>SSH Password Required</DialogTitle>
+          <DialogTitle>Mot de passe SSH requis</DialogTitle>
           <DialogDescription>
-            T3 needs your SSH password to connect to <code>{target}</code>. The password is passed
-            to the local SSH process for this connection attempt and is not saved by T3 Code.
+            T3 a besoin de ton mot de passe SSH pour se connecter à <code>{target}</code>. Le mot de
+            passe est transmis au processus SSH local pour cette tentative de connexion et n'est pas
+            enregistré par T3 Code.
           </DialogDescription>
         </DialogHeader>
         <DialogPanel className="space-y-3" scrollFade={false}>
@@ -184,7 +185,7 @@ function ActiveSshPasswordPrompt({
                         : "shrink-0 text-xs text-muted-foreground"
                     }
                   >
-                    {isExpired ? "Expired" : remainingLabel}
+                    {isExpired ? "Expiré" : remainingLabel}
                   </span>
                 ) : null}
               </div>
@@ -202,17 +203,18 @@ function ActiveSshPasswordPrompt({
               <p className="text-sm text-destructive">{visibleResponseError}</p>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Use SSH keys to avoid repeated password prompts on new SSH sessions.
+                Utilise des clés SSH pour éviter les demandes de mot de passe répétées lors de
+                nouvelles sessions SSH.
               </p>
             )}
           </form>
         </DialogPanel>
         <DialogFooter>
           <Button disabled={isResponding} type="button" variant="outline" onClick={cancelPrompt}>
-            {isExpired ? "Dismiss" : "Cancel"}
+            {isExpired ? "Ignorer" : "Annuler"}
           </Button>
           <Button disabled={isResponding || isExpired} form={formId} type="submit">
-            Continue
+            Continuer
           </Button>
         </DialogFooter>
       </DialogPopup>

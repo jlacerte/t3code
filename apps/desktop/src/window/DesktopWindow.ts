@@ -303,7 +303,7 @@ export const make = Effect.gen(function* () {
           });
         }
         if (params.dictionarySuggestions.length === 0) {
-          menuTemplate.push({ label: "No suggestions", enabled: false });
+          menuTemplate.push({ label: "Aucune suggestion", enabled: false });
         }
         menuTemplate.push({ type: "separator" });
       }
@@ -311,7 +311,7 @@ export const make = Effect.gen(function* () {
       if (Option.isSome(ElectronShell.parseSafeExternalUrl(params.linkURL))) {
         menuTemplate.push(
           {
-            label: "Copy Link",
+            label: "Copier le lien",
             click: () => {
               void runPromise(electronShell.copyText(params.linkURL));
             },
@@ -322,7 +322,7 @@ export const make = Effect.gen(function* () {
 
       if (params.mediaType === "image") {
         menuTemplate.push({
-          label: "Copy Image",
+          label: "Copier l'image",
           click: () => window.webContents.copyImageAt(params.x, params.y),
         });
         menuTemplate.push({ type: "separator" });

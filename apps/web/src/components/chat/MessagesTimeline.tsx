@@ -1340,7 +1340,7 @@ function UserMessagePreviewAnnotationCard(props: {
         >
           <img
             src={props.image.previewUrl}
-            alt="Annotated preview crop"
+            alt="Extrait d'aperçu annoté"
             className="size-full object-cover"
           />
         </button>

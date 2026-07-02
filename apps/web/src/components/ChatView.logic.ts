@@ -247,16 +247,18 @@ export function buildExpiredTerminalContextToastCopy(
   variant: "omitted" | "empty",
 ): { title: string; description: string } {
   const count = Math.max(1, Math.floor(expiredTerminalContextCount));
-  const noun = count === 1 ? "Contexte terminal expiré" : "Contextes terminaux expirés";
+  const isSingular = count === 1;
+  const noun = isSingular ? "Contexte terminal expiré" : "Contextes terminaux expirés";
+  const pronoun = isSingular ? "-le" : "-les";
   if (variant === "empty") {
     return {
-      title: `${noun} ne sera pas envoyé`,
-      description: "Retire-le ou rajoute-le pour inclure la sortie du terminal.",
+      title: isSingular ? `${noun} ne sera pas envoyé` : `${noun} ne seront pas envoyés`,
+      description: `Retire${pronoun} ou rajoute${pronoun} pour inclure la sortie du terminal.`,
     };
   }
   return {
     title: `${noun} omis du message`,
-    description: "Rajoute-le si tu veux inclure cette sortie du terminal.",
+    description: `Rajoute${pronoun} si tu veux inclure cette sortie du terminal.`,
   };
 }
 

@@ -105,7 +105,7 @@ export function SidebarUpdatePill() {
       {showArm64Warning && arm64Description && (
         <Alert variant="warning" className="rounded-2xl border-warning/40 bg-warning/8 text-xs">
           <TriangleAlertIcon />
-          <AlertTitle>Build Intel sur Apple Silicon</AlertTitle>
+          <AlertTitle>Version Intel sur puce Apple Silicon</AlertTitle>
           <AlertDescription>{arm64Description}</AlertDescription>
         </Alert>
       )}
