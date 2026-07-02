@@ -208,6 +208,9 @@ describe("ProcessDiagnostics", () => {
       const diagnostics = yield* Effect.service(ProcessDiagnostics.ProcessDiagnostics).pipe(
         Effect.flatMap((pd) => pd.read),
         Effect.provide(layer),
+        // Épingle la plateforme : sinon HostProcessPlatform prend `process.platform`
+        // et le test emprunte la branche PowerShell sur une machine Windows.
+        Effect.provideService(HostProcessPlatform, "linux"),
       );
 
       expect(diagnostics.processes.map((process) => process.pid)).toEqual([4242]);
@@ -217,6 +220,67 @@ describe("ProcessDiagnostics", () => {
           args: ["-axo", "pid=,ppid=,pgid=,stat=,pcpu=,rss=,etime=,command="],
         },
       ]);
+    }),
+  );
+
+  it.effect("queries processes through PowerShell on Windows", () =>
+    Effect.gen(function* () {
+      const commands: Array<{ readonly command: string; readonly args: ReadonlyArray<string> }> =
+        [];
+      const spawnerLayer = Layer.succeed(
+        ChildProcessSpawner.ChildProcessSpawner,
+        ChildProcessSpawner.make((command) => {
+          const childProcess = command as unknown as {
+            readonly command: string;
+            readonly args: ReadonlyArray<string>;
+          };
+          commands.push({ command: childProcess.command, args: childProcess.args });
+          return Effect.succeed(
+            mockHandle({
+              stdout: JSON.stringify([
+                {
+                  ProcessId: process.pid,
+                  ParentProcessId: 1,
+                  Name: "t3.exe",
+                  CommandLine: "t3 server",
+                  Status: "OK",
+                  WorkingSetSize: 1024,
+                  PercentProcessorTime: 0,
+                },
+                {
+                  ProcessId: 4242,
+                  ParentProcessId: process.pid,
+                  Name: "agent.exe",
+                  CommandLine: "codex app-server",
+                  Status: "OK",
+                  WorkingSetSize: 2048,
+                  PercentProcessorTime: 3,
+                },
+              ]),
+            }),
+          );
+        }),
+      );
+      const layer = ProcessDiagnostics.layer.pipe(Layer.provide(spawnerLayer));
+
+      const diagnostics = yield* Effect.service(ProcessDiagnostics.ProcessDiagnostics).pipe(
+        Effect.flatMap((pd) => pd.read),
+        Effect.provide(layer),
+        Effect.provideService(HostProcessPlatform, "win32"),
+      );
+
+      expect(diagnostics.processes.map((process) => process.pid)).toEqual([4242]);
+      expect(diagnostics.processes[0]?.cpuPercent).toBe(3);
+      expect(diagnostics.processes[0]?.rssBytes).toBe(2048);
+      expect(commands).toHaveLength(1);
+      expect(commands[0]?.command).toBe("powershell.exe");
+      expect(commands[0]?.args.slice(0, 3)).toEqual(["-NoProfile", "-NonInteractive", "-Command"]);
+      // La requête doit récupérer les compteurs de perf en une seule passe (pas de N+1
+      // par processus) et les joindre en mémoire via une table de hachage.
+      const script = commands[0]?.args[3] ?? "";
+      expect(script).toContain("Win32_PerfFormattedData_PerfProc_Process");
+      expect(script).toContain("$perf.ContainsKey");
+      expect(script).not.toContain('-Filter "IDProcess');
     }),
   );
 

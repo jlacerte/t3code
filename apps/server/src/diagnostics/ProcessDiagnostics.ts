@@ -29,6 +29,11 @@ export interface ProcessRow {
 }
 
 const PROCESS_QUERY_TIMEOUT_MS = 1_000;
+// La requête Windows lance `powershell.exe` (~300 ms de démarrage à froid) puis deux
+// requêtes CIM (Win32_Process + les compteurs de perf), soit ~2 s sur une machine
+// chargée. On lui accorde une marge plus large que le `ps` POSIX (quasi instantané),
+// tout en restant sous SAMPLE_INTERVAL_MS (5 s) du moniteur de ressources.
+const WINDOWS_PROCESS_QUERY_TIMEOUT_MS = 4_000;
 const POSIX_PROCESS_QUERY_COMMAND = "pid=,ppid=,pgid=,stat=,pcpu=,rss=,etime=,command=";
 const PROCESS_QUERY_MAX_OUTPUT_BYTES = 2 * 1024 * 1024;
 
@@ -340,8 +345,10 @@ interface ProcessOutput {
 const runProcess = Effect.fn("runProcess")(function* (input: {
   readonly command: string;
   readonly args: ReadonlyArray<string>;
+  readonly timeoutMillis?: number;
 }) {
   const cwd = process.cwd();
+  const timeoutMillis = input.timeoutMillis ?? PROCESS_QUERY_TIMEOUT_MS;
   return yield* Effect.gen(function* () {
     const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
     // `ps` and `powershell.exe` are real executables; spawning through cmd.exe
@@ -381,7 +388,7 @@ const runProcess = Effect.fn("runProcess")(function* (input: {
     } satisfies ProcessOutput;
   }).pipe(
     Effect.scoped,
-    Effect.timeoutOption(Duration.millis(PROCESS_QUERY_TIMEOUT_MS)),
+    Effect.timeoutOption(Duration.millis(timeoutMillis)),
     Effect.flatMap((result) =>
       Option.match(result, {
         onNone: () =>
@@ -390,7 +397,7 @@ const runProcess = Effect.fn("runProcess")(function* (input: {
               command: input.command,
               argCount: input.args.length,
               cwd,
-              timeoutMillis: PROCESS_QUERY_TIMEOUT_MS,
+              timeoutMillis,
             }),
           ),
         onSome: Effect.succeed,
@@ -442,17 +449,23 @@ function readWindowsProcessRows(): Effect.Effect<
   ProcessDiagnosticsError,
   ChildProcessSpawner.ChildProcessSpawner
 > {
+  // On récupère les compteurs de perf de TOUS les processus en une seule requête CIM,
+  // puis on les joint en mémoire par PID. L'ancienne version relançait
+  // `Get-CimInstance ... -Filter "IDProcess = ..."` pour chaque processus (N+1) :
+  // avec plusieurs centaines de processus, la requête dépassait largement le timeout.
   const command = [
-    "$processes = Get-CimInstance Win32_Process | ForEach-Object {",
-    '$perf = Get-CimInstance Win32_PerfFormattedData_PerfProc_Process -Filter "IDProcess = $($_.ProcessId)" -ErrorAction SilentlyContinue;',
-    "[pscustomobject]@{ ProcessId = $_.ProcessId; ParentProcessId = $_.ParentProcessId; Name = $_.Name; CommandLine = $_.CommandLine; Status = $_.Status; WorkingSetSize = $_.WorkingSetSize; PercentProcessorTime = if ($perf) { $perf.PercentProcessorTime } else { 0 } }",
-    "};",
-    "$processes | ConvertTo-Json -Compress -Depth 3",
+    "$perf = @{};",
+    "Get-CimInstance Win32_PerfFormattedData_PerfProc_Process -ErrorAction SilentlyContinue |",
+    "ForEach-Object { $perf[[uint32]$_.IDProcess] = $_.PercentProcessorTime };",
+    "Get-CimInstance Win32_Process | ForEach-Object {",
+    "[pscustomobject]@{ ProcessId = $_.ProcessId; ParentProcessId = $_.ParentProcessId; Name = $_.Name; CommandLine = $_.CommandLine; Status = $_.Status; WorkingSetSize = $_.WorkingSetSize; PercentProcessorTime = $(if ($perf.ContainsKey([uint32]$_.ProcessId)) { $perf[[uint32]$_.ProcessId] } else { 0 }) }",
+    "} | ConvertTo-Json -Compress -Depth 3",
   ].join(" ");
 
   return runProcess({
     command: "powershell.exe",
     args: ["-NoProfile", "-NonInteractive", "-Command", command],
+    timeoutMillis: WINDOWS_PROCESS_QUERY_TIMEOUT_MS,
   }).pipe(
     Effect.flatMap((result) =>
       result.exitCode !== 0
