@@ -1,11 +1,10 @@
-import * as NodePath from "node:path";
-
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { describe, it, assert } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as Fiber from "effect/Fiber";
 import * as Layer from "effect/Layer";
+import * as Path from "effect/Path";
 import * as PubSub from "effect/PubSub";
 import * as Ref from "effect/Ref";
 import * as Schema from "effect/Schema";
@@ -1746,10 +1745,12 @@ it.layer(Layer.mergeAll(NodeServices.layer, ServerSettingsModule.layerTest(), Te
           assert.strictEqual(status.status, "ready");
           // Le produit résout le homePath en absolu selon la plateforme
           // (`path.resolve`), donc sous Windows `/tmp/...` devient `C:\tmp\...`.
-          // On compare à la forme résolue pour rester correct multi-plateforme.
+          // On compare à la forme résolue (même service Path que le produit)
+          // pour rester correct multi-plateforme.
+          const path = yield* Path.Path;
           assert.deepStrictEqual(
             recorded.commands.map((command) => command.env?.HOME),
-            [NodePath.resolve(claudeHome)],
+            [path.resolve(claudeHome)],
           );
         }).pipe(Effect.provide(recorded.layer));
       });
