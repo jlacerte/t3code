@@ -1,5 +1,6 @@
 import {
   ClaudeSettings,
+  ClawcalSettings,
   CodexSettings,
   CursorSettings,
   GrokSettings,
@@ -7,7 +8,15 @@ import {
   ProviderDriverKind,
 } from "@t3tools/contracts";
 import type * as Schema from "effect/Schema";
-import { ClaudeAI, CursorIcon, GrokIcon, type Icon, OpenAI, OpenCodeIcon } from "../Icons";
+import {
+  ClaudeAI,
+  ClawcalIcon,
+  CursorIcon,
+  GrokIcon,
+  type Icon,
+  OpenAI,
+  OpenCodeIcon,
+} from "../Icons";
 
 type ProviderSettingsSchema = {
   readonly fields: Readonly<Record<string, Schema.Top>>;
@@ -60,6 +69,13 @@ export const PROVIDER_CLIENT_DEFINITIONS: readonly ProviderClientDefinition[] = 
     icon: GrokIcon,
     badgeLabel: "Accès anticipé",
     settingsSchema: GrokSettings,
+  },
+  {
+    value: ProviderDriverKind.make("clawcal"),
+    label: "Clawcal",
+    icon: ClawcalIcon,
+    badgeLabel: "Local",
+    settingsSchema: ClawcalSettings,
   },
   {
     value: ProviderDriverKind.make("opencode"),

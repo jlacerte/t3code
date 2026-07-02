@@ -211,6 +211,25 @@ export const GrokIcon: Icon = ({ className, ...props }) => (
   </svg>
 );
 
+export const ClawcalIcon: Icon = ({ className, ...props }) => (
+  <svg
+    {...props}
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("stroke-[#0F0F0F] dark:stroke-[#F5F5F5]", className)}
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {/* Pince de homard stylisée : deux mors ouverts reliés au poignet */}
+    <path d="M12 21c-4.4 0-8-3.6-8-8 0-3.1 1.8-5.8 4.4-7.1" />
+    <path d="M8.4 5.9C9 3.7 11 2 13.4 2 16.5 2 19 4.5 19 7.6c0 2.4-1.5 4.4-3.6 5.2" />
+    <path d="M15.4 12.8c.4.7.6 1.4.6 2.2 0 2.5-2 4.5-4.5 4.5" />
+    <path d="M8.4 5.9c2.3 1.5 5 4.1 7 6.9" />
+    <path d="m4 21 3.2-3.2" />
+  </svg>
+);
+
 export const TraeIcon: Icon = (props) => (
   <svg {...props} viewBox="0 0 24 24" fill="currentColor">
     {/* Back rectangle: left strip + bottom strip drawn separately — empty bottom-left corner is the gap between them */}
