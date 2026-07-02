@@ -1,3 +1,5 @@
+import * as NodePath from "node:path";
+
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { describe, it, assert } from "@effect/vitest";
 import * as Effect from "effect/Effect";
@@ -1742,9 +1744,12 @@ it.layer(Layer.mergeAll(NodeServices.layer, ServerSettingsModule.layerTest(), Te
             claudeCapabilities(),
           );
           assert.strictEqual(status.status, "ready");
+          // Le produit résout le homePath en absolu selon la plateforme
+          // (`path.resolve`), donc sous Windows `/tmp/...` devient `C:\tmp\...`.
+          // On compare à la forme résolue pour rester correct multi-plateforme.
           assert.deepStrictEqual(
             recorded.commands.map((command) => command.env?.HOME),
-            [claudeHome],
+            [NodePath.resolve(claudeHome)],
           );
         }).pipe(Effect.provide(recorded.layer));
       });
