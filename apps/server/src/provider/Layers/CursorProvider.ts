@@ -53,7 +53,7 @@ const decodeCursorListAvailableModelsResponse = Schema.decodeUnknownEffect(
 const PROVIDER = ProviderDriverKind.make("cursor");
 const CURSOR_PRESENTATION = {
   displayName: "Cursor",
-  badgeLabel: "Early Access",
+  badgeLabel: "Accès anticipé",
   showInteractionModeToggle: true,
 } as const;
 const EMPTY_CAPABILITIES: ModelCapabilities = createModelCapabilities({
@@ -93,7 +93,7 @@ export function buildInitialCursorProviderSnapshot(
           version: null,
           status: "warning",
           auth: { status: "unknown" },
-          message: "Cursor is disabled in T3 Code settings.",
+          message: "Cursor est désactivé dans les paramètres de T3 Code.",
         },
       });
     }
@@ -617,9 +617,9 @@ function joinProviderMessages(...messages: ReadonlyArray<string | undefined>): s
 
 function buildCursorCliCommandMissingMessage(binaryPath: string): string {
   return [
-    `Cursor CLI command \`${binaryPath}\` was not found.`,
-    `Install or enable the Cursor CLI, make sure \`${binaryPath}\` is on PATH, then restart T3 Code.`,
-    `See ${CURSOR_CLI_INSTALLATION_DOCS_URL}.`,
+    `La commande CLI Cursor \`${binaryPath}\` est introuvable.`,
+    `Installe ou active le CLI Cursor, assure-toi que \`${binaryPath}\` est dans le PATH, puis redémarre T3 Code.`,
+    `Voir ${CURSOR_CLI_INSTALLATION_DOCS_URL}.`,
   ].join(" ");
 }
 
@@ -1008,7 +1008,7 @@ export const checkCursorProviderStatus = Effect.fn("checkCursorProviderStatus")(
         version: null,
         status: "warning",
         auth: { status: "unknown" },
-        message: "Cursor is disabled in T3 Code settings.",
+        message: "Cursor est désactivé dans les paramètres de T3 Code.",
       },
     });
   }

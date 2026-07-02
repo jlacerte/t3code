@@ -408,7 +408,7 @@ const makePendingCodexProvider = (
           version: null,
           status: "warning",
           auth: { status: "unknown" },
-          message: "Codex is disabled in T3 Code settings.",
+          message: "Codex est désactivé dans les paramètres de T3 Code.",
         },
       });
     }
@@ -493,7 +493,7 @@ export const checkCodexProviderStatus = Effect.fn("checkCodexProviderStatus")(fu
         version: null,
         status: "warning",
         auth: { status: "unknown" },
-        message: "Codex is disabled in T3 Code settings.",
+        message: "Codex est désactivé dans les paramètres de T3 Code.",
       },
     });
   }

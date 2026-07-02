@@ -306,9 +306,9 @@ const cursorAcpDiscoveryFailedMessage = [
 ].join(" ");
 const missingCursorBinaryPath = "/definitely/not/installed/t3-cursor-agent";
 const cursorCliCommandMissingMessage = [
-  `Cursor CLI command \`${missingCursorBinaryPath}\` was not found.`,
-  `Install or enable the Cursor CLI, make sure \`${missingCursorBinaryPath}\` is on PATH, then restart T3 Code.`,
-  "See https://cursor.com/docs/cli/installation.",
+  `La commande CLI Cursor \`${missingCursorBinaryPath}\` est introuvable.`,
+  `Installe ou active le CLI Cursor, assure-toi que \`${missingCursorBinaryPath}\` est dans le PATH, puis redémarre T3 Code.`,
+  "Voir https://cursor.com/docs/cli/installation.",
 ].join(" ");
 
 describe("getCursorFallbackModels", () => {

@@ -33,7 +33,7 @@ import { makeGrokAcpRuntime, resolveGrokAcpBaseModelId } from "../acp/GrokAcpSup
 
 const GROK_PRESENTATION = {
   displayName: "Grok",
-  badgeLabel: "Early Access",
+  badgeLabel: "Accès anticipé",
   showInteractionModeToggle: false,
   requiresNewThreadForModelChange: true,
 } as const;
@@ -72,7 +72,7 @@ export function buildInitialGrokProviderSnapshot(
           version: null,
           status: "warning",
           auth: { status: "unknown" },
-          message: "Grok is disabled in T3 Code settings.",
+          message: "Grok est désactivé dans les paramètres de T3 Code.",
         },
       });
     }
@@ -182,7 +182,7 @@ export const checkGrokProviderStatus = Effect.fn("checkGrokProviderStatus")(func
         version: null,
         status: "warning",
         auth: { status: "unknown" },
-        message: "Grok is disabled in T3 Code settings.",
+        message: "Grok est désactivé dans les paramètres de T3 Code.",
       },
     });
   }
