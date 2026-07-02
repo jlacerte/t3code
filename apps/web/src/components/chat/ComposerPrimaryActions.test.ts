@@ -11,7 +11,7 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: true,
         questionIndex: 0,
       }),
-    ).toBe("Submitting...");
+    ).toBe("Envoi en cours...");
   });
 
   it("returns 'Submitting...' while responding regardless of other flags", () => {
@@ -22,7 +22,7 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: true,
         questionIndex: 3,
       }),
-    ).toBe("Submitting...");
+    ).toBe("Envoi en cours...");
   });
 
   it("returns 'Submit' in compact mode on the last question", () => {
@@ -33,7 +33,7 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: false,
         questionIndex: 0,
       }),
-    ).toBe("Submit");
+    ).toBe("Envoyer");
   });
 
   it("returns 'Next' in compact mode when not the last question", () => {
@@ -44,7 +44,7 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: false,
         questionIndex: 1,
       }),
-    ).toBe("Next");
+    ).toBe("Suivant");
   });
 
   it("returns 'Next question' when not the last question", () => {
@@ -55,7 +55,7 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: false,
         questionIndex: 0,
       }),
-    ).toBe("Next question");
+    ).toBe("Question suivante");
   });
 
   it("returns singular 'Submit answer' on the last question when it is the only question", () => {
@@ -66,7 +66,7 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: false,
         questionIndex: 0,
       }),
-    ).toBe("Submit answer");
+    ).toBe("Envoyer la réponse");
   });
 
   it("returns plural 'Submit answers' on the last question when there are multiple questions", () => {
@@ -77,7 +77,7 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: false,
         questionIndex: 1,
       }),
-    ).toBe("Submit answers");
+    ).toBe("Envoyer les réponses");
   });
 
   it("returns plural 'Submit answers' for higher question indices", () => {
@@ -88,6 +88,6 @@ describe("formatPendingPrimaryActionLabel", () => {
         isResponding: false,
         questionIndex: 5,
       }),
-    ).toBe("Submit answers");
+    ).toBe("Envoyer les réponses");
   });
 });

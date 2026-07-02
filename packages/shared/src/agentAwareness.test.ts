@@ -73,7 +73,7 @@ describe("projectThreadAwareness", () => {
     });
 
     expect(state?.phase).toBe("waiting_for_approval");
-    expect(state?.headline).toBe("Approval needed");
+    expect(state?.headline).toBe("Approbation requise");
   });
 
   it("projects running provider sessions", () => {
@@ -95,8 +95,8 @@ describe("projectThreadAwareness", () => {
 
     expect(state).toMatchObject({
       phase: "running",
-      headline: "Agent is working",
-      detail: "Codex is active.",
+      headline: "L'agent travaille",
+      detail: "Codex est actif.",
       modelTitle: "gpt-5.4",
       deepLink: "/threads/env-1/thread-1",
     });
@@ -121,7 +121,7 @@ describe("projectThreadAwareness", () => {
 
     expect(state).toMatchObject({
       phase: "failed",
-      headline: "Agent failed",
+      headline: "Échec de l'agent",
       detail: "Provider process exited.",
     });
   });

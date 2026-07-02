@@ -33,7 +33,7 @@ describe("mobile client presentation", () => {
 
     expect(mobileClientPlatformLabel(client)).toBe("iOS 18 · T3 Code 1.2.3");
     expect(mobileClientNotificationDetail(client)).toBe(
-      "Alerts enabled for approvals, completions.",
+      "Alertes activées pour : approbations, achèvements.",
     );
   });
 
@@ -42,7 +42,7 @@ describe("mobile client presentation", () => {
       mobileClientNotificationDetail(
         device({ notifications: { ...device().notifications, enabled: false } }),
       ),
-    ).toBe("Push notifications are disabled on this device.");
+    ).toBe("Les notifications push sont désactivées sur cet appareil.");
     expect(
       mobileClientNotificationDetail(
         device({
@@ -55,11 +55,11 @@ describe("mobile client presentation", () => {
           },
         }),
       ),
-    ).toBe("Push notifications are enabled, but no alert types are selected.");
+    ).toBe("Les notifications push sont activées, mais aucun type d'alerte n'est sélectionné.");
   });
 
   it("handles missing app versions and invalid update timestamps", () => {
     expect(mobileClientPlatformLabel(device({ appVersion: null }))).toBe("iOS 18");
-    expect(mobileClientUpdatedAtLabel("not-a-date")).toBe("Update time unavailable");
+    expect(mobileClientUpdatedAtLabel("not-a-date")).toBe("Heure de mise à jour indisponible");
   });
 });

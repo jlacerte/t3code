@@ -61,7 +61,7 @@ describe("previewViewport", () => {
   });
 
   it("formats settings for compact UI", () => {
-    expect(previewViewportLabel({ _tag: "fill" })).toBe("Fill panel");
+    expect(previewViewportLabel({ _tag: "fill" })).toBe("Remplir le panneau");
     expect(previewViewportLabel({ _tag: "freeform", width: 393, height: 852 })).toBe("393 × 852");
     expect(previewViewportPresetOrientation({ _tag: "freeform", width: 852, height: 393 })).toBe(
       "landscape",

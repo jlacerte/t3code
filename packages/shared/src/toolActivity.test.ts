@@ -15,7 +15,7 @@ describe("toolActivity", () => {
         fallbackSummary: "Terminal",
       }),
     ).toEqual({
-      summary: "Ran command",
+      summary: "Commande exécutée",
       detail: "bun run lint",
     });
   });
@@ -33,7 +33,7 @@ describe("toolActivity", () => {
         fallbackSummary: "Read File",
       }),
     ).toEqual({
-      summary: "Read file",
+      summary: "Fichier lu",
       detail: "/tmp/app.ts",
     });
   });
@@ -51,7 +51,7 @@ describe("toolActivity", () => {
         fallbackSummary: "Read File",
       }),
     ).toEqual({
-      summary: "Read file",
+      summary: "Fichier lu",
     });
   });
 });
