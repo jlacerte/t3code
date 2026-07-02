@@ -58,16 +58,16 @@ const checkForUpdatesFromMenu = Effect.gen(function* () {
   if (updateState.status === "up-to-date") {
     yield* electronDialog.showMessageBox({
       type: "info",
-      title: "You're up to date!",
-      message: `T3 Code ${updateState.currentVersion} is currently the newest version available.`,
+      title: "Tu es à jour!",
+      message: `T3 Code ${updateState.currentVersion} est actuellement la version la plus récente.`,
       buttons: ["OK"],
     });
   } else if (updateState.status === "error") {
     yield* electronDialog.showMessageBox({
       type: "warning",
-      title: "Update check failed",
-      message: "Could not check for updates.",
-      detail: updateState.message ?? "An unknown error occurred. Please try again later.",
+      title: "Échec de la vérification des mises à jour",
+      message: "Impossible de vérifier les mises à jour.",
+      detail: updateState.message ?? "Une erreur inconnue est survenue. Réessaie plus tard.",
       buttons: ["OK"],
     });
   }
@@ -83,8 +83,8 @@ const handleCheckForUpdatesMenuClick = Effect.gen(function* () {
     });
     yield* electronDialog.showMessageBox({
       type: "info",
-      title: "Updates unavailable",
-      message: "Automatic updates are not available right now.",
+      title: "Mises à jour non disponibles",
+      message: "Les mises à jour automatiques ne sont pas disponibles pour le moment.",
       detail: disabledReason.value,
       buttons: ["OK"],
     });
@@ -135,12 +135,12 @@ export const make = Effect.gen(function* () {
         submenu: [
           { role: "about" },
           {
-            label: "Check for Updates...",
+            label: "Vérifier les mises à jour...",
             click: checkForUpdatesClick,
           },
           { type: "separator" },
           {
-            label: "Settings...",
+            label: "Paramètres...",
             accelerator: "CmdOrCtrl+,",
             click: settingsClick,
           },
@@ -158,13 +158,13 @@ export const make = Effect.gen(function* () {
 
     template.push(
       {
-        label: "File",
+        label: "Fichier",
         submenu: [
           ...(environment.platform === "darwin"
             ? []
             : [
                 {
-                  label: "Settings...",
+                  label: "Paramètres...",
                   accelerator: "CmdOrCtrl+,",
                   click: settingsClick,
                 },
@@ -175,7 +175,7 @@ export const make = Effect.gen(function* () {
       },
       { role: "editMenu" },
       {
-        label: "View",
+        label: "Affichage",
         submenu: [
           { role: "reload" },
           { role: "forceReload" },
@@ -194,7 +194,7 @@ export const make = Effect.gen(function* () {
         role: "help",
         submenu: [
           {
-            label: "Check for Updates...",
+            label: "Vérifier les mises à jour...",
             click: checkForUpdatesClick,
           },
         ],

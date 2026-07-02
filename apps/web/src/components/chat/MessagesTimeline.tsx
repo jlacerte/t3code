@@ -461,7 +461,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
     return (
       <div className="flex h-full items-center justify-center">
         <p className="text-sm text-muted-foreground/30">
-          Send a message to start the conversation.
+          Envoie un message pour commencer la conversation.
         </p>
       </div>
     );
@@ -682,7 +682,7 @@ function TimelineMinimap({
     >
       <div className="relative h-full w-full select-none">
         <button
-          aria-label={`Jump to message: ${activeItem?.userText ?? "User message"}`}
+          aria-label={`Aller au message : ${activeItem?.userText ?? "Message de l'utilisateur"}`}
           className="pointer-events-auto absolute top-1/2 left-3 w-10 -translate-y-1/2 cursor-pointer bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70"
           onBlur={() => setActiveIndex(null)}
           onClick={(event) => {
@@ -763,7 +763,7 @@ function TimelineMinimap({
               }}
             >
               <span className="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5">
-                {activeItem.userText ?? "User message"}
+                {activeItem.userText ?? "Message de l'utilisateur"}
               </span>
               {activeItem.assistantText ? (
                 <span
@@ -861,7 +861,7 @@ function UserTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "message" 
                   <button
                     type="button"
                     className="h-full w-full cursor-zoom-in"
-                    aria-label={`Preview ${image.name}`}
+                    aria-label={`Aperçu de ${image.name}`}
                     onClick={() => {
                       const preview = buildExpandedImagePreview(regularImages, image.id);
                       if (!preview) return;
@@ -943,13 +943,13 @@ function RevertUserMessageButton({ messageId }: { messageId: MessageId }) {
             variant="ghost"
             disabled={activity.isRevertingCheckpoint || activity.isWorking}
             onClick={() => ctx.onRevertUserMessage(messageId)}
-            aria-label="Revert to this message"
+            aria-label="Revenir à ce message"
           />
         }
       >
         <Undo2Icon className="size-3" />
       </TooltipTrigger>
-      <TooltipPopup side="top">Revert to this message</TooltipPopup>
+      <TooltipPopup side="top">Revenir à ce message</TooltipPopup>
     </Tooltip>
   );
 }
@@ -976,7 +976,7 @@ function TurnFoldTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "turn-
 
 function AssistantTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "message" }> }) {
   const ctx = use(TimelineRowCtx);
-  const messageText = row.message.text || (row.message.streaming ? "" : "(empty response)");
+  const messageText = row.message.text || (row.message.streaming ? "" : "(réponse vide)");
 
   return (
     <>
@@ -1062,10 +1062,10 @@ function WorkingTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "workin
         <span>
           {row.createdAt ? (
             <>
-              Working for <WorkingTimer createdAt={row.createdAt} />
+              Au travail depuis <WorkingTimer createdAt={row.createdAt} />
             </>
           ) : (
-            "Working..."
+            "Au travail..."
           )}
         </span>
       </div>
@@ -1120,9 +1120,9 @@ const WorkGroupSection = memo(function WorkGroupSection({
   const onlyToolEntries = nonEmptyEntries.every((entry) => workLogEntryIsToolLike(entry));
   const groupLabel = onlyToolEntries
     ? nonEmptyEntries.length === 1
-      ? "1 tool call"
-      : `${nonEmptyEntries.length} tool calls`
-    : "Work Log";
+      ? "1 appel d'outil"
+      : `${nonEmptyEntries.length} appels d'outils`
+    : "Journal de travail";
 
   if (nonEmptyEntries.length === 0) return null;
 
@@ -1152,7 +1152,7 @@ function WorkGroupToggleTimelineRow({
   row: Extract<TimelineRow, { kind: "work-toggle" }>;
 }) {
   const ctx = use(TimelineRowCtx);
-  const labelNoun = row.onlyToolEntries ? "tool call" : "log entry";
+  const labelNoun = row.onlyToolEntries ? "appel d'outil" : "entrée de journal";
 
   return (
     <button
@@ -1175,11 +1175,12 @@ function WorkGroupToggleTimelineRow({
       </span>
       {row.expanded ? (
         <span className="font-medium text-foreground/82">
-          Show fewer {row.onlyToolEntries ? "tool calls" : "log entries"}
+          Afficher moins {row.onlyToolEntries ? "d'appels d'outils" : "d'entrées de journal"}
         </span>
       ) : (
         <span className="font-medium text-foreground/82">
-          +{row.hiddenCount} previous {labelNoun}
+          +{row.hiddenCount} {labelNoun}
+          {row.hiddenCount === 1 ? "" : "s"} précédent
           {row.hiddenCount === 1 ? "" : "s"}
         </span>
       )}
@@ -1241,7 +1242,7 @@ function AssistantChangedFilesSectionInner({
     <div className="mt-2 rounded-lg border border-border/80 bg-card/45 p-2.5">
       <div className="sticky top-2 z-10 mb-1.5 flex items-center justify-between gap-2 bg-[color-mix(in_srgb,var(--card)_45%,var(--background))] before:absolute before:inset-x-0 before:-top-2 before:h-2 before:bg-[color-mix(in_srgb,var(--card)_45%,var(--background))] before:content-['']">
         <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/65">
-          <span>Changed files ({changedFileCountLabel})</span>
+          <span>Fichiers modifiés ({changedFileCountLabel})</span>
           {hasNonZeroStat(summaryStat) && (
             <>
               <span className="mx-1">•</span>
@@ -1257,7 +1258,7 @@ function AssistantChangedFilesSectionInner({
             data-scroll-anchor-ignore
             onClick={() => setExpanded(routeThreadKey, turnSummary.turnId, !allDirectoriesExpanded)}
           >
-            {allDirectoriesExpanded ? "Collapse all" : "Expand all"}
+            {allDirectoriesExpanded ? "Tout réduire" : "Tout déplier"}
           </Button>
           <Button
             type="button"
@@ -1265,7 +1266,7 @@ function AssistantChangedFilesSectionInner({
             variant="outline"
             onClick={() => onOpenTurnDiff(turnSummary.turnId, checkpointFiles[0]?.path)}
           >
-            View diff
+            Voir le diff
           </Button>
         </div>
       </div>
@@ -1330,7 +1331,7 @@ function UserMessagePreviewAnnotationCard(props: {
         <button
           type="button"
           className="size-14 shrink-0 cursor-zoom-in overflow-hidden border-r border-border/70 bg-muted"
-          aria-label={`Preview ${props.image.name}`}
+          aria-label={`Aperçu de ${props.image.name}`}
           onClick={() => {
             if (!props.image) return;
             const preview = buildExpandedImagePreview([props.image], props.image.id);
@@ -1443,7 +1444,7 @@ const CollapsibleUserMessageBody = memo(function CollapsibleUserMessageBody(prop
               onClick={() => setExpanded((value) => !value)}
               className="-ml-1 h-6 rounded-md px-1.5 text-xs text-muted-foreground/72 hover:bg-muted/55 hover:text-foreground/85"
             >
-              {expanded ? "Show less" : "Show full message"}
+              {expanded ? "Afficher moins" : "Afficher le message complet"}
             </Button>
           ) : null}
           {props.footer ? (
@@ -1808,7 +1809,7 @@ function workEntryPreview(
   const displayPath = formatWorkspaceRelativePath(firstPath, workspaceRoot);
   return workEntry.changedFiles!.length === 1
     ? displayPath
-    : `${displayPath} +${workEntry.changedFiles!.length - 1} more`;
+    : `${displayPath} +${workEntry.changedFiles!.length - 1} de plus`;
 }
 
 function workEntryRawCommand(
@@ -2004,13 +2005,13 @@ const SimpleWorkEntryRow = memo(function SimpleWorkEntryRow(props: {
                     render={
                       <span
                         className="flex size-4 items-center justify-center"
-                        aria-label="Tool call failed"
+                        aria-label="Appel d'outil échoué"
                       />
                     }
                   >
                     <XIcon className="block size-3 shrink-0 text-destructive" aria-hidden />
                   </TooltipTrigger>
-                  <TooltipPopup>Failed</TooltipPopup>
+                  <TooltipPopup>Échoué</TooltipPopup>
                 </Tooltip>
               ) : showSuccessIndicator ? (
                 <Tooltip>
@@ -2025,7 +2026,7 @@ const SimpleWorkEntryRow = memo(function SimpleWorkEntryRow(props: {
                       />
                     </span>
                   </TooltipTrigger>
-                  <TooltipPopup>Completed</TooltipPopup>
+                  <TooltipPopup>Terminé</TooltipPopup>
                 </Tooltip>
               ) : showNeutralIndicator ? (
                 <Tooltip>
@@ -2034,7 +2035,7 @@ const SimpleWorkEntryRow = memo(function SimpleWorkEntryRow(props: {
                   >
                     <MinusIcon className="block size-3 shrink-0 opacity-70" aria-hidden />
                   </TooltipTrigger>
-                  <TooltipPopup>Empty</TooltipPopup>
+                  <TooltipPopup>Vide</TooltipPopup>
                 </Tooltip>
               ) : null}
             </span>

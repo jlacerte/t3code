@@ -687,8 +687,8 @@ export default function FilePreviewPanel({
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Unable to open file in browser",
-          description: error instanceof Error ? error.message : "An error occurred.",
+          title: "Impossible d'ouvrir le fichier dans le navigateur",
+          description: error instanceof Error ? error.message : "Une erreur est survenue.",
         }),
       );
     })();
@@ -753,7 +753,7 @@ export default function FilePreviewPanel({
                         revealRequestId: pressed ? revealRequestId : null,
                       });
                     }}
-                    aria-label={renderMarkdown ? "Show markdown source" : "Show rendered markdown"}
+                    aria-label={renderMarkdown ? "Afficher la source markdown" : "Afficher le markdown rendu"}
                     variant="ghost"
                     size="sm"
                   >
@@ -762,7 +762,7 @@ export default function FilePreviewPanel({
                 }
               />
               <TooltipPopup>
-                {renderMarkdown ? "Show markdown source" : "Show rendered markdown"}
+                {renderMarkdown ? "Afficher la source markdown" : "Afficher le markdown rendu"}
               </TooltipPopup>
             </Tooltip>
           ) : null}
@@ -774,7 +774,7 @@ export default function FilePreviewPanel({
                     className="shrink-0"
                     pressed={false}
                     onPressedChange={handleOpenInBrowser}
-                    aria-label="Open file in preview browser"
+                    aria-label="Ouvrir le fichier dans le navigateur d'aperçu"
                     variant="ghost"
                     size="sm"
                   >
@@ -782,7 +782,7 @@ export default function FilePreviewPanel({
                   </Toggle>
                 }
               />
-              <TooltipPopup>Open file in preview browser</TooltipPopup>
+              <TooltipPopup>Ouvrir le fichier dans le navigateur d'aperçu</TooltipPopup>
             </Tooltip>
           ) : null}
           <Tooltip>
@@ -792,7 +792,7 @@ export default function FilePreviewPanel({
                   className="shrink-0"
                   pressed={explorerOpen}
                   onPressedChange={toggleExplorer}
-                  aria-label={explorerOpen ? "Hide file explorer" : "Show file explorer"}
+                  aria-label={explorerOpen ? "Masquer l'explorateur de fichiers" : "Afficher l'explorateur de fichiers"}
                   variant="ghost"
                   size="sm"
                 >
@@ -801,14 +801,14 @@ export default function FilePreviewPanel({
               }
             />
             <TooltipPopup>
-              {explorerOpen ? "Hide file explorer" : "Show file explorer"}
+              {explorerOpen ? "Masquer l'explorateur de fichiers" : "Afficher l'explorateur de fichiers"}
             </TooltipPopup>
           </Tooltip>
         </div>
       ) : null}
       {relativePath && file.data?.truncated ? (
         <div className="shrink-0 border-b border-amber-500/20 bg-amber-500/8 px-3 py-1.5 text-[11px] text-amber-700 dark:text-amber-300">
-          Preview limited to the first 1 MB of a {file.data.byteLength.toLocaleString()} byte file.
+          Aperçu limité au premier 1 Mo d'un fichier de {file.data.byteLength.toLocaleString()} octets.
         </div>
       ) : null}
       <div className="flex min-h-0 flex-1 overflow-hidden">

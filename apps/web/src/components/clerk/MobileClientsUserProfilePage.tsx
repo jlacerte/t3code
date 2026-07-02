@@ -24,7 +24,7 @@ function MobileClientStatusBadge({
 }) {
   return (
     <Badge variant={enabled ? "success" : "outline"}>
-      {label}: {enabled ? "On" : "Off"}
+      {label} : {enabled ? "Activé" : "Désactivé"}
     </Badge>
   );
 }
@@ -49,7 +49,7 @@ function MobileClientRow({ device }: { readonly device: RelayClientDeviceRecord 
           <div className="mt-3 flex flex-wrap gap-1.5">
             <MobileClientStatusBadge
               enabled={device.notifications.enabled}
-              label="Push notifications"
+              label="Notifications push"
             />
             <MobileClientStatusBadge
               enabled={device.liveActivities.enabled}
@@ -67,7 +67,7 @@ function MobileClientRow({ device }: { readonly device: RelayClientDeviceRecord 
 
 function MobileClientsSkeleton() {
   return (
-    <div aria-label="Loading mobile clients" className="space-y-3" role="status">
+    <div aria-label="Chargement des clients mobiles" className="space-y-3" role="status">
       {MOBILE_CLIENT_SKELETON_ROWS.map((row) => (
         <div key={row} className="rounded-xl border p-4">
           <div className="flex gap-3">
@@ -94,10 +94,10 @@ function EmptyMobileClients() {
         <SmartphoneIcon />
       </EmptyMedia>
       <EmptyHeader>
-        <EmptyTitle>No mobile clients</EmptyTitle>
+        <EmptyTitle>Aucun client mobile</EmptyTitle>
         <EmptyDescription>
-          Sign in to T3 Code on your iPhone to register it for push notifications and Live
-          Activities.
+          Connecte-toi à T3 Code sur ton iPhone pour l'enregistrer pour les notifications push et
+          les Live Activities.
         </EmptyDescription>
       </EmptyHeader>
     </Empty>
@@ -115,9 +115,9 @@ export function MobileClientsUserProfilePage() {
     <div className="flex min-h-[30rem] w-full flex-col bg-background text-foreground">
       <header className="flex flex-col gap-4 border-b px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold tracking-[-0.01em]">Mobile clients</h2>
+          <h2 className="text-base font-semibold tracking-[-0.01em]">Clients mobiles</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Devices registered to receive T3 Connect activity from your environments.
+            Appareils enregistrés pour recevoir l'activité T3 Connect de tes environnements.
           </p>
         </div>
         <Button
@@ -127,7 +127,7 @@ export function MobileClientsUserProfilePage() {
           onClick={devicesState.refresh}
         >
           <RefreshCwIcon className={cn("size-3.5", devicesState.isPending && "animate-spin")} />
-          Refresh
+          Actualiser
         </Button>
       </header>
 
@@ -139,12 +139,12 @@ export function MobileClientsUserProfilePage() {
           >
             <div>
               <p className="font-medium text-destructive-foreground">
-                Could not load mobile clients
+                Impossible de charger les clients mobiles
               </p>
               <p className="mt-0.5 text-xs text-muted-foreground">{devicesState.error}</p>
             </div>
             <Button size="xs" variant="outline" onClick={devicesState.refresh}>
-              Try again
+              Réessayer
             </Button>
           </div>
         ) : null}

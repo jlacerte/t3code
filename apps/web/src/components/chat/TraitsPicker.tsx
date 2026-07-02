@@ -294,8 +294,8 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
             </div>
             {ultrathinkInBodyText && descriptor.id === primarySelectDescriptor?.id ? (
               <div className="px-2 pb-1.5 text-muted-foreground/80 text-xs">
-                Your prompt contains &quot;ultrathink&quot; in the text. Remove it to change this
-                option.
+                Ton prompt contient &quot;ultrathink&quot; dans le texte. Retire-le pour changer
+                cette option.
               </div>
             ) : null}
             <MenuRadioGroup
@@ -313,7 +313,7 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
                   disabled={ultrathinkInBodyText && descriptor.id === primarySelectDescriptor?.id}
                 >
                   {option.label}
-                  {option.isDefault ? " (default)" : ""}
+                  {option.isDefault ? " (défaut)" : ""}
                 </MenuRadioItem>
               ))}
             </MenuRadioGroup>
@@ -335,8 +335,8 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
                 );
               }}
             >
-              <MenuRadioItem value="on">On</MenuRadioItem>
-              <MenuRadioItem value="off">Off</MenuRadioItem>
+              <MenuRadioItem value="on">Activé</MenuRadioItem>
+              <MenuRadioItem value="off">Désactivé</MenuRadioItem>
             </MenuRadioGroup>
           </MenuGroup>
         </div>
@@ -389,9 +389,9 @@ export const TraitsPicker = memo(function TraitsPicker({
         : descriptor.type === "boolean"
           ? descriptor.id === "fastMode"
             ? descriptor.currentValue === true
-              ? "Fast"
+              ? "Rapide"
               : "Normal"
-            : `${descriptor.label} ${descriptor.currentValue === true ? "On" : "Off"}`
+            : `${descriptor.label} ${descriptor.currentValue === true ? "Activé" : "Désactivé"}`
           : getProviderOptionCurrentLabel(descriptor);
     if (typeof label === "string" && label.length > 0) {
       triggerLabels.push(label);

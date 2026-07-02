@@ -100,21 +100,21 @@ function authPresentation(auth: SourceControlProviderAuth): {
   readonly badge: "warning" | null;
 } {
   if (auth.status === "authenticated") {
-    return { label: "Authenticated", badge: null };
+    return { label: "Authentifié", badge: null };
   }
   if (auth.status === "unauthenticated") {
-    return { label: "Not authenticated", badge: "warning" };
+    return { label: "Non authentifié", badge: "warning" };
   }
-  return { label: "Status unknown", badge: null };
+  return { label: "Statut inconnu", badge: null };
 }
 
 function RedactedAccount(props: { readonly account: string | null }) {
   return (
     <RedactedSensitiveText
       value={props.account}
-      ariaLabel="Toggle source control account visibility"
-      revealTooltip="Click to reveal account"
-      hideTooltip="Click to hide account"
+      ariaLabel="Basculer la visibilité du compte de gestion de code source"
+      revealTooltip="Clique pour révéler le compte"
+      hideTooltip="Clique pour cacher le compte"
     />
   );
 }
@@ -164,21 +164,21 @@ function itemSummary({
   readonly authAccount: string | null;
 }) {
   if (isVcsNotReady(item)) {
-    return <span>Support for {item.label} is coming soon.</span>;
+    return <span>Le support pour {item.label} s'en vient bientôt.</span>;
   }
 
   if (item.status !== "available") {
-    return <span>Not available on this server: {item.installHint}</span>;
+    return <span>Non disponible sur ce serveur : {item.installHint}</span>;
   }
 
   if (auth) {
     if (auth.status === "authenticated") {
       return (
         <>
-          <span>Authenticated</span>
+          <span>Authentifié</span>
           {authAccount ? (
             <>
-              <span aria-hidden>as</span>
+              <span aria-hidden>en tant que</span>
               <RedactedAccount account={authAccount} />
             </>
           ) : null}
@@ -187,26 +187,27 @@ function itemSummary({
     }
 
     if (!item.executable) {
-      return <span>Available. {item.installHint}</span>;
+      return <span>Disponible. {item.installHint}</span>;
     }
 
     if (auth.status === "unauthenticated") {
       return (
         <span>
-          {item.label} is not authenticated on this server. Sign in or configure credentials using
-          the <code className="rounded bg-muted px-1 py-px text-[11px]">{item.executable}</code>{" "}
-          tool on the server host to enable pull request features.
+          {item.label} n'est pas authentifié sur ce serveur. Connecte-toi ou configure les
+          identifiants avec l'outil{" "}
+          <code className="rounded bg-muted px-1 py-px text-[11px]">{item.executable}</code> sur
+          l'hôte du serveur pour activer les fonctionnalités de pull request.
         </span>
       );
     }
     return (
       <span>
-        Could not verify {item.label}. {item.installHint}
+        Impossible de vérifier {item.label}. {item.installHint}
       </span>
     );
   }
 
-  return <span>Available</span>;
+  return <span>Disponible</span>;
 }
 
 function DiscoveryItemRow({
@@ -244,7 +245,7 @@ function DiscoveryItemRow({
               {version ? <code className="text-xs text-muted-foreground">{version}</code> : null}
               {isVcsNotReady(item) ? (
                 <Badge variant="warning" size="sm">
-                  Coming Soon
+                  Bientôt disponible
                 </Badge>
               ) : null}
               {authStatus?.badge ? (
@@ -265,7 +266,7 @@ function DiscoveryItemRow({
                 className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
                 onClick={() => setIsExpanded((open) => !open)}
                 aria-expanded={isExpanded}
-                aria-label={`Toggle ${item.label} details`}
+                aria-label={`Afficher/masquer les détails de ${item.label}`}
               >
                 <ChevronDownIcon
                   className={cn("size-3.5 transition-transform", isExpanded && "rotate-180")}
@@ -273,7 +274,7 @@ function DiscoveryItemRow({
               </Button>
             ) : null}
             {!isVcsNotReady(item) ? (
-              <Switch checked={enabled} disabled aria-label={`${item.label} availability`} />
+              <Switch checked={enabled} disabled aria-label={`Disponibilité de ${item.label}`} />
             ) : null}
           </div>
         </div>
@@ -307,7 +308,7 @@ function GitFetchIntervalSettings() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-1">
           <div className="flex min-w-0 items-center gap-1">
-            <span className="text-xs font-medium text-foreground">Fetch interval</span>
+            <span className="text-xs font-medium text-foreground">Intervalle de fetch</span>
             <span
               className={cn(
                 "inline-flex size-5 shrink-0 items-center justify-center transition-opacity",
@@ -317,7 +318,7 @@ function GitFetchIntervalSettings() {
             >
               {canResetFetchInterval ? (
                 <SettingResetButton
-                  label="fetch interval"
+                  label="intervalle de fetch"
                   onClick={() =>
                     updateSettings({
                       automaticGitFetchInterval: DEFAULT_UNIFIED_SETTINGS.automaticGitFetchInterval,
@@ -328,8 +329,9 @@ function GitFetchIntervalSettings() {
             </span>
           </div>
           <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
-            Refresh remote branch status in the background. Set this to 0 seconds if Git credentials
-            or security keys should only be prompted by explicit Git actions.
+            Rafraîchit le statut des branches distantes en arrière-plan. Mets ceci à 0 seconde si
+            les identifiants Git ou les clés de sécurité ne devraient être demandés que par des
+            actions Git explicites.
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -346,12 +348,12 @@ function GitFetchIntervalSettings() {
             }
           >
             <NumberFieldGroup>
-              <NumberFieldDecrement aria-label="Decrease fetch interval" />
-              <NumberFieldInput aria-label="Automatic Git fetch interval in seconds" />
-              <NumberFieldIncrement aria-label="Increase fetch interval" />
+              <NumberFieldDecrement aria-label="Diminuer l'intervalle de fetch" />
+              <NumberFieldInput aria-label="Intervalle de fetch Git automatique en secondes" />
+              <NumberFieldIncrement aria-label="Augmenter l'intervalle de fetch" />
             </NumberFieldGroup>
           </NumberField>
-          <span className="text-xs text-muted-foreground">seconds</span>
+          <span className="text-xs text-muted-foreground">secondes</span>
         </div>
       </div>
     </div>
@@ -407,19 +409,19 @@ function EmptySourceControlDiscovery({
   const hasError = error !== null;
 
   return (
-    <SettingsSection title="Server environment">
+    <SettingsSection title="Environnement du serveur">
       <Empty className="min-h-88">
         <EmptyMedia variant="icon">
           <GitPullRequestIcon />
         </EmptyMedia>
         <EmptyHeader>
           <EmptyTitle>
-            {hasError ? "Could not scan the server environment" : "Nothing detected yet"}
+            {hasError ? "Impossible d'analyser l'environnement du serveur" : "Rien détecté pour l'instant"}
           </EmptyTitle>
           <EmptyDescription>
             {hasError
               ? error
-              : "Install Git on the server, add optional hosting integrations or credentials your workspace needs, then rescan."}
+              : "Installe Git sur le serveur, ajoute les intégrations d'hébergement ou les identifiants optionnels dont ton espace de travail a besoin, puis relance l'analyse."}
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
@@ -431,7 +433,7 @@ function EmptySourceControlDiscovery({
             disabled={isPending}
           >
             <RefreshCwIcon className={cn("size-3.5", isPending && "animate-spin")} />
-            Scan
+            Analyser
           </Button>
         </EmptyContent>
       </Empty>
@@ -466,13 +468,13 @@ export function SourceControlSettingsPanel() {
             className="size-5 rounded-sm p-0 text-muted-foreground hover:text-foreground"
             onClick={handleScan}
             disabled={discovery.isPending}
-            aria-label="Rescan server environment"
+            aria-label="Relancer l'analyse de l'environnement du serveur"
           >
             <RefreshCwIcon className={cn("size-3", discovery.isPending && "animate-spin")} />
           </Button>
         }
       />
-      <TooltipPopup side="top">Rescan Git and hosting integrations</TooltipPopup>
+      <TooltipPopup side="top">Relancer l'analyse de Git et des intégrations d'hébergement</TooltipPopup>
     </Tooltip>
   );
 
@@ -480,13 +482,13 @@ export function SourceControlSettingsPanel() {
     <SettingsPageContainer>
       {isInitialScanPending ? (
         <>
-          <SourceControlSectionSkeleton title="Version Control" headerAction={scanButton} />
-          <SourceControlSectionSkeleton title="Source Control Providers" />
+          <SourceControlSectionSkeleton title="Contrôle de version" headerAction={scanButton} />
+          <SourceControlSectionSkeleton title="Fournisseurs de gestion de code source" />
         </>
       ) : hasDiscoveryItems ? (
         <>
           {result.versionControlSystems.length > 0 ? (
-            <SettingsSection title="Version Control" headerAction={scanButton}>
+            <SettingsSection title="Contrôle de version" headerAction={scanButton}>
               {result.versionControlSystems.map((item) => (
                 <DiscoveryItemRow key={`vcs:${item.kind}`} item={item}>
                   {item.kind === "git" ? <GitFetchIntervalSettings /> : undefined}
@@ -497,7 +499,7 @@ export function SourceControlSettingsPanel() {
 
           {result.sourceControlProviders.length > 0 ? (
             <SettingsSection
-              title="Source Control Providers"
+              title="Fournisseurs de gestion de code source"
               headerAction={result.versionControlSystems.length === 0 ? scanButton : null}
             >
               {result.sourceControlProviders.map((item) => (

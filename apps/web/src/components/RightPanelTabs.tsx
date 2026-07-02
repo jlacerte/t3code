@@ -51,9 +51,9 @@ interface RightPanelTabsProps {
 }
 
 const SURFACE_DISABLED_REASONS = {
-  browser: "Browser previews are only available in the T3 Code desktop app.",
-  files: "Files are only available when a project is open.",
-  diff: "Diff is only available for server threads in Git repositories.",
+  browser: "Les aperçus du navigateur sont disponibles seulement dans l'application de bureau T3 Code.",
+  files: "Les fichiers sont disponibles seulement quand un projet est ouvert.",
+  diff: "Diff est disponible seulement pour les fils serveur dans des repos Git.",
 } as const;
 
 type TabContextMenuAction = "copy-path" | "close" | "close-others" | "close-to-right" | "close-all";
@@ -97,8 +97,8 @@ function RightPanelEmptyState(props: {
 }) {
   const actions = [
     {
-      label: "Browser",
-      description: "Open a local app or URL.",
+      label: "Navigateur",
+      description: "Ouvre une appli locale ou une URL.",
       icon: Globe2,
       available: props.browserAvailable,
       disabledReason: SURFACE_DISABLED_REASONS.browser,
@@ -106,15 +106,15 @@ function RightPanelEmptyState(props: {
     },
     {
       label: "Terminal",
-      description: "Start a shell in this workspace.",
+      description: "Démarre un shell dans cet espace de travail.",
       icon: TerminalSquare,
       available: true,
       disabledReason: null,
       onClick: props.onAddTerminal,
     },
     {
-      label: "Files",
-      description: "Browse and read workspace files.",
+      label: "Fichiers",
+      description: "Parcours et lis les fichiers de l'espace de travail.",
       icon: Files,
       available: props.filesAvailable,
       disabledReason: SURFACE_DISABLED_REASONS.files,
@@ -122,7 +122,7 @@ function RightPanelEmptyState(props: {
     },
     {
       label: "Diff",
-      description: "Review changes in this thread.",
+      description: "Passe en revue les changements de ce fil.",
       icon: FileDiff,
       available: props.diffAvailable,
       disabledReason: SURFACE_DISABLED_REASONS.diff,
@@ -134,9 +134,9 @@ function RightPanelEmptyState(props: {
     <div className="flex min-h-0 flex-1 items-center justify-center p-6">
       <div className="w-full max-w-xl">
         <div className="mb-5 text-center">
-          <h3 className="text-sm font-medium text-foreground">Open a surface</h3>
+          <h3 className="text-sm font-medium text-foreground">Ouvrir une surface</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Choose what to show in the right panel.
+            Choisis quoi afficher dans le panneau de droite.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -195,7 +195,7 @@ function surfaceTitle(
     case "diff":
       return "Diff";
     case "files":
-      return "Files";
+      return "Fichiers";
     case "file":
       return surface.relativePath.slice(surface.relativePath.lastIndexOf("/") + 1);
     case "terminal":
@@ -207,12 +207,12 @@ function surfaceTitle(
       return "Plan";
     case "preview": {
       const snapshot = surface.resourceId ? sessions[surface.resourceId] : null;
-      if (!snapshot || snapshot.navStatus._tag === "Idle") return "Browser";
+      if (!snapshot || snapshot.navStatus._tag === "Idle") return "Navigateur";
       if (snapshot.navStatus.title.trim().length > 0) return snapshot.navStatus.title;
       try {
-        return new URL(snapshot.navStatus.url).host || "Browser";
+        return new URL(snapshot.navStatus.url).host || "Navigateur";
       } catch {
-        return "Browser";
+        return "Navigateur";
       }
     }
   }
@@ -287,23 +287,23 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
 
       const items: ContextMenuItem<TabContextMenuAction>[] = [];
       if (surface.kind === "file") {
-        items.push({ id: "copy-path", label: "Copy path" });
+        items.push({ id: "copy-path", label: "Copier le chemin" });
       }
       items.push(
-        { id: "close", label: "Close" },
+        { id: "close", label: "Fermer" },
         {
           id: "close-others",
-          label: "Close others",
+          label: "Fermer les autres",
           disabled: props.surfaces.length <= 1,
         },
         {
           id: "close-to-right",
-          label: "Close to the right",
+          label: "Fermer à droite",
           disabled: surfaceIndex >= props.surfaces.length - 1,
         },
         {
           id: "close-all",
-          label: "Close all",
+          label: "Tout fermer",
           disabled: props.surfaces.length === 0,
         },
       );
@@ -415,7 +415,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                       "relative flex size-4 shrink-0 items-center justify-center rounded hover:bg-muted focus:opacity-100",
                       pending ? "opacity-100" : "opacity-0 group-hover:opacity-100",
                     )}
-                    aria-label={`Close ${title}`}
+                    aria-label={`Fermer ${title}`}
                     onClick={() => props.onCloseSurface(surface)}
                   >
                     {pending ? (
@@ -437,7 +437,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
               <Menu>
                 <MenuTrigger
                   className="relative inline-flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
-                  aria-label="Add panel surface"
+                  aria-label="Ajouter une surface au panneau"
                 >
                   <Plus className="size-4" />
                 </MenuTrigger>
@@ -448,7 +448,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                     onClick={props.onAddBrowser}
                   >
                     <Globe2 />
-                    Browser
+                    Navigateur
                   </SurfaceMenuItem>
                   <SurfaceMenuItem available onClick={props.onAddTerminal}>
                     <TerminalSquare />
@@ -460,7 +460,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                     onClick={props.onAddFiles}
                   >
                     <Files />
-                    Files
+                    Fichiers
                   </SurfaceMenuItem>
                   <SurfaceMenuItem
                     available={props.diffAvailable}

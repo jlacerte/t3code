@@ -37,15 +37,15 @@ export const formatPendingPrimaryActionLabel = (input: {
   questionIndex: number;
 }) => {
   if (input.isResponding) {
-    return "Submitting...";
+    return "Envoi en cours...";
   }
   if (input.compact) {
-    return input.isLastQuestion ? "Submit" : "Next";
+    return input.isLastQuestion ? "Envoyer" : "Suivant";
   }
   if (!input.isLastQuestion) {
-    return "Next question";
+    return "Question suivante";
   }
-  return input.questionIndex > 0 ? "Submit answers" : "Submit answer";
+  return input.questionIndex > 0 ? "Envoyer les réponses" : "Envoyer la réponse";
 };
 
 const preventPointerFocus: PointerEventHandler<HTMLElement> = (event) => {
@@ -84,7 +84,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
               {...pointerFocusProps}
               onClick={onPreviousPendingQuestion}
               disabled={pendingAction.isResponding}
-              aria-label="Previous question"
+              aria-label="Question précédente"
             >
               <ChevronLeftIcon className="size-3.5" />
             </Button>
@@ -97,7 +97,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
               onClick={onPreviousPendingQuestion}
               disabled={pendingAction.isResponding}
             >
-              Previous
+              Précédent
             </Button>
           )
         ) : null}
@@ -130,7 +130,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
         className="flex size-8 cursor-pointer items-center justify-center rounded-full bg-destructive/90 text-white shadow-xs shadow-destructive/24 inset-shadow-[0_1px_--theme(--color-white/16%)] transition-all duration-150 hover:bg-destructive hover:scale-105 active:inset-shadow-[0_1px_--theme(--color-black/8%)] active:shadow-none sm:h-8 sm:w-8"
         {...pointerFocusProps}
         onClick={onInterrupt}
-        aria-label="Stop generation"
+        aria-label="Arrêter la génération"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
           <rect x="2" y="2" width="8" height="8" rx="1.5" />
@@ -149,7 +149,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
           {...pointerFocusProps}
           disabled={isSendBusy || isConnecting || isEnvironmentUnavailable}
         >
-          {isConnecting || isSendBusy ? "Sending..." : "Refine"}
+          {isConnecting || isSendBusy ? "Envoi en cours..." : "Peaufiner"}
         </Button>
       );
     }
@@ -163,7 +163,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
           {...pointerFocusProps}
           disabled={isSendBusy || isConnecting || isEnvironmentUnavailable}
         >
-          {isConnecting || isSendBusy ? "Sending..." : "Implement"}
+          {isConnecting || isSendBusy ? "Envoi en cours..." : "Implémenter"}
         </Button>
         <Menu>
           <MenuTrigger
@@ -172,7 +172,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
                 size="sm"
                 variant="default"
                 className="h-9 rounded-l-none rounded-r-full border-l-white/12 px-2 sm:h-8"
-                aria-label="Implementation actions"
+                aria-label="Actions d'implémentation"
                 {...pointerFocusProps}
                 disabled={isSendBusy || isConnecting || isEnvironmentUnavailable}
               />
@@ -185,7 +185,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
               disabled={isSendBusy || isConnecting || isEnvironmentUnavailable}
               onClick={() => void onImplementPlanInNewThread()}
             >
-              Implement in a new thread
+              Implémenter dans un nouveau fil
             </MenuItem>
           </MenuPopup>
         </Menu>
@@ -201,14 +201,14 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
       disabled={isSendBusy || isConnecting || isEnvironmentUnavailable || !hasSendableContent}
       aria-label={
         isEnvironmentUnavailable
-          ? "Environment disconnected"
+          ? "Environnement déconnecté"
           : isConnecting
-            ? "Connecting"
+            ? "Connexion en cours"
             : isPreparingWorktree
-              ? "Preparing worktree"
+              ? "Préparation du worktree"
               : isSendBusy
-                ? "Sending"
-                : "Send message"
+                ? "Envoi en cours"
+                : "Envoyer le message"
       }
     >
       {isConnecting || isSendBusy ? (

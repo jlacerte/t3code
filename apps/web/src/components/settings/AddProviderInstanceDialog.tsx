@@ -73,7 +73,7 @@ interface ComingSoonDriverOption {
 const COMING_SOON_DRIVER_OPTIONS: readonly ComingSoonDriverOption[] = [
   {
     value: ProviderDriverKind.make("githubCopilot"),
-    label: "Github Copilot",
+    label: "GitHub Copilot",
     icon: GithubCopilotIcon,
   },
   {
@@ -99,12 +99,12 @@ const COMING_SOON_DRIVER_OPTIONS: readonly ComingSoonDriverOption[] = [
  * Returns a user-facing error string, or `null` if valid.
  */
 function validateInstanceId(id: string, existing: ReadonlySet<string>): string | null {
-  if (id.length === 0) return "Instance ID is required.";
-  if (id.length > 64) return "Instance ID must be 64 characters or fewer.";
+  if (id.length === 0) return "L'ID d'instance est requis.";
+  if (id.length > 64) return "L'ID d'instance doit contenir 64 caractères ou moins.";
   if (!INSTANCE_ID_PATTERN.test(id)) {
-    return "Instance ID must start with a letter and use only letters, digits, '-', or '_'.";
+    return "L'ID d'instance doit commencer par une lettre et utiliser seulement des lettres, chiffres, '-' ou '_'.";
   }
-  if (existing.has(id)) return `An instance named '${id}' already exists.`;
+  if (existing.has(id)) return `Une instance nommée '${id}' existe déjà.`;
   return null;
 }
 
@@ -142,8 +142,8 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
   );
   const instanceIdError = validateInstanceId(instanceId, existingIds);
   const showInstanceIdError = hasAttemptedSubmit && instanceIdError !== null;
-  const previewLabel = label.trim() || `${driverOption.label} Workspace`;
-  const wizardSteps = ["Driver", "Identity", "Config"] as const;
+  const previewLabel = label.trim() || `Espace de travail ${driverOption.label}`;
+  const wizardSteps = ["Pilote", "Identité", "Configuration"] as const;
   const wizardStepSummaries = [driverOption.label, previewLabel, null] as const;
 
   const configDraft = configByDriver[driver] ?? EMPTY_CONFIG_DRAFT;
@@ -190,15 +190,15 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
       updateSettings({ providerInstances: nextMap });
       toastManager.add({
         type: "success",
-        title: "Provider instance added",
-        description: `${driverOption.label} instance '${instanceId}' was added.`,
+        title: "Instance de fournisseur ajoutée",
+        description: `L'instance ${driverOption.label} '${instanceId}' a été ajoutée.`,
       });
       onOpenChange(false);
     } catch (error) {
       toastManager.add({
         type: "error",
-        title: "Could not add provider instance",
-        description: error instanceof Error ? error.message : "Update failed.",
+        title: "Impossible d'ajouter l'instance de fournisseur",
+        description: error instanceof Error ? error.message : "Échec de la mise à jour.",
       });
     }
   }, [
@@ -219,10 +219,10 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
       <DialogPopup className="max-w-xl overflow-hidden">
         <div className="flex min-h-0 flex-col overflow-hidden border-foreground/10 bg-background shadow-2xl">
           <DialogHeader className="border-b border-border/70 bg-background">
-            <DialogTitle>Add provider instance</DialogTitle>
+            <DialogTitle>Ajouter une instance de fournisseur</DialogTitle>
             <DialogDescription>
-              Configure an additional provider instance — for example, a second Codex install
-              pointed at a different workspace.
+              Configure une instance de fournisseur additionnelle — par exemple, une deuxième
+              installation de Codex pointant vers un espace de travail différent.
             </DialogDescription>
             <div className="grid grid-cols-3 gap-2">
               {wizardSteps.map((step, index) => (
@@ -253,7 +253,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                     {index < wizardStep ? <CheckIcon className="size-3" /> : null}
                   </span>
                   <span className="text-[10px] font-medium uppercase text-muted-foreground">
-                    Step {index + 1}
+                    Étape {index + 1}
                   </span>
                   <span className="truncate text-xs font-semibold text-foreground">
                     {step}
@@ -276,7 +276,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                   id="add-instance-driver-label"
                   className="text-xs font-medium text-foreground"
                 >
-                  Driver
+                  Pilote
                 </span>
                 <RadioGroup
                   value={driver}
@@ -330,7 +330,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                           {option.label}
                         </span>
                         <Badge variant="warning" size="sm">
-                          Coming Soon
+                          Bientôt disponible
                         </Badge>
                       </RadioPrimitive.Root>
                     );
@@ -339,20 +339,20 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
               </div>
 
               <label className={cn("grid gap-2", wizardStep !== 1 && "hidden")}>
-                <span className="text-xs font-medium text-foreground">Label</span>
+                <span className="text-xs font-medium text-foreground">Étiquette</span>
                 <Input
                   className="bg-background"
-                  placeholder="e.g. Work"
+                  placeholder="ex. Travail"
                   value={label}
                   onChange={(event) => setLabel(event.target.value)}
                 />
                 <span className="text-[11px] text-muted-foreground">
-                  Shown in the provider list. Optional.
+                  Affichée dans la liste des fournisseurs. Optionnel.
                 </span>
               </label>
 
               <label className={cn("grid gap-2", wizardStep !== 1 && "hidden")}>
-                <span className="text-xs font-medium text-foreground">Instance ID</span>
+                <span className="text-xs font-medium text-foreground">ID d'instance</span>
                 <Input
                   className="bg-background"
                   placeholder={`${driver}_work`}
@@ -366,19 +366,20 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                   <span className="text-[11px] text-destructive">{instanceIdError}</span>
                 ) : (
                   <span className="text-[11px] text-muted-foreground">
-                    Routing key used by threads and sessions. Letters, digits, '-', or '_'.
+                    Clé de routage utilisée par les fils et les sessions. Lettres,
+                    chiffres, '-' ou '_'.
                   </span>
                 )}
               </label>
 
               <div className={cn("grid gap-2", wizardStep !== 1 && "hidden")}>
-                <span className="text-xs font-medium text-foreground">Accent color</span>
+                <span className="text-xs font-medium text-foreground">Couleur d'accent</span>
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                   <input
                     type="color"
                     value={normalizeProviderAccentColor(accentColor) ?? PROVIDER_ACCENT_SWATCHES[0]}
                     onChange={(event) => setAccentColor(event.target.value)}
-                    aria-label="Provider instance accent color"
+                    aria-label="Couleur d'accent de l'instance du fournisseur"
                     className="h-8 w-10 cursor-pointer rounded-xl border border-input bg-background p-0.5"
                   />
                   <div className="flex flex-wrap gap-1.5">
@@ -396,7 +397,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                           )}
                           style={{ backgroundColor: swatch }}
                           onClick={() => setAccentColor(swatch)}
-                          aria-label={`Use ${swatch} accent`}
+                          aria-label={`Utiliser l'accent ${swatch}`}
                         />
                       );
                     })}
@@ -409,12 +410,12 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                       className="h-7 px-2 text-xs text-muted-foreground"
                       onClick={() => setAccentColor("")}
                     >
-                      Clear
+                      Effacer
                     </Button>
                   ) : null}
                 </div>
                 <span className="text-[11px] text-muted-foreground">
-                  Optional marker shown in the picker.
+                  Marqueur optionnel affiché dans le sélecteur.
                 </span>
               </div>
 
@@ -431,7 +432,8 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
               ) : wizardStep === 2 ? (
                 <div className="grid gap-2">
                   <p className="text-sm text-muted-foreground">
-                    This driver has no required configuration. You can add the instance now.
+                    Ce pilote n'a aucune configuration requise. Tu peux ajouter l'instance
+                    maintenant.
                   </p>
                 </div>
               ) : null}
@@ -450,15 +452,15 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                 setWizardStep((step) => Math.max(0, step - 1));
               }}
             >
-              {wizardStep === 0 ? "Cancel" : "Back"}
+              {wizardStep === 0 ? "Annuler" : "Retour"}
             </Button>
             {wizardStep < wizardSteps.length - 1 ? (
               <Button size="sm" onClick={() => setWizardStep((step) => Math.min(2, step + 1))}>
-                Next
+                Suivant
               </Button>
             ) : (
               <Button size="sm" onClick={handleSave}>
-                Add instance
+                Ajouter l'instance
               </Button>
             )}
           </DialogFooter>

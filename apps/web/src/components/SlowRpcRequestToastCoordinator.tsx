@@ -7,7 +7,9 @@ function describeSlowRequests(requests: ReadonlyArray<SlowRpcAckRequest>): strin
   const count = requests.length;
   const thresholdSeconds = Math.round((requests[0]?.thresholdMs ?? 0) / 1000);
 
-  return `${count} request${count === 1 ? "" : "s"} waiting longer than ${thresholdSeconds}s.`;
+  return count === 1
+    ? `1 requête en attente depuis plus de ${thresholdSeconds}s.`
+    : `${count} requêtes en attente depuis plus de ${thresholdSeconds}s.`;
 }
 
 function SlowRequestDetails({ requests }: { requests: ReadonlyArray<SlowRpcAckRequest> }) {
@@ -20,7 +22,7 @@ function SlowRequestDetails({ requests }: { requests: ReadonlyArray<SlowRpcAckRe
         >
           <div className="wrap-break-word font-medium text-foreground">{request.tag}</div>
           <div className="mt-0.5 text-[10px] opacity-75">
-            Started {new Date(request.startedAt).toLocaleTimeString()}
+            Débutée à {new Date(request.startedAt).toLocaleTimeString()}
           </div>
         </li>
       ))}
@@ -45,11 +47,11 @@ export function SlowRpcRequestToastCoordinator() {
       data: {
         expandableContent: <SlowRequestDetails requests={slowRequests} />,
         expandableDescriptionTrigger: true,
-        expandableLabels: { collapse: "Hide requests", expand: "Show requests" },
+        expandableLabels: { collapse: "Masquer les requêtes", expand: "Afficher les requêtes" },
       },
       description: describeSlowRequests(slowRequests),
       timeout: 0,
-      title: "Some requests are slow",
+      title: "Certaines requêtes sont lentes",
       type: "warning" as const,
     };
 

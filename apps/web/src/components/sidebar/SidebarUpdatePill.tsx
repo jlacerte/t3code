@@ -22,7 +22,7 @@ export function SidebarUpdatePill() {
   const [dismissed, setDismissed] = useState(false);
 
   const visible = isElectron && shouldShowDesktopUpdateButton(state) && !dismissed;
-  const tooltip = state ? getDesktopUpdateButtonTooltip(state) : "Update available";
+  const tooltip = state ? getDesktopUpdateButtonTooltip(state) : "Mise à jour disponible";
   const disabled = isDesktopUpdateButtonDisabled(state);
   const action = state ? resolveDesktopUpdateButtonAction(state) : "none";
 
@@ -42,8 +42,8 @@ export function SidebarUpdatePill() {
           if (result.completed) {
             toastManager.add({
               type: "success",
-              title: "Update downloaded",
-              description: "Restart the app from the update button to install it.",
+              title: "Mise à jour téléchargée",
+              description: "Redémarre l'app à partir du bouton de mise à jour pour l'installer.",
             });
           }
           if (!shouldToastDesktopUpdateActionResult(result)) return;
@@ -52,7 +52,7 @@ export function SidebarUpdatePill() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not download update",
+              title: "Impossible de télécharger la mise à jour",
               description: actionError,
             }),
           );
@@ -61,8 +61,8 @@ export function SidebarUpdatePill() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not start update download",
-              description: error instanceof Error ? error.message : "An unexpected error occurred.",
+              title: "Impossible de lancer le téléchargement de la mise à jour",
+              description: error instanceof Error ? error.message : "Une erreur inattendue est survenue.",
             }),
           );
         });
@@ -81,7 +81,7 @@ export function SidebarUpdatePill() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not install update",
+              title: "Impossible d'installer la mise à jour",
               description: actionError,
             }),
           );
@@ -90,8 +90,8 @@ export function SidebarUpdatePill() {
           toastManager.add(
             stackedThreadToast({
               type: "error",
-              title: "Could not install update",
-              description: error instanceof Error ? error.message : "An unexpected error occurred.",
+              title: "Impossible d'installer la mise à jour",
+              description: error instanceof Error ? error.message : "Une erreur inattendue est survenue.",
             }),
           );
         });
@@ -105,7 +105,7 @@ export function SidebarUpdatePill() {
       {showArm64Warning && arm64Description && (
         <Alert variant="warning" className="rounded-2xl border-warning/40 bg-warning/8 text-xs">
           <TriangleAlertIcon />
-          <AlertTitle>Intel build on Apple Silicon</AlertTitle>
+          <AlertTitle>Build Intel sur Apple Silicon</AlertTitle>
           <AlertDescription>{arm64Description}</AlertDescription>
         </Alert>
       )}
@@ -130,13 +130,13 @@ export function SidebarUpdatePill() {
                   {action === "install" ? (
                     <>
                       <RotateCwIcon className="size-3.5" />
-                      <span>Restart to update</span>
+                      <span>Redémarrer pour mettre à jour</span>
                     </>
                   ) : state?.status === "downloading" ? (
                     <>
                       <DownloadIcon className="size-3.5" />
                       <span>
-                        Downloading
+                        Téléchargement
                         {typeof state.downloadPercent === "number"
                           ? ` (${Math.floor(state.downloadPercent)}%)`
                           : "…"}
@@ -145,7 +145,7 @@ export function SidebarUpdatePill() {
                   ) : (
                     <>
                       <DownloadIcon className="size-3.5" />
-                      <span>Update available</span>
+                      <span>Mise à jour disponible</span>
                     </>
                   )}
                 </button>
@@ -159,7 +159,7 @@ export function SidebarUpdatePill() {
                 render={
                   <button
                     type="button"
-                    aria-label="Dismiss update"
+                    aria-label="Ignorer la mise à jour"
                     className="mr-1 inline-flex size-5 items-center justify-center rounded-md text-primary/60 transition-colors hover:text-primary"
                     onClick={() => setDismissed(true)}
                   >
@@ -167,7 +167,7 @@ export function SidebarUpdatePill() {
                   </button>
                 }
               />
-              <TooltipPopup side="top">Dismiss until next launch</TooltipPopup>
+              <TooltipPopup side="top">Ignorer jusqu'au prochain lancement</TooltipPopup>
             </Tooltip>
           )}
         </div>

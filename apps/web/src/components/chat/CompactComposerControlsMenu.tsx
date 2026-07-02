@@ -32,7 +32,7 @@ export const CompactComposerControlsMenu = memo(function CompactComposerControls
             size="sm"
             variant="ghost"
             className="shrink-0 px-2 text-muted-foreground/70 hover:text-foreground/80"
-            aria-label="More composer controls"
+            aria-label="Plus de contrôles du compositeur"
           />
         }
       >
@@ -55,13 +55,13 @@ export const CompactComposerControlsMenu = memo(function CompactComposerControls
                 props.onToggleInteractionMode();
               }}
             >
-              <MenuRadioItem value="default">Chat</MenuRadioItem>
+              <MenuRadioItem value="default">Clavardage</MenuRadioItem>
               <MenuRadioItem value="plan">Plan</MenuRadioItem>
             </MenuRadioGroup>
             <MenuDivider />
           </>
         ) : null}
-        <div className="px-2 py-1.5 font-medium text-muted-foreground text-xs">Access</div>
+        <div className="px-2 py-1.5 font-medium text-muted-foreground text-xs">Accès</div>
         <MenuRadioGroup
           value={props.runtimeMode}
           onValueChange={(value) => {
@@ -69,9 +69,9 @@ export const CompactComposerControlsMenu = memo(function CompactComposerControls
             props.onRuntimeModeChange(value as RuntimeMode);
           }}
         >
-          <MenuRadioItem value="approval-required">Supervised</MenuRadioItem>
-          <MenuRadioItem value="auto-accept-edits">Auto-accept edits</MenuRadioItem>
-          <MenuRadioItem value="full-access">Full access</MenuRadioItem>
+          <MenuRadioItem value="approval-required">Supervisé</MenuRadioItem>
+          <MenuRadioItem value="auto-accept-edits">Approbation auto des modifications</MenuRadioItem>
+          <MenuRadioItem value="full-access">Accès complet</MenuRadioItem>
         </MenuRadioGroup>
         {props.activePlan ? (
           <>
@@ -79,8 +79,8 @@ export const CompactComposerControlsMenu = memo(function CompactComposerControls
             <MenuItem onClick={props.onTogglePlanSidebar}>
               <ListTodoIcon className="size-4 shrink-0" />
               {props.planSidebarOpen
-                ? `Hide ${props.planSidebarLabel.toLowerCase()} sidebar`
-                : `Show ${props.planSidebarLabel.toLowerCase()} sidebar`}
+                ? `Masquer la barre latérale ${props.planSidebarLabel.toLowerCase()}`
+                : `Afficher la barre latérale ${props.planSidebarLabel.toLowerCase()}`}
             </MenuItem>
           </>
         ) : null}

@@ -36,7 +36,7 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
     <div className="relative mt-4 rounded-2xl bg-card/40 shadow-xs/5 not-dark:bg-clip-padding after:pointer-events-none after:absolute after:inset-0 after:z-20 after:rounded-2xl after:border after:border-input">
       <div className="sticky top-0 z-10 mb-3 flex items-center justify-between gap-2 rounded-t-2xl bg-card/72 p-3 backdrop-blur-md">
         <p className="flex items-center gap-1 font-medium text-foreground text-xs leading-4">
-          <span>{files.length} changed files</span>
+          <span>{files.length} fichiers modifiés</span>
           {hasNonZeroStat(summaryStat) && (
             <DiffStatLabel
               additions={summaryStat.additions}
@@ -54,7 +54,7 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
             data-scroll-anchor-ignore
             onClick={onToggleAllDirectories}
           >
-            {allDirectoriesExpanded ? "Collapse all" : "Expand all"}
+            {allDirectoriesExpanded ? "Tout réduire" : "Tout déployer"}
           </Button>
           <Button
             type="button"
@@ -62,7 +62,7 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
             variant="outline"
             onClick={() => onOpenTurnDiff(turnId, files[0]?.path)}
           >
-            View diff
+            Voir le diff
           </Button>
         </div>
       </div>

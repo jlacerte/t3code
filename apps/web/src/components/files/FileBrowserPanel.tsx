@@ -88,15 +88,15 @@ export default function FileBrowserPanel({
           <div className="truncate text-xs font-medium text-foreground">{projectName}</div>
           <div className="truncate text-[10px] leading-none text-muted-foreground">
             {entriesQuery.isPending && entriesQuery.data === null
-              ? "Indexing…"
-              : `${fileCount.toLocaleString()} files`}
-            {entriesQuery.data?.truncated ? " · partial" : ""}
+              ? "Indexation…"
+              : `${fileCount.toLocaleString()} fichiers`}
+            {entriesQuery.data?.truncated ? " · partiel" : ""}
           </div>
         </div>
         <button
           type="button"
           className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-          aria-label="Search workspace files"
+          aria-label="Rechercher dans les fichiers du projet"
           onClick={() => model.openSearch()}
         >
           <Search className="size-3.5" />
@@ -104,7 +104,7 @@ export default function FileBrowserPanel({
         <button
           type="button"
           className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-          aria-label="Refresh workspace files"
+          aria-label="Actualiser les fichiers du projet"
           onClick={entriesQuery.refresh}
         >
           <RefreshCw className={cn("size-3.5", entriesQuery.isPending && "animate-spin")} />

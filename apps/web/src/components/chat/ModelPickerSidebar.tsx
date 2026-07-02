@@ -14,13 +14,13 @@ import { isProviderInstancePickerReady, type ProviderInstanceEntry } from "../..
 function describeUnavailableInstance(entry: ProviderInstanceEntry): string {
   const label = entry.displayName;
   if (!entry.enabled || entry.status === "disabled") {
-    return `${label} — Disabled in settings.`;
+    return `${label} — Désactivé dans les paramètres.`;
   }
   if (entry.status === "ready" && entry.isAvailable) {
     return label;
   }
   const kind =
-    entry.status === "error" ? "Unavailable" : entry.status === "warning" ? "Limited" : "Not ready";
+    entry.status === "error" ? "Indisponible" : entry.status === "warning" ? "Limité" : "Pas prêt";
   const msg = entry.snapshot.message?.trim();
   return msg ? `${label} — ${kind}. ${msg}` : `${label} — ${kind}.`;
 }
@@ -130,7 +130,7 @@ export const ModelPickerSidebar = memo(function ModelPickerSidebar(props: {
                         onClick={() => handleSelect("favorites")}
                         type="button"
                         data-model-picker-provider="favorites"
-                        aria-label="Favorites"
+                        aria-label="Favoris"
                       >
                         <StarIcon className="size-5 fill-current shrink-0" aria-hidden />
                       </button>
@@ -142,7 +142,7 @@ export const ModelPickerSidebar = memo(function ModelPickerSidebar(props: {
                     align="center"
                     className={PICKER_TOOLTIP_CLASS}
                   >
-                    Favorites
+                    Favoris
                   </TooltipPopup>
                 </Tooltip>
               </div>
@@ -165,7 +165,7 @@ export const ModelPickerSidebar = memo(function ModelPickerSidebar(props: {
               : isContextDisabled
                 ? (props.getDisabledInstanceTooltip?.(entry) ?? entry.displayName)
                 : showNewBadge
-                  ? `${entry.displayName} — New`
+                  ? `${entry.displayName} — Nouveau`
                   : entry.displayName;
 
             const button = (
@@ -191,7 +191,7 @@ export const ModelPickerSidebar = memo(function ModelPickerSidebar(props: {
                   isDisabled
                     ? tooltip
                     : showNewBadge
-                      ? `${entry.displayName}, new`
+                      ? `${entry.displayName}, nouveau`
                       : entry.displayName
                 }
               >

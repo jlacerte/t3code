@@ -145,7 +145,7 @@ export const make = ElectronDialog.of({
 
     const options = {
       type: "question" as const,
-      buttons: ["No", "Yes"],
+      buttons: ["Non", "Oui"],
       defaultId: 0,
       cancelId: 0,
       noLink: true,

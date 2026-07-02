@@ -53,24 +53,24 @@ export function PreviewMoreMenu({
           render={
             <MenuTrigger
               render={
-                <Button variant="ghost" size="icon-xs" type="button" aria-label="Preview menu" />
+                <Button variant="ghost" size="icon-xs" type="button" aria-label="Menu de l'aperçu" />
               }
             />
           }
         >
           <MoreVertical />
         </TooltipTrigger>
-        <TooltipPopup>More</TooltipPopup>
+        <TooltipPopup>Plus</TooltipPopup>
       </Tooltip>
       <MenuPopup align="end" sideOffset={6} className="min-w-56">
         <MenuItem onClick={callTab(bridge.hardReload)} disabled={tabDisabled}>
-          Hard reload
+          Rechargement forcé
         </MenuItem>
         <MenuItem onClick={callTab(bridge.openDevTools)} disabled={tabDisabled}>
-          Open DevTools
+          Ouvrir les DevTools
         </MenuItem>
         <MenuItem onClick={onToggleDeviceToolbar} disabled={tabDisabled}>
-          {deviceToolbarVisible ? "Hide device toolbar" : "Show device toolbar"}
+          {deviceToolbarVisible ? "Masquer la barre d'outils de l'appareil" : "Afficher la barre d'outils de l'appareil"}
         </MenuItem>
         <MenuSeparator />
         {/*
@@ -90,7 +90,7 @@ export function PreviewMoreMenu({
               size="icon-xs"
               type="button"
               onClick={callTab(bridge.zoomOut)}
-              aria-label="Zoom out"
+              aria-label="Zoom arrière"
               disabled={tabDisabled}
             >
               <Minus />
@@ -103,7 +103,7 @@ export function PreviewMoreMenu({
               size="icon-xs"
               type="button"
               onClick={callTab(bridge.zoomIn)}
-              aria-label="Zoom in"
+              aria-label="Zoom avant"
               disabled={tabDisabled}
             >
               <PlusIcon />
@@ -113,7 +113,7 @@ export function PreviewMoreMenu({
               size="icon-xs"
               type="button"
               onClick={callTab(bridge.resetZoom)}
-              aria-label="Reset zoom"
+              aria-label="Réinitialiser le zoom"
               disabled={tabDisabled}
             >
               <RotateCcw />
@@ -122,10 +122,10 @@ export function PreviewMoreMenu({
         </MenuItem>
         <MenuSeparator />
         <MenuItem onClick={() => void bridge.clearCookies().catch(() => undefined)}>
-          Clear cookies
+          Effacer les cookies
         </MenuItem>
         <MenuItem onClick={() => void bridge.clearCache().catch(() => undefined)}>
-          Clear cache
+          Effacer le cache
         </MenuItem>
       </MenuPopup>
     </Menu>

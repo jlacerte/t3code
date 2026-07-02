@@ -86,7 +86,7 @@ function updateProviderUpdateToast(input: {
       description: input.view.description,
       timeout: 0,
       actionProps: {
-        children: "Settings",
+        children: "Paramètres",
         onClick: input.openSettings,
       },
       actionVariant: "outline",
@@ -288,11 +288,11 @@ export function ProviderUpdatePrimaryNotification() {
         actionProps:
           oneClickProviders.length > 0
             ? {
-                children: "Update",
+                children: "Mettre à jour",
                 onClick: runUpdates,
               }
             : {
-                children: "Settings",
+                children: "Paramètres",
                 onClick: openSettings,
               },
         actionVariant: oneClickProviders.length > 0 ? "default" : "outline",
@@ -306,7 +306,7 @@ export function ProviderUpdatePrimaryNotification() {
           ...(oneClickProviders.length > 0
             ? {
                 secondaryActionProps: {
-                  children: "Settings",
+                  children: "Paramètres",
                   onClick: openSettings,
                 },
                 secondaryActionVariant: "outline" as const,

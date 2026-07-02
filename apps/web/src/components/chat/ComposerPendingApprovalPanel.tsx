@@ -12,15 +12,15 @@ export const ComposerPendingApprovalPanel = memo(function ComposerPendingApprova
 }: ComposerPendingApprovalPanelProps) {
   const approvalSummary =
     approval.requestKind === "command"
-      ? "Command approval requested"
+      ? "Approbation de commande demandée"
       : approval.requestKind === "file-read"
-        ? "File-read approval requested"
-        : "File-change approval requested";
+        ? "Approbation de lecture de fichier demandée"
+        : "Approbation de modification de fichier demandée";
 
   return (
     <div className="px-4 py-3.5 sm:px-5 sm:py-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="uppercase text-sm tracking-[0.2em]">PENDING APPROVAL</span>
+        <span className="uppercase text-sm tracking-[0.2em]">APPROBATION EN ATTENTE</span>
         <span className="text-sm font-medium">{approvalSummary}</span>
         {pendingCount > 1 ? (
           <span className="text-xs text-muted-foreground">1/{pendingCount}</span>

@@ -26,7 +26,7 @@ export const ThreadErrorBanner = memo(function ThreadErrorBanner({
         </Tooltip>
         {onDismiss && (
           <AlertAction>
-            <Button variant="ghost" size="icon-xs" aria-label="Dismiss error" onClick={onDismiss}>
+            <Button variant="ghost" size="icon-xs" aria-label="Ignorer l'erreur" onClick={onDismiss}>
               <XIcon className="text-destructive" />
             </Button>
           </AlertAction>

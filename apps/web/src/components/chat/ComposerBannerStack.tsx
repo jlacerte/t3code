@@ -179,7 +179,7 @@ function ComposerBannerStackAlert({
             <Button
               size="icon-xs"
               variant="ghost"
-              aria-label={item.dismissLabel ?? "Dismiss warning"}
+              aria-label={item.dismissLabel ?? "Ignorer l'avertissement"}
               disabled={exiting}
               onClick={onDismissRequest}
             >

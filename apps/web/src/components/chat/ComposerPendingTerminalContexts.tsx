@@ -21,7 +21,7 @@ export function ComposerPendingTerminalContextChip({
   const label = formatTerminalContextLabel(context);
   const expired = isTerminalContextExpired(context);
   const tooltipText = expired
-    ? `Terminal context expired. Remove and re-add ${label} to include it in your message.`
+    ? `Contexte terminal expiré. Retire et rajoute ${label} pour l'inclure dans ton message.`
     : context.text;
 
   return <TerminalContextInlineChip label={label} tooltipText={tooltipText} expired={expired} />;

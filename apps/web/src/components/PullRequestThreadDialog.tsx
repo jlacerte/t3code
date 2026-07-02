@@ -171,9 +171,9 @@ export function PullRequestThreadDialog({
   const validationMessage = !referenceDirty
     ? null
     : reference.trim().length === 0
-      ? `Paste a ${terminology.singular} URL, checkout command, or enter 123 / #123.`
+      ? `Colle une URL de ${terminology.singular}, une commande checkout, ou entre 123 / #123.`
       : parsedReference === null
-        ? `Use a ${terminology.singular} URL, checkout command, 123, or #123.`
+        ? `Utilise une URL de ${terminology.singular}, une commande checkout, 123, ou #123.`
         : null;
   const errorMessage =
     validationMessage ??
@@ -182,7 +182,7 @@ export function PullRequestThreadDialog({
       : preparePullRequestThreadAction.error instanceof Error
         ? preparePullRequestThreadAction.error.message
         : preparePullRequestThreadAction.error
-          ? `Failed to prepare ${terminology.singular} thread.`
+          ? `Échec de la préparation du fil pour ce/cette ${terminology.singular}.`
           : null);
 
   return (
@@ -201,8 +201,8 @@ export function PullRequestThreadDialog({
             Checkout {terminology.singular}
           </DialogTitle>
           <DialogDescription>
-            Resolve a {sourceControlPresentation.providerName} {terminology.singular}, then create
-            the draft thread in the main repo or in a dedicated worktree.
+            Résous un(e) {terminology.singular} {sourceControlPresentation.providerName}, puis crée
+            le fil brouillon dans le repo principal ou dans un worktree dédié.
           </DialogDescription>
         </DialogHeader>
         <DialogPanel className="space-y-4">
@@ -212,7 +212,7 @@ export function PullRequestThreadDialog({
             </span>
             <Input
               ref={referenceInputRef}
-              placeholder={`${terminology.shortLabel} URL, checkout command, or #42`}
+              placeholder={`URL de ${terminology.shortLabel}, commande checkout, ou #42`}
               value={reference}
               onChange={(event) => {
                 setReferenceDirty(true);
@@ -250,7 +250,7 @@ export function PullRequestThreadDialog({
           {isResolving ? (
             <div className="flex items-center gap-2 text-muted-foreground text-xs">
               <Spinner className="size-3.5" />
-              Resolving {terminology.singular}...
+              Résolution du/de la {terminology.singular}...
             </div>
           ) : null}
 
@@ -264,7 +264,7 @@ export function PullRequestThreadDialog({
             onClick={() => onOpenChange(false)}
             disabled={preparePullRequestThreadAction.isPending}
           >
-            Cancel
+            Annuler
           </Button>
           <Button
             type="button"
@@ -280,7 +280,7 @@ export function PullRequestThreadDialog({
               preparePullRequestThreadAction.isPending
             }
           >
-            {preparingMode === "local" ? "Preparing local..." : "Local"}
+            {preparingMode === "local" ? "Préparation locale..." : "Local"}
           </Button>
           <Button
             type="button"
@@ -295,7 +295,7 @@ export function PullRequestThreadDialog({
               preparePullRequestThreadAction.isPending
             }
           >
-            {preparingMode === "worktree" ? "Preparing worktree..." : "Worktree"}
+            {preparingMode === "worktree" ? "Préparation du worktree..." : "Worktree"}
           </Button>
         </DialogFooter>
       </DialogPopup>

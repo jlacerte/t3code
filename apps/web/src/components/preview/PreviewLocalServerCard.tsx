@@ -28,14 +28,14 @@ export function PreviewLocalServerCard({ server, onOpen }: Props) {
 
 function describeServer(server: PreviewableServer): string {
   if (server.processName) return server.processName;
-  if (server.listening) return "Listening";
-  if (server.source === "configured") return "Configured";
-  return "Recently seen";
+  if (server.listening) return "En écoute";
+  if (server.source === "configured") return "Configuré";
+  return "Vu récemment";
 }
 
 function PulsingDot() {
   return (
-    <span aria-label="Listening" className="relative inline-flex size-2 shrink-0">
+    <span aria-label="En écoute" className="relative inline-flex size-2 shrink-0">
       <span className="absolute inset-0 animate-ping rounded-full bg-success opacity-60" />
       <span className="relative inline-flex size-2 rounded-full bg-success" />
     </span>
@@ -45,7 +45,7 @@ function PulsingDot() {
 function DimDot() {
   return (
     <span
-      aria-label="Not currently listening"
+      aria-label="Pas en écoute actuellement"
       className="size-2 shrink-0 rounded-full bg-muted-foreground/40"
     />
   );

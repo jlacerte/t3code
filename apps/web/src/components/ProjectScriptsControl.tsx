@@ -61,12 +61,12 @@ import { Textarea } from "./ui/textarea";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 
 const SCRIPT_ICONS: Array<{ id: ProjectScriptIcon; label: string }> = [
-  { id: "play", label: "Play" },
+  { id: "play", label: "Lancer" },
   { id: "test", label: "Test" },
   { id: "lint", label: "Lint" },
-  { id: "configure", label: "Configure" },
+  { id: "configure", label: "Configurer" },
   { id: "build", label: "Build" },
-  { id: "debug", label: "Debug" },
+  { id: "debug", label: "Débogage" },
 ];
 
 function ScriptIcon({
@@ -162,11 +162,11 @@ export default function ProjectScriptsControl({
     const trimmedName = name.trim();
     const trimmedCommand = command.trim();
     if (trimmedName.length === 0) {
-      setValidationError("Name is required.");
+      setValidationError("Le nom est requis.");
       return;
     }
     if (trimmedCommand.length === 0) {
-      setValidationError("Command is required.");
+      setValidationError("La commande est requise.");
       return;
     }
 
@@ -194,7 +194,7 @@ export default function ProjectScriptsControl({
         autoOpenPreview: trimmedPreviewUrl.length > 0 ? autoOpenPreview : false,
       } satisfies NewProjectScriptInput;
     } catch (error) {
-      setValidationError(error instanceof Error ? error.message : "Failed to save action.");
+      setValidationError(error instanceof Error ? error.message : "Impossible d'enregistrer l'action.");
       return;
     }
 
@@ -204,7 +204,7 @@ export default function ProjectScriptsControl({
     if (result._tag === "Failure") {
       if (!isAtomCommandInterrupted(result)) {
         const error = squashAtomCommandFailure(result);
-        setValidationError(error instanceof Error ? error.message : "Failed to save action.");
+        setValidationError(error instanceof Error ? error.message : "Impossible d'enregistrer l'action.");
       }
       return;
     }
@@ -250,14 +250,14 @@ export default function ProjectScriptsControl({
   return (
     <>
       {primaryScript ? (
-        <Group aria-label="Project scripts">
+        <Group aria-label="Actions du projet">
           <Tooltip>
             <TooltipTrigger
               render={
                 <Button
                   size="xs"
                   variant="outline"
-                  aria-label={`Run ${primaryScript.name}`}
+                  aria-label={`Lancer ${primaryScript.name}`}
                   onClick={() => onRunScript(primaryScript)}
                 />
               }
@@ -267,12 +267,12 @@ export default function ProjectScriptsControl({
                 {primaryScript.name}
               </span>
             </TooltipTrigger>
-            <TooltipPopup side="top">Run {primaryScript.name}</TooltipPopup>
+            <TooltipPopup side="top">Lancer {primaryScript.name}</TooltipPopup>
           </Tooltip>
           <GroupSeparator className="hidden @3xl/header-actions:block" />
           <Menu highlightItemOnHover={false}>
             <MenuTrigger
-              render={<Button size="icon-xs" variant="outline" aria-label="Script actions" />}
+              render={<Button size="icon-xs" variant="outline" aria-label="Actions du script" />}
             >
               <ChevronDownIcon className="size-4" />
             </MenuTrigger>
@@ -290,7 +290,7 @@ export default function ProjectScriptsControl({
                   >
                     <ScriptIcon icon={script.icon} className="size-4" />
                     <span className="truncate">
-                      {script.runOnWorktreeCreate ? `${script.name} (setup)` : script.name}
+                      {script.runOnWorktreeCreate ? `${script.name} (configuration)` : script.name}
                     </span>
                     <span className="relative ms-auto flex h-6 min-w-6 items-center justify-end">
                       {shortcutLabel && (
@@ -303,7 +303,7 @@ export default function ProjectScriptsControl({
                         variant="ghost"
                         size="icon-xs"
                         className="absolute right-0 top-1/2 size-6 -translate-y-1/2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto group-focus-visible:opacity-100 group-focus-visible:pointer-events-auto"
-                        aria-label={`Edit ${script.name}`}
+                        aria-label={`Modifier ${script.name}`}
                         onPointerDown={(event) => {
                           event.preventDefault();
                           event.stopPropagation();
@@ -322,7 +322,7 @@ export default function ProjectScriptsControl({
               })}
               <MenuItem className={dropdownItemClassName} onClick={openAddDialog}>
                 <PlusIcon className="size-4" />
-                Add action
+                Ajouter une action
               </MenuItem>
             </MenuPopup>
           </Menu>
@@ -331,15 +331,15 @@ export default function ProjectScriptsControl({
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button size="xs" variant="outline" aria-label="Add action" onClick={openAddDialog} />
+              <Button size="xs" variant="outline" aria-label="Ajouter une action" onClick={openAddDialog} />
             }
           >
             <PlusIcon className="size-3.5" />
             <span className="sr-only @3xl/header-actions:not-sr-only @3xl/header-actions:ml-0.5">
-              Add action
+              Ajouter une action
             </span>
           </TooltipTrigger>
-          <TooltipPopup side="top">Add action</TooltipPopup>
+          <TooltipPopup side="top">Ajouter une action</TooltipPopup>
         </Tooltip>
       )}
 
@@ -366,15 +366,16 @@ export default function ProjectScriptsControl({
       >
         <DialogPopup>
           <DialogHeader>
-            <DialogTitle>{isEditing ? "Edit Action" : "Add Action"}</DialogTitle>
+            <DialogTitle>{isEditing ? "Modifier l'action" : "Ajouter une action"}</DialogTitle>
             <DialogDescription>
-              Actions are project-scoped commands you can run from the top bar or keybindings.
+              Les actions sont des commandes propres au projet que tu peux lancer depuis la barre
+              du haut ou avec des raccourcis clavier.
             </DialogDescription>
           </DialogHeader>
           <DialogPanel>
             <form id={addScriptFormId} className="space-y-4" onSubmit={submitAddScript}>
               <div className="space-y-1.5">
-                <Label htmlFor="script-name">Name</Label>
+                <Label htmlFor="script-name">Nom</Label>
                 <div className="flex items-center gap-2">
                   <Popover onOpenChange={setIconPickerOpen} open={iconPickerOpen}>
                     <PopoverTrigger
@@ -383,7 +384,7 @@ export default function ProjectScriptsControl({
                           type="button"
                           variant="outline"
                           className="size-9 shrink-0 hover:bg-popover active:bg-popover data-pressed:bg-popover data-pressed:shadow-xs/5 data-pressed:before:shadow-[0_1px_--theme(--color-black/4%)] dark:data-pressed:before:shadow-[0_-1px_--theme(--color-white/6%)]"
-                          aria-label="Choose icon"
+                          aria-label="Choisir une icône"
                         />
                       }
                     >
@@ -425,20 +426,20 @@ export default function ProjectScriptsControl({
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="script-keybinding">Keybinding</Label>
+                <Label htmlFor="script-keybinding">Raccourci clavier</Label>
                 <Input
                   id="script-keybinding"
-                  placeholder="Press shortcut"
+                  placeholder="Appuie sur le raccourci"
                   value={keybinding}
                   readOnly
                   onKeyDown={captureKeybinding}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Press a shortcut. Use <code>Backspace</code> to clear.
+                  Appuie sur un raccourci. Utilise <code>Backspace</code> pour effacer.
                 </p>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="script-command">Command</Label>
+                <Label htmlFor="script-command">Commande</Label>
                 <Textarea
                   id="script-command"
                   placeholder="bun test"
@@ -447,7 +448,7 @@ export default function ProjectScriptsControl({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="script-preview-url">Preview URL (optional)</Label>
+                <Label htmlFor="script-preview-url">URL d'aperçu (optionnel)</Label>
                 <Input
                   id="script-preview-url"
                   placeholder="http://localhost:5173"
@@ -455,11 +456,11 @@ export default function ProjectScriptsControl({
                   onChange={(event) => setPreviewUrl(event.target.value)}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Open this URL in the in-app preview when this action runs.
+                  Ouvre cette URL dans l'aperçu intégré quand cette action est lancée.
                 </p>
               </div>
               <label className="flex items-center justify-between gap-3 rounded-md border border-border/70 px-3 py-2 text-sm">
-                <span>Run automatically on worktree creation</span>
+                <span>Lancer automatiquement à la création d'un worktree</span>
                 <Switch
                   checked={runOnWorktreeCreate}
                   onCheckedChange={(checked) => setRunOnWorktreeCreate(Boolean(checked))}
@@ -470,7 +471,7 @@ export default function ProjectScriptsControl({
                   previewUrl.trim().length === 0 ? "opacity-60" : ""
                 }`}
               >
-                <span>Open preview automatically when this action runs</span>
+                <span>Ouvrir l'aperçu automatiquement quand cette action est lancée</span>
                 <Switch
                   checked={autoOpenPreview}
                   disabled={previewUrl.trim().length === 0}
@@ -488,7 +489,7 @@ export default function ProjectScriptsControl({
                 className="mr-auto"
                 onClick={() => setDeleteConfirmOpen(true)}
               >
-                Delete
+                Supprimer
               </Button>
             )}
             <Button
@@ -498,10 +499,10 @@ export default function ProjectScriptsControl({
                 setDialogOpen(false);
               }}
             >
-              Cancel
+              Annuler
             </Button>
             <Button form={addScriptFormId} type="submit">
-              {isEditing ? "Save changes" : "Save action"}
+              {isEditing ? "Enregistrer les changements" : "Enregistrer l'action"}
             </Button>
           </DialogFooter>
         </DialogPopup>
@@ -510,13 +511,13 @@ export default function ProjectScriptsControl({
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogPopup>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete action "{name}"?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+            <AlertDialogTitle>Supprimer l'action "{name}"?</AlertDialogTitle>
+            <AlertDialogDescription>Cette action ne peut pas être annulée.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogClose render={<Button variant="outline" />}>Cancel</AlertDialogClose>
+            <AlertDialogClose render={<Button variant="outline" />}>Annuler</AlertDialogClose>
             <Button variant="destructive" onClick={confirmDeleteScript}>
-              Delete action
+              Supprimer l'action
             </Button>
           </AlertDialogFooter>
         </AlertDialogPopup>

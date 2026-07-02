@@ -39,48 +39,48 @@ export function isDesktopUpdateButtonDisabled(state: DesktopUpdateState | null):
 
 export function getArm64IntelBuildWarningDescription(state: DesktopUpdateState): string {
   if (!shouldShowArm64IntelBuildWarning(state)) {
-    return "This install is using the correct architecture.";
+    return "Cette installation utilise la bonne architecture.";
   }
 
   const action = resolveDesktopUpdateButtonAction(state);
   if (action === "download") {
-    return "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. Download the available update to switch to the native Apple Silicon build.";
+    return "Ce Mac a un processeur Apple Silicon, mais T3 Code utilise encore la version Intel sous Rosetta. Télécharge la mise à jour disponible pour passer à la version native Apple Silicon.";
   }
   if (action === "install") {
-    return "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. Restart to install the downloaded Apple Silicon build.";
+    return "Ce Mac a un processeur Apple Silicon, mais T3 Code utilise encore la version Intel sous Rosetta. Redémarre pour installer la version Apple Silicon téléchargée.";
   }
-  return "This Mac has Apple Silicon, but T3 Code is still running the Intel build under Rosetta. The next app update will replace it with the native Apple Silicon build.";
+  return "Ce Mac a un processeur Apple Silicon, mais T3 Code utilise encore la version Intel sous Rosetta. La prochaine mise à jour de l'application la remplacera par la version native Apple Silicon.";
 }
 
 export function getDesktopUpdateButtonTooltip(state: DesktopUpdateState): string {
   if (state.status === "available") {
-    return `Update ${state.availableVersion ?? "available"} ready to download`;
+    return `Mise à jour ${state.availableVersion ?? "disponible"} prête à télécharger`;
   }
   if (state.status === "downloading") {
     const progress =
       typeof state.downloadPercent === "number" ? ` (${Math.floor(state.downloadPercent)}%)` : "";
-    return `Downloading update${progress}`;
+    return `Téléchargement de la mise à jour${progress}`;
   }
   if (state.status === "downloaded") {
-    return `Update ${state.downloadedVersion ?? state.availableVersion ?? "ready"} downloaded. Click to restart and install.`;
+    return `Mise à jour ${state.downloadedVersion ?? state.availableVersion ?? "prête"} téléchargée. Clique pour redémarrer et installer.`;
   }
   if (state.status === "error") {
     if (state.errorContext === "download" && state.availableVersion) {
-      return `Download failed for ${state.availableVersion}. Click to retry.`;
+      return `Échec du téléchargement pour ${state.availableVersion}. Clique pour réessayer.`;
     }
     if (state.errorContext === "install" && state.downloadedVersion) {
-      return `Install failed for ${state.downloadedVersion}. Click to retry.`;
+      return `Échec de l'installation pour ${state.downloadedVersion}. Clique pour réessayer.`;
     }
-    return state.message ?? "Update failed";
+    return state.message ?? "Échec de la mise à jour";
   }
-  return "Up to date";
+  return "À jour";
 }
 
 export function getDesktopUpdateInstallConfirmationMessage(
   state: Pick<DesktopUpdateState, "availableVersion" | "downloadedVersion">,
 ): string {
   const version = state.downloadedVersion ?? state.availableVersion;
-  return `Install update${version ? ` ${version}` : ""} and restart T3 Code?\n\nAny running tasks will be interrupted. Make sure you're ready before continuing.`;
+  return `Installer la mise à jour${version ? ` ${version}` : ""} et redémarrer T3 Code?\n\nToutes les tâches en cours seront interrompues. Assure-toi d'être prêt avant de continuer.`;
 }
 
 export function getDesktopUpdateActionError(result: DesktopUpdateActionResult): string | null {

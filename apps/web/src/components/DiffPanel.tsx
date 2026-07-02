@@ -273,11 +273,11 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
   const selectedScopeLabel =
     selectedTurnId === null
       ? selectedGitScope === "unstaged"
-        ? "Working tree"
-        : "Branch changes"
+        ? "Arbre de travail"
+        : "Changements de la branch"
       : selectedTurn?.turnId === latestTurn?.turnId
-        ? "Latest turn"
-        : `Turn ${selectedCheckpointTurnCount ?? "?"}`;
+        ? "Dernier tour"
+        : `Tour ${selectedCheckpointTurnCount ?? "?"}`;
   const reviewSectionId = selectedTurn ? `turn:${selectedTurn.turnId}` : selectedGitScope;
   const collapseScopeKey = routeThreadRef
     ? `${routeThreadRef.environmentId}:${routeThreadRef.threadId}:${reviewSectionId}`
@@ -287,10 +287,10 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
       ? collapsedDiffFiles.fileKeys
       : EMPTY_COLLAPSED_DIFF_FILE_KEYS;
   const reviewSectionTitle = selectedTurn
-    ? `Turn ${selectedCheckpointTurnCount ?? "?"}`
+    ? `Tour ${selectedCheckpointTurnCount ?? "?"}`
     : selectedGitScope === "unstaged"
-      ? "Working tree"
-      : "Branch changes";
+      ? "Arbre de travail"
+      : "Changements de la branch";
   const selectedCheckpointRange = useMemo(
     () =>
       typeof selectedCheckpointTurnCount === "number"
@@ -505,20 +505,20 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
         <DropdownMenu>
           <DropdownMenuTrigger
             className="inline-flex h-6 max-w-full items-center gap-1 rounded-md bg-muted/70 px-2 text-xs font-medium text-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label={`Diff scope: ${selectedScopeLabel}`}
+            aria-label={`Portée du diff : ${selectedScopeLabel}`}
           >
             <span className="truncate">{selectedScopeLabel}</span>
             <ChevronDownIcon className="size-3.5 shrink-0 text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-60">
             <DropdownMenuItem onClick={() => selectGitScope("unstaged")}>
-              <span>Working tree</span>
+              <span>Arbre de travail</span>
               {selectedTurnId === null && selectedGitScope === "unstaged" && (
                 <CheckIcon className="ml-auto" />
               )}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => selectGitScope("branch")}>
-              <span>Branch changes</span>
+              <span>Changements de la branch</span>
               {selectedTurnId === null && selectedGitScope === "branch" && (
                 <CheckIcon className="ml-auto" />
               )}
@@ -528,13 +528,13 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                 if (latestTurn) selectTurn(latestTurn.turnId);
               }}
             >
-              <span>Latest turn</span>
+              <span>Dernier tour</span>
               {selectedTurnId !== null && selectedTurn?.turnId === latestTurn?.turnId && (
                 <CheckIcon className="ml-auto" />
               )}
             </DropdownMenuItem>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Turn</DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger>Tour</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="w-64">
                 {orderedTurnDiffSummaries.map((summary) => {
                   const turnCount =
@@ -546,7 +546,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                       key={summary.turnId}
                       onClick={() => selectTurn(summary.turnId)}
                     >
-                      <span>Turn {turnCount}</span>
+                      <span>Tour {turnCount}</span>
                       <span className="ml-auto text-xs tabular-nums text-muted-foreground">
                         {formatShortTimestamp(summary.completedAt, settings.timestampFormat)}
                       </span>
@@ -562,7 +562,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
           <div
             className="flex min-w-0 max-w-full items-center gap-2 overflow-hidden text-xs text-muted-foreground"
             title={`${selectedGitSource.headRef ?? "HEAD"} → ${selectedGitSource.baseRef}`}
-            aria-label={`Comparing ${selectedGitSource.headRef ?? "HEAD"} against ${selectedGitSource.baseRef}`}
+            aria-label={`Comparaison de ${selectedGitSource.headRef ?? "HEAD"} avec ${selectedGitSource.baseRef}`}
           >
             <span className="min-w-0 max-w-48 truncate">{selectedGitSource.headRef ?? "HEAD"}</span>
             <ArrowRightIcon className="size-3.5 shrink-0 opacity-70" />
@@ -580,7 +580,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
             >
               <ComboboxTrigger
                 className="inline-flex min-w-0 max-w-48 items-center gap-1 overflow-hidden rounded-md px-1.5 py-1 outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={`Change comparison target. Currently ${selectedGitSource.baseRef}`}
+                aria-label={`Changer la cible de comparaison. Actuellement ${selectedGitSource.baseRef}`}
               >
                 <span className="min-w-0 truncate">{selectedGitSource.baseRef}</span>
                 <ChevronDownIcon className="size-3.5 shrink-0 opacity-70" />
@@ -598,7 +598,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                     <ComboboxInput
                       className="[&_input]:h-6.5 [&_input]:ps-5 [&_input]:font-sans [&_input]:leading-6.5"
                       inputClassName="rounded-none bg-transparent text-sm"
-                      placeholder="Search refs..."
+                      placeholder="Rechercher des refs..."
                       showTrigger={false}
                       size="sm"
                       unstyled
@@ -611,17 +611,17 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                   <span aria-hidden="true" />
                   <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_2rem] items-center">
                     <span>Branch</span>
-                    <span className="text-right">Remote</span>
+                    <span className="text-right">Distant</span>
                   </div>
                 </div>
-                <ComboboxEmpty>No matching refs.</ComboboxEmpty>
+                <ComboboxEmpty>Aucune ref correspondante.</ComboboxEmpty>
                 <ComboboxList className="max-h-64 min-w-0 overflow-x-hidden">
                   <ComboboxItem
                     className="h-8 w-full min-w-0 grid-cols-[1rem_minmax(0,1fr)] py-0"
                     contentClassName="w-full min-w-0 overflow-hidden"
                     value={AUTOMATIC_BASE_REF}
                   >
-                    <span className="block min-w-0 truncate">Automatic</span>
+                    <span className="block min-w-0 truncate">Automatique</span>
                   </ComboboxItem>
                   {baseRefChoices.map((choice) => {
                     const item = valueForBaseRefChoice(choice);
@@ -643,7 +643,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                               onPointerDown={(event) => event.stopPropagation()}
                             >
                               <Switch
-                                aria-label={`Use remote version of ${choice.label}`}
+                                aria-label={`Utiliser la version distante de ${choice.label}`}
                                 checked={useRemote}
                                 className="[--thumb-size:--spacing(3)]"
                                 onCheckedChange={(checked) => {
@@ -657,7 +657,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                           ) : choice.remote ? (
                             <span
                               className="flex justify-end text-muted-foreground"
-                              title="Remote only"
+                              title="Distant seulement"
                             >
                               <CheckIcon aria-hidden="true" className="size-3" />
                             </span>
@@ -685,10 +685,10 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
             }
           }}
         >
-          <Toggle aria-label="Stacked diff view" value="stacked">
+          <Toggle aria-label="Vue diff empilée" value="stacked">
             <Rows3Icon className="size-3" />
           </Toggle>
-          <Toggle aria-label="Split diff view" value="split">
+          <Toggle aria-label="Vue diff divisée" value="split">
             <Columns2Icon className="size-3" />
           </Toggle>
         </ToggleGroup>
@@ -696,7 +696,11 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
           <TooltipTrigger
             render={
               <Toggle
-                aria-label={wordWrap ? "Disable diff line wrapping" : "Enable diff line wrapping"}
+                aria-label={
+                  wordWrap
+                    ? "Désactiver le retour à la ligne du diff"
+                    : "Activer le retour à la ligne du diff"
+                }
                 variant="outline"
                 size="xs"
                 pressed={wordWrap}
@@ -709,7 +713,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
             <TextWrapIcon className="size-3" />
           </TooltipTrigger>
           <TooltipPopup side="top">
-            {wordWrap ? "Disable line wrapping" : "Enable line wrapping"}
+            {wordWrap ? "Désactiver le retour à la ligne" : "Activer le retour à la ligne"}
           </TooltipPopup>
         </Tooltip>
         <Tooltip>
@@ -717,7 +721,9 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
             render={
               <Toggle
                 aria-label={
-                  diffIgnoreWhitespace ? "Show whitespace changes" : "Hide whitespace changes"
+                  diffIgnoreWhitespace
+                    ? "Afficher les changements d'espacement"
+                    : "Masquer les changements d'espacement"
                 }
                 variant="outline"
                 size="xs"
@@ -731,7 +737,9 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
             <PilcrowIcon className="size-3" />
           </TooltipTrigger>
           <TooltipPopup side="top">
-            {diffIgnoreWhitespace ? "Show whitespace changes" : "Hide whitespace changes"}
+            {diffIgnoreWhitespace
+              ? "Afficher les changements d'espacement"
+              : "Masquer les changements d'espacement"}
           </TooltipPopup>
         </Tooltip>
       </div>
@@ -742,23 +750,23 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
     <DiffPanelShell mode={mode} header={headerRow}>
       {!activeThread ? (
         <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
-          Select a thread to inspect turn diffs.
+          Sélectionne un fil pour inspecter les diffs de tours.
         </div>
       ) : !isGitRepo ? (
         <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
-          Turn diffs are unavailable because this project is not a git repository.
+          Les diffs de tours ne sont pas disponibles parce que ce projet n'est pas un repo git.
         </div>
       ) : selectedTurnId !== null && orderedTurnDiffSummaries.length === 0 ? (
         <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
-          No completed turns yet.
+          Aucun tour complété pour l'instant.
         </div>
       ) : (
         <>
           <div className="diff-panel-viewport flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
             {isSelectedPatchTruncated && (
               <p className="shrink-0 border-b border-border/70 bg-muted/40 px-3 py-1.5 text-[11px] text-muted-foreground">
-                This diff was truncated because it exceeded the preview limit. The changes shown are
-                incomplete.
+                Ce diff a été tronqué parce qu'il dépassait la limite de l'aperçu. Les changements
+                affichés sont incomplets.
               </p>
             )}
             {selectedPatchError && !renderablePatch && (
@@ -771,18 +779,18 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                 <DiffPanelLoadingState
                   label={
                     selectedTurn
-                      ? "Loading checkpoint diff..."
+                      ? "Chargement du diff du checkpoint..."
                       : selectedGitScope === "unstaged"
-                        ? "Loading working tree diff..."
-                        : "Loading branch diff..."
+                        ? "Chargement du diff de l'arbre de travail..."
+                        : "Chargement du diff de la branch..."
                   }
                 />
               ) : (
                 <div className="flex h-full items-center justify-center px-3 py-2 text-xs text-muted-foreground/70">
                   <p>
                     {hasNoNetChanges
-                      ? "No net changes in this selection."
-                      : "No patch available for this selection."}
+                      ? "Aucun changement net dans cette sélection."
+                      : "Aucun patch disponible pour cette sélection."}
                   </p>
                 </div>
               )
@@ -819,7 +827,9 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                                 "inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-sm border-0 bg-transparent p-0 transition-colors hover:bg-foreground/10 focus-visible:outline-hidden",
                                 getDiffCollapseIconClassName(fileDiff),
                               )}
-                              aria-label={collapsed ? `Expand ${filePath}` : `Collapse ${filePath}`}
+                              aria-label={
+                                collapsed ? `Déplier ${filePath}` : `Replier ${filePath}`
+                              }
                               aria-expanded={!collapsed}
                               onClick={(event) => {
                                 event.stopPropagation();
@@ -835,7 +845,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
                           )}
                         </TooltipTrigger>
                         <TooltipPopup side="top">
-                          {collapsed ? "Expand diff" : "Collapse diff"}
+                          {collapsed ? "Déplier le diff" : "Replier le diff"}
                         </TooltipPopup>
                       </Tooltip>
                     );

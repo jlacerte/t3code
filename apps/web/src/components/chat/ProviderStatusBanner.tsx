@@ -17,14 +17,14 @@ export const ProviderStatusBanner = memo(function ProviderStatusBanner({
   const providerName = status.displayName?.trim() || formatProviderDriverKindLabel(status.driver);
   const isUnauthenticated = status.status === "error" && status.auth.status === "unauthenticated";
   const title = isUnauthenticated
-    ? `${providerName} is unauthenticated`
-    : `${providerName} provider status`;
+    ? `${providerName} n'est pas authentifié`
+    : `Statut du fournisseur ${providerName}`;
   const message = isUnauthenticated
-    ? "Sign in via the CLI to authenticate again."
+    ? "Connecte-toi via le CLI pour t'authentifier à nouveau."
     : (status.message ??
       (status.status === "error"
-        ? `${providerName} provider is unavailable.`
-        : `${providerName} provider has limited availability.`));
+        ? `Le fournisseur ${providerName} est indisponible.`
+        : `Le fournisseur ${providerName} a une disponibilité limitée.`));
 
   return (
     <div className="mx-auto w-fit max-w-[calc(100%-2rem)] pt-3">

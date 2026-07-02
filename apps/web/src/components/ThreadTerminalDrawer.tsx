@@ -1,4 +1,4 @@
-import { useAtomValue } from "@effect/atom-react";
+﻿import { useAtomValue } from "@effect/atom-react";
 import { FitAddon } from "@xterm/addon-fit";
 import {
   isAtomCommandInterrupted,
@@ -472,7 +472,7 @@ export function TerminalViewport({
       selectionActionOpenRef.current = true;
       try {
         const clicked = await localApi.contextMenu.show(
-          [{ id: "add-to-chat", label: "Add to chat" }],
+          [{ id: "add-to-chat", label: "Ajouter au chat" }],
           nextAction.position,
         );
         if (requestId !== selectionActionRequestIdRef.current || clicked !== "add-to-chat") {
@@ -514,7 +514,7 @@ export function TerminalViewport({
       if (navigationData !== null) {
         event.preventDefault();
         event.stopPropagation();
-        void sendTerminalInput(navigationData, "Failed to move cursor");
+        void sendTerminalInput(navigationData, "Échec du déplacement du curseur");
         return false;
       }
 
@@ -522,14 +522,14 @@ export function TerminalViewport({
       if (deleteData !== null) {
         event.preventDefault();
         event.stopPropagation();
-        void sendTerminalInput(deleteData, "Failed to delete terminal input");
+        void sendTerminalInput(deleteData, "Échec de la suppression de l'entrée du terminal");
         return false;
       }
 
       if (!isTerminalClearShortcut(event)) return true;
       event.preventDefault();
       event.stopPropagation();
-      void sendTerminalInput("\u000c", "Failed to clear terminal");
+      void sendTerminalInput("\u000c", "Échec de l'effacement du terminal");
       return false;
     });
 
@@ -576,7 +576,7 @@ export function TerminalViewport({
                 if (!localApi) {
                   writeSystemMessage(
                     latestTerminal,
-                    "Opening links is unavailable in this browser.",
+                    "L'ouverture de liens n'est pas disponible dans ce navigateur.",
                   );
                   return;
                 }
@@ -584,7 +584,7 @@ export function TerminalViewport({
                   void localApi.shell.openExternal(match.text).catch((error: unknown) => {
                     writeSystemMessage(
                       latestTerminal,
-                      error instanceof Error ? error.message : "Unable to open link",
+                      error instanceof Error ? error.message : "Impossible d'ouvrir le lien",
                     );
                   });
                 };
@@ -608,7 +608,7 @@ export function TerminalViewport({
                 const error = squashAtomCommandFailure(result);
                 writeSystemMessage(
                   latestTerminal,
-                  error instanceof Error ? error.message : "Unable to open path",
+                  error instanceof Error ? error.message : "Impossible d'ouvrir le chemin",
                 );
               })();
             },
@@ -626,7 +626,7 @@ export function TerminalViewport({
         const error = squashAtomCommandFailure(result);
         writeSystemMessage(
           terminal,
-          error instanceof Error ? error.message : "Terminal write failed",
+          error instanceof Error ? error.message : "Échec de l'écriture dans le terminal",
         );
       })();
     });
@@ -749,7 +749,7 @@ export function TerminalViewport({
       hasHandledExitRef.current = true;
       writeSystemMessage(
         terminal,
-        current.status === "closed" ? "Terminal closed" : "Process exited",
+        current.status === "closed" ? "Terminal fermé" : "Processus terminé",
       );
       window.setTimeout(() => {
         if (hasHandledExitRef.current) {
@@ -1062,21 +1062,21 @@ export default function ThreadTerminalDrawer({
     [cwd, runtimeEnv, terminalLaunchLocationsById, worktreePath],
   );
   const splitTerminalActionLabel = hasReachedSplitLimit
-    ? `Split Terminal Horizontally (max ${MAX_TERMINALS_PER_GROUP} per group)`
+    ? `Diviser le terminal horizontalement (max ${MAX_TERMINALS_PER_GROUP} par groupe)`
     : splitShortcutLabel
-      ? `Split Terminal Horizontally (${splitShortcutLabel})`
-      : "Split Terminal Horizontally";
+      ? `Diviser le terminal horizontalement (${splitShortcutLabel})`
+      : "Diviser le terminal horizontalement";
   const splitTerminalVerticalActionLabel = hasReachedSplitLimit
-    ? `Split Terminal Vertically (max ${MAX_TERMINALS_PER_GROUP} per group)`
+    ? `Diviser le terminal verticalement (max ${MAX_TERMINALS_PER_GROUP} par groupe)`
     : splitVerticalShortcutLabel
-      ? `Split Terminal Vertically (${splitVerticalShortcutLabel})`
-      : "Split Terminal Vertically";
+      ? `Diviser le terminal verticalement (${splitVerticalShortcutLabel})`
+      : "Diviser le terminal verticalement";
   const newTerminalActionLabel = newShortcutLabel
-    ? `New Terminal (${newShortcutLabel})`
-    : "New Terminal";
+    ? `Nouveau terminal (${newShortcutLabel})`
+    : "Nouveau terminal";
   const closeTerminalActionLabel = closeShortcutLabel
-    ? `Close Terminal (${closeShortcutLabel})`
-    : "Close Terminal";
+    ? `Fermer le terminal (${closeShortcutLabel})`
+    : "Fermer le terminal";
   const onSplitTerminalAction = useCallback(() => {
     if (hasReachedSplitLimit) return;
     onSplitTerminal();
@@ -1211,7 +1211,7 @@ export default function ThreadTerminalDrawer({
           />
         ) : null}
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-4 py-6 text-center text-sm text-muted-foreground">
-          <p>No terminal sessions for this thread yet.</p>
+          <p>Aucune session terminal pour ce fil pour l'instant.</p>
           <button
             type="button"
             className="rounded-md border border-border/80 bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-accent"
@@ -1443,7 +1443,7 @@ export default function ThreadTerminalDrawer({
                           }`}
                           onClick={() => onActiveTerminalChange(groupActiveTerminalId)}
                         >
-                          Group {groupIndex + 1}
+                          Groupe {groupIndex + 1}
                         </button>
                       )}
 
@@ -1452,7 +1452,7 @@ export default function ThreadTerminalDrawer({
                       >
                         {terminalGroup.terminalIds.map((terminalId) => {
                           const isActive = terminalId === resolvedActiveTerminalId;
-                          const closeTerminalLabel = `Close ${
+                          const closeTerminalLabel = `Fermer ${
                             terminalLabelById.get(terminalId) ?? "terminal"
                           }${isActive && closeShortcutLabel ? ` (${closeShortcutLabel})` : ""}`;
                           return (

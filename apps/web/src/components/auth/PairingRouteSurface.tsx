@@ -28,10 +28,10 @@ export function PairingPendingSurface() {
           {APP_DISPLAY_NAME}
         </p>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-          Pairing with this environment
+          Jumelage avec cet environnement
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Validating the pairing link and preparing your session.
+          Validation du lien de jumelage et préparation de ta session.
         </p>
       </section>
     </div>
@@ -109,7 +109,7 @@ export function PairingRouteSurface({
           {APP_DISPLAY_NAME}
         </p>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-          Pair with this environment
+          Jumeler avec cet environnement
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           {describeAuthGate(auth.bootstrapMethods)}
@@ -118,7 +118,7 @@ export function PairingRouteSurface({
         <form className="mt-6 space-y-4" onSubmit={(event) => void handleSubmit(event)}>
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="pairing-token">
-              Pairing token
+              Jeton de jumelage
             </label>
             <Input
               id="pairing-token"
@@ -128,7 +128,7 @@ export function PairingRouteSurface({
               disabled={isSubmitting}
               nativeInput
               onChange={(event) => setCredential(event.currentTarget.value)}
-              placeholder="Paste a one-time token or pairing secret"
+              placeholder="Colle un jeton à usage unique ou un secret de jumelage"
               spellCheck={false}
               value={credential}
             />
@@ -142,7 +142,7 @@ export function PairingRouteSurface({
 
           <div className="flex flex-wrap gap-2">
             <Button disabled={isSubmitting} size="sm" type="submit">
-              {isSubmitting ? "Pairing..." : "Continue"}
+              {isSubmitting ? "Jumelage en cours..." : "Continuer"}
             </Button>
             <Button
               disabled={isSubmitting}
@@ -150,7 +150,7 @@ export function PairingRouteSurface({
               size="sm"
               variant="outline"
             >
-              Reload app
+              Recharger l'appli
             </Button>
           </div>
         </form>
@@ -173,8 +173,8 @@ export function HostedPairingRouteSurface() {
   );
   const [message, setMessage] = useState(() =>
     hostedPairingRequestRef.current
-      ? "Connecting to this backend."
-      : "This pairing link is missing its backend host or token.",
+      ? "Connexion à ce backend."
+      : "Ce lien de jumelage n'a pas d'hôte backend ou de jeton.",
   );
   const [canRetry, setCanRetry] = useState(false);
   const submitAttemptedRef = useRef(false);
@@ -185,20 +185,20 @@ export function HostedPairingRouteSurface() {
 
     if (!request) {
       setStatus("error");
-      setMessage("This pairing link is missing its backend host or token.");
+      setMessage("Ce lien de jumelage n'a pas d'hôte backend ou de jeton.");
       setCanRetry(false);
       return;
     }
 
     if (tokenSubmittedRef.current) {
       setStatus("error");
-      setMessage("This one-time pairing token was already submitted. Request a new pairing link.");
+      setMessage("Ce jeton de jumelage à usage unique a déjà été soumis. Demande un nouveau lien de jumelage.");
       setCanRetry(false);
       return;
     }
 
     setStatus("pairing");
-    setMessage("Connecting to this backend.");
+    setMessage("Connexion à ce backend.");
     setCanRetry(false);
     tokenSubmittedRef.current = true;
 
@@ -208,7 +208,7 @@ export function HostedPairingRouteSurface() {
     });
     if (result._tag === "Success") {
       setStatus("paired");
-      setMessage(`${request.label || "The environment"} is saved in this browser.`);
+      setMessage(`${request.label || "L'environnement"} est enregistré dans ce navigateur.`);
       return;
     }
 
@@ -216,7 +216,7 @@ export function HostedPairingRouteSurface() {
     setStatus("error");
     setCanRetry(true);
     setMessage(
-      `${errorMessageFromUnknown(squashAtomCommandFailure(result))} If the backend accepted this one-time token, request a new pairing link before retrying.`,
+      `${errorMessageFromUnknown(squashAtomCommandFailure(result))} Si le backend a accepté ce jeton à usage unique, demande un nouveau lien de jumelage avant de réessayer.`,
     );
   }, [connectPairingEnvironment]);
 
@@ -246,39 +246,39 @@ export function HostedPairingRouteSurface() {
         </p>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
           {status === "paired"
-            ? "Backend paired"
+            ? "Backend jumelé"
             : status === "error"
-              ? "Pairing failed"
-              : "Pairing backend"}
+              ? "Échec du jumelage"
+              : "Jumelage du backend"}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{message}</p>
 
         {request ? (
           <div className="mt-5 rounded-lg border border-border/70 bg-background/55 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
-            Host: <span className="font-mono text-foreground/80">{request.host}</span>
+            Hôte : <span className="font-mono text-foreground/80">{request.host}</span>
           </div>
         ) : null}
 
         {status === "error" ? (
           <div className="mt-5 rounded-lg border border-destructive/30 bg-destructive/6 px-3 py-2 text-sm text-destructive">
-            Verify the backend is reachable from this browser, supports CORS for hosted clients, and
-            is served over HTTPS when opening this page from HTTPS.
+            Vérifie que le backend est accessible depuis ce navigateur, qu'il supporte le CORS pour
+            les clients hébergés, et qu'il est servi en HTTPS quand cette page est ouverte en HTTPS.
           </div>
         ) : null}
 
         <div className="mt-6 flex flex-wrap gap-2">
           {status === "pairing" ? (
             <Button disabled size="sm">
-              Pairing...
+              Jumelage en cours...
             </Button>
           ) : canRetry ? (
             <Button size="sm" onClick={() => void submitHostedPairingRequest()}>
-              Try again
+              Réessayer
             </Button>
           ) : null}
           {status === "paired" ? (
             <Button size="sm" variant="outline" onClick={() => (window.location.href = "/")}>
-              Open app
+              Ouvrir l'appli
             </Button>
           ) : null}
         </div>
@@ -296,15 +296,15 @@ function errorMessageFromUnknown(error: unknown): string {
     return error;
   }
 
-  return "Authentication failed.";
+  return "L'authentification a échoué.";
 }
 
 function describeAuthGate(bootstrapMethods: ReadonlyArray<string>): string {
   if (bootstrapMethods.includes("desktop-bootstrap")) {
-    return "This environment expects a trusted pairing credential before the app can connect.";
+    return "Cet environnement exige une identification de jumelage de confiance avant que l'appli puisse se connecter.";
   }
 
-  return "Enter a pairing token to start a session with this environment.";
+  return "Entre un jeton de jumelage pour démarrer une session avec cet environnement.";
 }
 
 function describeSupportedMethods(bootstrapMethods: ReadonlyArray<string>): string {
@@ -312,12 +312,12 @@ function describeSupportedMethods(bootstrapMethods: ReadonlyArray<string>): stri
     bootstrapMethods.includes("desktop-bootstrap") &&
     bootstrapMethods.includes("one-time-token")
   ) {
-    return "Desktop-managed pairing and one-time pairing tokens are both accepted for this environment.";
+    return "Le jumelage géré par le bureau et les jetons de jumelage à usage unique sont tous deux acceptés pour cet environnement.";
   }
 
   if (bootstrapMethods.includes("desktop-bootstrap")) {
-    return "This environment is desktop-managed. Open it from the desktop app or paste a bootstrap credential if one was issued explicitly.";
+    return "Cet environnement est géré par le bureau. Ouvre-le depuis l'appli de bureau ou colle une identification de démarrage si elle a été émise explicitement.";
   }
 
-  return "This environment accepts one-time pairing tokens. Pairing links can open this page directly, or you can paste the token here.";
+  return "Cet environnement accepte les jetons de jumelage à usage unique. Les liens de jumelage peuvent ouvrir cette page directement, ou tu peux coller le jeton ici.";
 }

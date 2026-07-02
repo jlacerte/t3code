@@ -31,8 +31,8 @@ export function CommandPaletteResults(props: CommandPaletteResultsProps) {
       <div className="py-10 text-center text-sm text-muted-foreground">
         {props.emptyStateMessage ??
           (props.isActionsOnly
-            ? "No matching actions."
-            : "No matching commands, projects, or threads.")}
+            ? "Aucune action correspondante."
+            : "Aucune commande, aucun projet ou fil correspondant.")}
       </div>
     );
   }

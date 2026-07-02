@@ -1451,8 +1451,8 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not reconnect environment",
-            description: error instanceof Error ? error.message : "Failed to reconnect.",
+            title: "Impossible de reconnecter l'environnement",
+            description: error instanceof Error ? error.message : "Échec de la reconnexion.",
           }),
         );
       }
@@ -1664,7 +1664,7 @@ function ChatViewContent(props: ChatViewProps) {
         title: `${activeEnvironmentUnavailableState.label}: ${connectionStatusText(connection)}`,
         description:
           connection.error ??
-          "Reconnect this environment before sending messages or running actions.",
+          "Reconnecte cet environnement avant d'envoyer des messages ou d'exécuter des actions.",
         actions: (
           <>
             <Button
@@ -1676,14 +1676,14 @@ function ChatViewContent(props: ChatViewProps) {
                 )
               }
             >
-              {isReconnecting ? "Reconnecting..." : "Reconnect"}
+              {isReconnecting ? "Reconnexion en cours..." : "Reconnecter"}
             </Button>
             <Button
               size="xs"
               variant="outline"
               onClick={() => void navigate({ to: "/settings/connections" })}
             >
-              Connections
+              Connexions
             </Button>
           </>
         ),
@@ -1694,14 +1694,15 @@ function ChatViewContent(props: ChatViewProps) {
         id: `version-mismatch:${versionMismatchDismissKey}`,
         variant: "warning",
         icon: <TriangleAlertIcon />,
-        title: "Client and server versions differ",
+        title: "Les versions du client et du serveur diffèrent",
         description: (
           <>
-            Client {versionMismatch.clientVersion} is connected to {versionMismatchServerLabel}{" "}
-            {versionMismatch.serverVersion}. Sync them if RPC calls or reconnects fail.
+            Le client {versionMismatch.clientVersion} est connecté à {versionMismatchServerLabel}{" "}
+            {versionMismatch.serverVersion}. Synchronise-les si les appels RPC ou les reconnexions
+            échouent.
           </>
         ),
-        dismissLabel: "Dismiss version mismatch warning",
+        dismissLabel: "Ignorer l'avertissement de versions différentes",
         onDismiss: () => {
           dismissVersionMismatch(versionMismatchDismissKey);
           setDismissedVersionMismatchKey(versionMismatchDismissKey);
@@ -1791,7 +1792,7 @@ function ChatViewContent(props: ChatViewProps) {
     () => deriveActivePlanState(threadActivities, activeLatestTurn?.turnId ?? undefined),
     [activeLatestTurn?.turnId, threadActivities],
   );
-  const planSidebarLabel = sidebarProposedPlan || interactionMode === "plan" ? "Plan" : "Tasks";
+  const planSidebarLabel = sidebarProposedPlan || interactionMode === "plan" ? "Plan" : "Tâches";
   const showPlanFollowUpPrompt =
     pendingUserInputs.length === 0 &&
     interactionMode === "plan" &&
@@ -2689,15 +2690,15 @@ function ChatViewContent(props: ChatViewProps) {
       if (result._tag === "Success") {
         toastManager.add({
           type: "success",
-          title: `Deleted action "${deletedName ?? "Unknown"}"`,
+          title: `Action « ${deletedName ?? "Inconnue"} » supprimée`,
         });
       } else if (!isAtomCommandInterrupted(result)) {
         const error = squashAtomCommandFailure(result);
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not delete action",
-            description: error instanceof Error ? error.message : "An unexpected error occurred.",
+            title: "Impossible de supprimer l'action",
+            description: error instanceof Error ? error.message : "Une erreur inattendue est survenue.",
           }),
         );
       }
@@ -3040,8 +3041,8 @@ function ChatViewContent(props: ChatViewProps) {
       toastManager.add(
         stackedThreadToast({
           type: "error",
-          title: "Failed to copy path",
-          description: "Clipboard API unavailable.",
+          title: "Échec de la copie du chemin",
+          description: "API du presse-papiers non disponible.",
         }),
       );
       return;
@@ -3051,7 +3052,7 @@ function ChatViewContent(props: ChatViewProps) {
       () => {
         toastManager.add({
           type: "success",
-          title: "Path copied",
+          title: "Chemin copié",
           description: relativePath,
         });
       },
@@ -3059,8 +3060,8 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Failed to copy path",
-            description: error instanceof Error ? error.message : "An error occurred.",
+            title: "Échec de la copie du chemin",
+            description: error instanceof Error ? error.message : "Une erreur est survenue.",
           }),
         );
       },
@@ -3824,19 +3825,19 @@ function ChatViewContent(props: ChatViewProps) {
       if (activeEnvironmentUnavailable && activeEnvironmentUnavailableLabel) {
         setThreadError(
           activeThread.id,
-          `Reconnect ${activeEnvironmentUnavailableLabel} before reverting checkpoints.`,
+          `Reconnecte ${activeEnvironmentUnavailableLabel} avant de revenir à un point de contrôle.`,
         );
         return;
       }
       if (phase === "running" || isSendBusy || isConnecting) {
-        setThreadError(activeThread.id, "Interrupt the current turn before reverting checkpoints.");
+        setThreadError(activeThread.id, "Interromps le tour en cours avant de revenir à un point de contrôle.");
         return;
       }
       const confirmed = await localApi.dialogs.confirm(
         [
-          `Revert this thread to checkpoint ${turnCount}?`,
-          "This will discard newer messages and turn diffs in this thread.",
-          "This action cannot be undone.",
+          `Revenir à ce fil au point de contrôle ${turnCount}?`,
+          "Cela supprimera les messages et les diffs de tours plus récents dans ce fil.",
+          "Cette action est irréversible.",
         ].join("\n"),
       );
       if (!confirmed) {
@@ -3856,7 +3857,7 @@ function ChatViewContent(props: ChatViewProps) {
         const error = squashAtomCommandFailure(result);
         setThreadError(
           activeThread.id,
-          error instanceof Error ? error.message : "Failed to revert thread state.",
+          error instanceof Error ? error.message : "Échec du retour à l'état précédent du fil.",
         );
       }
       setIsRevertingCheckpoint(false);
@@ -3976,7 +3977,7 @@ function ChatViewContent(props: ChatViewProps) {
     const shouldCreateWorktree =
       isFirstMessage && sendEnvMode === "worktree" && !activeThread.worktreePath;
     if (shouldCreateWorktree && !activeThreadBranch) {
-      setThreadError(threadIdForSend, "Select a base branch before sending in New worktree mode.");
+      setThreadError(threadIdForSend, "Sélectionne une branche de base avant d'envoyer en mode Nouveau worktree.");
       return;
     }
 
@@ -4087,7 +4088,7 @@ function ChatViewContent(props: ChatViewProps) {
       } else if (composerElementContextsSnapshot.length > 0) {
         titleSeed = formatElementContextLabel(composerElementContextsSnapshot[0]!);
       } else {
-        titleSeed = "New thread";
+        titleSeed = "Nouveau fil";
       }
     }
     const title = truncate(titleSeed);
@@ -4228,7 +4229,7 @@ function ChatViewContent(props: ChatViewProps) {
         const error = squashAtomCommandFailure(failure);
         setThreadError(
           threadIdForSend,
-          error instanceof Error ? error.message : "Failed to send message.",
+          error instanceof Error ? error.message : "Échec de l'envoi du message.",
         );
       }
     }
@@ -4248,7 +4249,7 @@ function ChatViewContent(props: ChatViewProps) {
       const error = squashAtomCommandFailure(result);
       setThreadError(
         activeThread.id,
-        error instanceof Error ? error.message : "Failed to interrupt the current turn.",
+        error instanceof Error ? error.message : "Échec de l'interruption du tour en cours.",
       );
     }
   };
@@ -4272,7 +4273,7 @@ function ChatViewContent(props: ChatViewProps) {
         const error = squashAtomCommandFailure(result);
         setThreadError(
           activeThreadId,
-          error instanceof Error ? error.message : "Failed to submit approval decision.",
+          error instanceof Error ? error.message : "Échec de l'envoi de la décision d'approbation.",
         );
       }
       setRespondingRequestIds((existing) => existing.filter((id) => id !== requestId));
@@ -4300,7 +4301,7 @@ function ChatViewContent(props: ChatViewProps) {
         const error = squashAtomCommandFailure(result);
         setThreadError(
           activeThreadId,
-          error instanceof Error ? error.message : "Failed to submit user input.",
+          error instanceof Error ? error.message : "Échec de l'envoi de la réponse.",
         );
       }
       setRespondingUserInputRequestIds((existing) => existing.filter((id) => id !== requestId));
@@ -4558,7 +4559,7 @@ function ChatViewContent(props: ChatViewProps) {
         const error = squashAtomCommandFailure(failure);
         setThreadError(
           threadIdForSend,
-          error instanceof Error ? error.message : "Failed to send plan follow-up.",
+          error instanceof Error ? error.message : "Échec de l'envoi du suivi du plan.",
         );
       }
       sendInFlightRef.current = false;
@@ -4712,11 +4713,11 @@ function ChatViewContent(props: ChatViewProps) {
         toastManager.add(
           stackedThreadToast({
             type: "error",
-            title: "Could not start implementation thread",
+            title: "Impossible de démarrer le fil d'implémentation",
             description:
               error instanceof Error
                 ? error.message
-                : "An error occurred while creating the new thread.",
+                : "Une erreur est survenue lors de la création du nouveau fil.",
           }),
         );
       }
@@ -5111,13 +5112,13 @@ function ChatViewContent(props: ChatViewProps) {
                 >
                   <button
                     type="button"
-                    aria-label="Scroll to end"
-                    title="Scroll to end"
+                    aria-label="Défiler jusqu'à la fin"
+                    title="Défiler jusqu'à la fin"
                     onClick={() => scrollToEnd(true)}
                     className="pointer-events-auto flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1 text-muted-foreground text-xs shadow-sm transition-colors hover:border-border hover:text-foreground hover:cursor-pointer"
                   >
                     <ChevronDownIcon className="size-3.5" />
-                    Scroll to end
+                    Défiler jusqu'à la fin
                   </button>
                 </div>
               )}

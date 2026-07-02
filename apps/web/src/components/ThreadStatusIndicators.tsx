@@ -26,7 +26,7 @@ export interface PrStatusIndicator {
 }
 
 export interface TerminalStatusIndicator {
-  label: "Terminal process running";
+  label: "Processus terminal en cours";
   colorClass: string;
   pulse: boolean;
 }
@@ -42,25 +42,25 @@ export function prStatusIndicator(
 
   if (pr.state === "open") {
     return {
-      label: `${presentation.shortName} open`,
+      label: `${presentation.shortName} ouvert`,
       colorClass: "text-emerald-600 dark:text-emerald-300/90",
-      tooltip: `#${pr.number} ${presentation.shortName} open: ${pr.title}`,
+      tooltip: `#${pr.number} ${presentation.shortName} ouvert : ${pr.title}`,
       url: pr.url,
     };
   }
   if (pr.state === "closed") {
     return {
-      label: `${presentation.shortName} closed`,
+      label: `${presentation.shortName} fermé`,
       colorClass: "text-zinc-500 dark:text-zinc-400/80",
-      tooltip: `#${pr.number} ${presentation.shortName} closed: ${pr.title}`,
+      tooltip: `#${pr.number} ${presentation.shortName} fermé : ${pr.title}`,
       url: pr.url,
     };
   }
   if (pr.state === "merged") {
     return {
-      label: `${presentation.shortName} merged`,
+      label: `${presentation.shortName} fusionné`,
       colorClass: "text-violet-600 dark:text-violet-300/90",
-      tooltip: `#${pr.number} ${presentation.shortName} merged: ${pr.title}`,
+      tooltip: `#${pr.number} ${presentation.shortName} fusionné : ${pr.title}`,
       url: pr.url,
     };
   }
@@ -89,7 +89,7 @@ export function terminalStatusFromRunningIds(
     return null;
   }
   return {
-    label: "Terminal process running",
+    label: "Processus terminal en cours",
     colorClass: "text-teal-600 dark:text-teal-300/90",
     pulse: true,
   };
@@ -107,8 +107,8 @@ export function ThreadWorktreeIndicator({
 
   const displayPath = formatWorktreePathForDisplay(worktreePath);
   const tooltip = thread.branch
-    ? `Worktree: ${displayPath} (${thread.branch})`
-    : `Worktree: ${displayPath}`;
+    ? `Worktree : ${displayPath} (${thread.branch})`
+    : `Worktree : ${displayPath}`;
 
   return (
     <Tooltip>
@@ -256,7 +256,7 @@ export function ThreadRowTrailingStatus({ thread }: { thread: SidebarThreadSumma
   const isRemoteThread =
     primaryEnvironmentId !== null && thread.environmentId !== primaryEnvironmentId;
   const remoteEnvLabel = environment?.label ?? null;
-  const threadEnvironmentLabel = isRemoteThread ? (remoteEnvLabel ?? "Remote") : null;
+  const threadEnvironmentLabel = isRemoteThread ? (remoteEnvLabel ?? "Distant") : null;
   const terminalStatus = terminalStatusFromRunningIds(runningTerminalIds);
 
   if (!terminalStatus && !isRemoteThread) {
@@ -286,7 +286,7 @@ export function ThreadRowTrailingStatus({ thread }: { thread: SidebarThreadSumma
           <TooltipTrigger
             render={
               <span
-                aria-label={threadEnvironmentLabel ?? "Remote"}
+                aria-label={threadEnvironmentLabel ?? "Distant"}
                 className="inline-flex items-center justify-center"
               />
             }

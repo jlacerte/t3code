@@ -37,7 +37,7 @@ export const PanelLayoutControls = memo(function PanelLayoutControls({
               className="shrink-0 [-webkit-app-region:no-drag]"
               pressed={terminalOpen}
               onPressedChange={onToggleTerminal}
-              aria-label="Toggle terminal drawer"
+              aria-label="Afficher/masquer le tiroir du terminal"
               variant="ghost"
               size="sm"
               disabled={!terminalAvailable}
@@ -48,8 +48,8 @@ export const PanelLayoutControls = memo(function PanelLayoutControls({
         />
         <TooltipPopup side="bottom">
           {terminalAvailable
-            ? `Toggle terminal drawer${terminalShortcutLabel ? ` (${terminalShortcutLabel})` : ""}`
-            : "Terminal drawer is unavailable"}
+            ? `Afficher/masquer le tiroir du terminal${terminalShortcutLabel ? ` (${terminalShortcutLabel})` : ""}`
+            : "Le tiroir du terminal n'est pas disponible"}
         </TooltipPopup>
       </Tooltip>
       <Tooltip>
@@ -59,7 +59,7 @@ export const PanelLayoutControls = memo(function PanelLayoutControls({
               className="shrink-0 [-webkit-app-region:no-drag]"
               pressed={rightPanelOpen}
               onPressedChange={onToggleRightPanel}
-              aria-label="Toggle right panel"
+              aria-label="Afficher/masquer le panneau de droite"
               variant="ghost"
               size="sm"
               disabled={!rightPanelAvailable}
@@ -70,8 +70,8 @@ export const PanelLayoutControls = memo(function PanelLayoutControls({
         />
         <TooltipPopup side="bottom">
           {rightPanelAvailable
-            ? `Toggle right panel${rightPanelShortcutLabel ? ` (${rightPanelShortcutLabel})` : ""}`
-            : "Right panel is unavailable"}
+            ? `Afficher/masquer le panneau de droite${rightPanelShortcutLabel ? ` (${rightPanelShortcutLabel})` : ""}`
+            : "Le panneau de droite n'est pas disponible"}
         </TooltipPopup>
       </Tooltip>
     </div>
@@ -85,7 +85,7 @@ export const RightPanelMaximizeControl = memo(function RightPanelMaximizeControl
   maximized: boolean;
   onToggle: () => void;
 }) {
-  const label = maximized ? "Restore panel size" : "Maximize panel";
+  const label = maximized ? "Restaurer la taille du panneau" : "Maximiser le panneau";
   return (
     <Tooltip>
       <TooltipTrigger

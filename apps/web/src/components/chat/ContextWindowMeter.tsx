@@ -43,8 +43,8 @@ export function ContextWindowMeter(props: {
             )}
             aria-label={
               usage.maxTokens !== null && usedPercentage
-                ? `Context window ${usedPercentage} used`
-                : `Context window ${formatContextWindowTokens(usage.usedTokens)} tokens used`
+                ? `Fenêtre de contexte : ${usedPercentage} utilisé`
+                : `Fenêtre de contexte : ${formatContextWindowTokens(usage.usedTokens)} tokens utilisés`
             }
           >
             <span className="relative flex size-4 items-center justify-center">
@@ -81,7 +81,7 @@ export function ContextWindowMeter(props: {
       <PopoverPopup tooltipStyle side="top" align="end" className="w-64 max-w-none p-0">
         <div className="flex flex-col gap-2 p-3">
           <div className="flex items-center justify-between gap-3">
-            <div className="font-medium text-muted-foreground text-xs">Context Window</div>
+            <div className="font-medium text-muted-foreground text-xs">Fenêtre de contexte</div>
             {usage.maxTokens !== null && usedPercentage ? (
               <div className="text-[11px] tabular-nums text-muted-foreground/70">
                 <span>{usedPercentage}</span>
@@ -104,7 +104,7 @@ export function ContextWindowMeter(props: {
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={Math.round(normalizedPercentage)}
-              aria-label="Context window usage"
+              aria-label="Utilisation de la fenêtre de contexte"
             >
               <div
                 className="h-full rounded-full transition-[width,background-color] duration-500 ease-out motion-reduce:transition-none"
@@ -114,7 +114,7 @@ export function ContextWindowMeter(props: {
           ) : null}
           {showTotalProcessed ? (
             <div className="flex items-center justify-between gap-3 text-[11px] leading-4">
-              <span className="text-muted-foreground/60">Total processed</span>
+              <span className="text-muted-foreground/60">Total traité</span>
               <span className="font-medium tabular-nums text-muted-foreground/80">
                 {formatContextWindowTokens(totalProcessedTokens)}
               </span>
@@ -122,7 +122,7 @@ export function ContextWindowMeter(props: {
           ) : null}
           {usage.compactsAutomatically ? (
             <div className="mt-1 text-pretty text-[11px] font-medium text-muted-foreground/70">
-              {providerDisplayName ?? "It"} automatically compacts its context when needed.
+              {providerDisplayName ?? "Il"} compacte automatiquement son contexte au besoin.
             </div>
           ) : null}
         </div>

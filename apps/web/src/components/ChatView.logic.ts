@@ -36,7 +36,7 @@ export function buildLocalDraftThread(
     id: threadId,
     environmentId: draftThread.environmentId,
     projectId: draftThread.projectId,
-    title: "New thread",
+    title: "Nouveau fil",
     modelSelection: fallbackModelSelection,
     runtimeMode: draftThread.runtimeMode,
     interactionMode: draftThread.interactionMode,
@@ -177,10 +177,10 @@ export function readFileAsDataUrl(file: File): Promise<string> {
         resolve(reader.result);
         return;
       }
-      reject(new Error("Could not read image data."));
+      reject(new Error("Impossible de lire les données de l'image."));
     });
     reader.addEventListener("error", () => {
-      reject(reader.error ?? new Error("Failed to read image."));
+      reject(reader.error ?? new Error("Échec de la lecture de l'image."));
     });
     reader.readAsDataURL(file);
   });
@@ -247,16 +247,16 @@ export function buildExpiredTerminalContextToastCopy(
   variant: "omitted" | "empty",
 ): { title: string; description: string } {
   const count = Math.max(1, Math.floor(expiredTerminalContextCount));
-  const noun = count === 1 ? "Expired terminal context" : "Expired terminal contexts";
+  const noun = count === 1 ? "Contexte terminal expiré" : "Contextes terminaux expirés";
   if (variant === "empty") {
     return {
-      title: `${noun} won't be sent`,
-      description: "Remove it or re-add it to include terminal output.",
+      title: `${noun} ne sera pas envoyé`,
+      description: "Retire-le ou rajoute-le pour inclure la sortie du terminal.",
     };
   }
   return {
-    title: `${noun} omitted from message`,
-    description: "Re-add it if you want that terminal output included.",
+    title: `${noun} omis du message`,
+    description: "Rajoute-le si tu veux inclure cette sortie du terminal.",
   };
 }
 
@@ -334,8 +334,8 @@ export function getStartedThreadModelChangeBlockReason(input: {
     return null;
   }
   return {
-    title: "Start a new chat to change models",
-    description: "This provider does not allow switching models after a conversation has started.",
+    title: "Démarre un nouveau chat pour changer de modèle",
+    description: "Ce fournisseur ne permet pas de changer de modèle après le début d'une conversation.",
   };
 }
 

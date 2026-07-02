@@ -166,8 +166,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
         const error = squashAtomCommandFailure(result);
         toastManager.add({
           type: "error",
-          title: "Unable to resize browser viewport",
-          description: error instanceof Error ? error.message : "An error occurred.",
+          title: "Impossible de redimensionner la fenêtre du navigateur",
+          description: error instanceof Error ? error.message : "Une erreur est survenue.",
         });
         throw error;
       }
@@ -227,8 +227,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
                   toastId,
                   stackedThreadToast({
                     type: "error",
-                    title: "Unable to copy recording path",
-                    description: "Clipboard API unavailable.",
+                    title: "Impossible de copier le chemin de l'enregistrement",
+                    description: "API du presse-papiers non disponible.",
                     actionProps: revealAction,
                   }),
                 );
@@ -249,8 +249,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
                     toastId,
                     stackedThreadToast({
                       type: "error",
-                      title: "Unable to copy recording path",
-                      description: error instanceof Error ? error.message : "An error occurred.",
+                      title: "Impossible de copier le chemin de l'enregistrement",
+                      description: error instanceof Error ? error.message : "Une erreur est survenue.",
                       actionProps: revealAction,
                     }),
                   );
@@ -267,11 +267,11 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
                 toastId,
                 stackedThreadToast({
                   type: "success",
-                  title: "Recording saved",
+                  title: "Enregistrement sauvegardé",
                   actionProps: revealAction,
                   data: {
                     secondaryActionProps: {
-                      children: pathCopied ? "Copied!" : "Copy path",
+                      children: pathCopied ? "Copié!" : "Copier le chemin",
                       disabled: pathCopied,
                       onClick: copyPath,
                     },
@@ -284,11 +284,11 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
             toastId = toastManager.add(
               stackedThreadToast({
                 type: "success",
-                title: "Recording saved",
+                title: "Enregistrement sauvegardé",
                 actionProps: revealAction,
                 data: {
                   secondaryActionProps: {
-                    children: "Copy path",
+                    children: "Copier le chemin",
                     onClick: copyPath,
                   },
                   secondaryActionVariant: "outline",
@@ -299,8 +299,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
           (error) => {
             toastManager.add({
               type: "error",
-              title: "Unable to stop recording",
-              description: error instanceof Error ? error.message : "An error occurred.",
+              title: "Impossible d'arrêter l'enregistrement",
+              description: error instanceof Error ? error.message : "Une erreur est survenue.",
             });
           },
         );
@@ -310,16 +310,16 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
         if (activeRecordingTabId !== null) {
           toastManager.add({
             type: "warning",
-            title: "Another preview is recording",
-            description: "Stop the active recording before starting a new one.",
+            title: "Un autre aperçu est en cours d'enregistrement",
+            description: "Arrête l'enregistrement actif avant d'en démarrer un nouveau.",
           });
           return;
         }
         void startBrowserRecording(tabId).catch((error) => {
           toastManager.add({
             type: "error",
-            title: "Unable to start recording",
-            description: error instanceof Error ? error.message : "An error occurred.",
+            title: "Impossible de démarrer l'enregistrement",
+            description: error instanceof Error ? error.message : "Une erreur est survenue.",
           });
         });
         return;
@@ -336,7 +336,7 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
 
           const updateScreenshotToast = (
             type: "success" | "error" = "success",
-            title = "Screenshot saved",
+            title = "Capture d'écran sauvegardée",
             description?: string,
           ) => {
             toastManager.update(
@@ -346,7 +346,7 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
                 title,
                 description,
                 actionProps: {
-                  children: imageCopied ? "Copied!" : "Copy image",
+                  children: imageCopied ? "Copié!" : "Copier l'image",
                   disabled: imageCopied,
                   onClick: copyImage,
                 },
@@ -355,7 +355,7 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
                     {
                       id: "copy-path",
                       props: {
-                        children: pathCopied ? "Copied!" : "Copy path",
+                        children: pathCopied ? "Copié!" : "Copier le chemin",
                         disabled: pathCopied,
                         onClick: copyPath,
                       },
@@ -374,8 +374,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
             if (!navigator.clipboard?.writeText) {
               updateScreenshotToast(
                 "error",
-                "Unable to copy screenshot path",
-                "Clipboard API unavailable.",
+                "Impossible de copier le chemin de la capture d'écran",
+                "API du presse-papiers non disponible.",
               );
               return;
             }
@@ -392,8 +392,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
               (error) => {
                 updateScreenshotToast(
                   "error",
-                  "Unable to copy screenshot path",
-                  error instanceof Error ? error.message : "An error occurred.",
+                  "Impossible de copier le chemin de la capture d'écran",
+                  error instanceof Error ? error.message : "Une erreur est survenue.",
                 );
               },
             );
@@ -412,8 +412,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
               (error) => {
                 updateScreenshotToast(
                   "error",
-                  "Unable to copy screenshot",
-                  error instanceof Error ? error.message : "An error occurred.",
+                  "Impossible de copier la capture d'écran",
+                  error instanceof Error ? error.message : "Une erreur est survenue.",
                 );
               },
             );
@@ -422,9 +422,9 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
           toastId = toastManager.add(
             stackedThreadToast({
               type: "success",
-              title: "Screenshot saved",
+              title: "Capture d'écran sauvegardée",
               actionProps: {
-                children: "Copy image",
+                children: "Copier l'image",
                 onClick: copyImage,
               },
               data: {
@@ -432,7 +432,7 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
                   {
                     id: "copy-path",
                     props: {
-                      children: "Copy path",
+                      children: "Copier le chemin",
                       onClick: copyPath,
                     },
                   },
@@ -448,8 +448,8 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
         (error) => {
           toastManager.add({
             type: "error",
-            title: "Unable to capture screenshot",
-            description: error instanceof Error ? error.message : "An error occurred.",
+            title: "Impossible de prendre la capture d'écran",
+            description: error instanceof Error ? error.message : "Une erreur est survenue.",
           });
         },
       );
@@ -584,7 +584,9 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
         // user wouldn't be able to actually click anything underneath).
         pickDisabled={!tabId || isUnreachable}
         pickDisabledReason={
-          isUnreachable ? "Page didn't load — pick unavailable until the page renders" : undefined
+          isUnreachable
+            ? "La page ne s'est pas chargée — sélection indisponible tant que la page n'est pas affichée"
+            : undefined
         }
         trailingActions={
           previewBridge ? (
@@ -628,7 +630,7 @@ export function PreviewView({ threadRef, tabId: requestedTabId, configuredUrls, 
         ) : null}
         {controller !== "none" ? (
           <div className="pointer-events-none absolute left-3 top-3 z-40 rounded-full border border-border/70 bg-background/90 px-2.5 py-1 text-[11px] font-medium shadow-sm backdrop-blur">
-            {controller === "agent" ? "Agent controlling browser" : "Human control"}
+            {controller === "agent" ? "L'agent contrôle le navigateur" : "Contrôle humain"}
           </div>
         ) : null}
         {navStatus._tag === "LoadFailed" ? (

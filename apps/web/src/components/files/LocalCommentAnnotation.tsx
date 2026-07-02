@@ -33,9 +33,9 @@ export function LocalCommentAnnotation({
       >
         <div className="flex items-center gap-2">
           <MessageCircle className="size-4 text-muted-foreground" />
-          <span className="text-xs font-medium">Local comment</span>
+          <span className="text-xs font-medium">Commentaire local</span>
           <span className="ml-auto text-[11px] text-muted-foreground">{rangeLabel}</span>
-          <Button variant="ghost" size="icon-xs" aria-label="Delete comment" onClick={onDelete}>
+          <Button variant="ghost" size="icon-xs" aria-label="Supprimer le commentaire" onClick={onDelete}>
             <Trash2 className="size-3.5" />
           </Button>
         </div>
@@ -55,16 +55,16 @@ export function LocalCommentAnnotation({
     >
       <div className="flex items-center gap-2">
         <MessageCircle className="size-4 text-muted-foreground" />
-        <span className="text-sm font-medium">Local comment</span>
+        <span className="text-sm font-medium">Commentaire local</span>
       </div>
-      <div className="mt-1 text-xs text-muted-foreground">Comment on lines {rangeLabel}</div>
+      <div className="mt-1 text-xs text-muted-foreground">Commenter les lignes {rangeLabel}</div>
       <Textarea
         autoFocus
         className="mt-3"
         size="sm"
         value={text}
-        placeholder="Request change"
-        aria-label={`Comment on lines ${rangeLabel}`}
+        placeholder="Demander un changement"
+        aria-label={`Commenter les lignes ${rangeLabel}`}
         onChange={(event) => setText(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === "Escape") {
@@ -79,10 +79,10 @@ export function LocalCommentAnnotation({
       />
       <div className="mt-3 flex justify-end gap-2">
         <Button variant="ghost" size="sm" onClick={onCancel}>
-          Cancel
+          Annuler
         </Button>
         <Button size="sm" disabled={!text.trim()} onClick={() => onComment(text.trim())}>
-          Comment
+          Commenter
         </Button>
       </div>
     </div>

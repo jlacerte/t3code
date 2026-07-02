@@ -150,7 +150,7 @@ export function buildThreadActionItems<TThread extends BuildThreadActionItemsThr
       descriptionParts.push(`#${thread.branch}`);
     }
     if (thread.id === input.activeThreadId) {
-      descriptionParts.push("Current thread");
+      descriptionParts.push("Fil actuel");
     }
 
     const leadingContent = input.renderLeadingContent?.(thread);
@@ -242,14 +242,14 @@ export function filterCommandPaletteGroups(input: {
     if (input.projectSearchItems.length > 0) {
       searchableGroups.push({
         value: "projects-search",
-        label: "Projects",
+        label: "Projets",
         items: input.projectSearchItems,
       });
     }
     if (input.threadSearchItems.length > 0) {
       searchableGroups.push({
         value: "threads-search",
-        label: "Threads",
+        label: "Fils",
         items: input.threadSearchItems,
       });
     }
@@ -318,7 +318,7 @@ export function buildBrowseGroups(input: {
     });
   }
 
-  return [{ value: "directories", label: "Directories", items }];
+  return [{ value: "directories", label: "Dossiers", items }];
 }
 
 export function getCommandPaletteMode(input: {
@@ -342,7 +342,7 @@ export function buildRootGroups(input: {
   if (input.recentThreadItems.length > 0) {
     groups.push({
       value: "recent-threads",
-      label: "Recent Threads",
+      label: "Fils récents",
       items: input.recentThreadItems,
     });
   }
@@ -352,12 +352,12 @@ export function buildRootGroups(input: {
 export function getCommandPaletteInputPlaceholder(mode: CommandPaletteMode): string {
   switch (mode) {
     case "root":
-      return "Search commands, projects, and threads...";
+      return "Rechercher des commandes, projets et fils...";
     case "root-browse":
-      return "Enter project path (e.g. ~/projects/my-app)";
+      return "Entre le chemin du projet (ex. ~/projects/mon-app)";
     case "submenu":
-      return "Search...";
+      return "Rechercher...";
     case "submenu-browse":
-      return "Enter path (e.g. ~/projects/my-app)";
+      return "Entre le chemin (ex. ~/projects/mon-app)";
   }
 }

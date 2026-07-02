@@ -133,18 +133,18 @@ const runtimeModeConfig: Record<
   { label: string; description: string; icon: LucideIcon }
 > = {
   "approval-required": {
-    label: "Supervised",
-    description: "Ask before commands and file changes.",
+    label: "Supervisé",
+    description: "Demander avant les commandes et les modifications de fichiers.",
     icon: LockIcon,
   },
   "auto-accept-edits": {
-    label: "Auto-accept edits",
-    description: "Auto-approve edits, ask before other actions.",
+    label: "Approbation auto des modifications",
+    description: "Approuver automatiquement les modifications, demander avant les autres actions.",
     icon: PenLineIcon,
   },
   "full-access": {
-    label: "Full access",
-    description: "Allow commands and edits without prompts.",
+    label: "Accès complet",
+    description: "Permettre les commandes et modifications sans demander.",
     icon: LockOpenIcon,
   },
 };
@@ -205,11 +205,11 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
   const RuntimeModeIcon = runtimeModeOption.icon;
   const interactionModeTooltip =
     props.interactionMode === "plan"
-      ? "Plan mode — click to return to normal build mode"
-      : "Default mode — click to enter plan mode";
+      ? "Mode Plan — clique pour revenir au mode de construction normal"
+      : "Mode par défaut — clique pour entrer en mode Plan";
   const planSidebarTooltip = props.planSidebarOpen
-    ? `Hide ${props.planSidebarLabel.toLowerCase()} sidebar`
-    : `Show ${props.planSidebarLabel.toLowerCase()} sidebar`;
+    ? `Masquer la barre latérale ${props.planSidebarLabel.toLowerCase()}`
+    : `Afficher la barre latérale ${props.planSidebarLabel.toLowerCase()}`;
 
   const interactionModeToggle = props.showInteractionModeToggle ? (
     <>
@@ -238,7 +238,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
             <BotIcon />
           )}
           <span className="sr-only sm:not-sr-only">
-            {props.interactionMode === "plan" ? "Plan" : "Build"}
+            {props.interactionMode === "plan" ? "Plan" : "Construction"}
           </span>
         </TooltipTrigger>
         <TooltipPopup side="top">{interactionModeTooltip}</TooltipPopup>
@@ -261,7 +261,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
                 variant="ghost"
                 size="sm"
                 className="font-medium"
-                aria-label="Runtime mode"
+                aria-label="Mode d'exécution"
               />
             }
           >
@@ -360,7 +360,7 @@ const ComposerFooterPrimaryActions = memo(function ComposerFooterPrimaryActions(
         />
       ) : null}
       {props.isPreparingWorktree ? (
-        <span className="text-muted-foreground/70 text-xs">Preparing worktree...</span>
+        <span className="text-muted-foreground/70 text-xs">Préparation du worktree...</span>
       ) : null}
       <ComposerPrimaryActions
         compact={props.compact}
@@ -955,21 +955,21 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
           type: "slash-command",
           command: "model",
           label: "/model",
-          description: "Switch response model for this thread",
+          description: "Changer le modèle de réponse pour ce fil",
         },
         {
           id: "slash:plan",
           type: "slash-command",
           command: "plan",
           label: "/plan",
-          description: "Switch this thread into plan mode",
+          description: "Passer ce fil en mode Plan",
         },
         {
           id: "slash:default",
           type: "slash-command",
           command: "default",
           label: "/default",
-          description: "Switch this thread back to normal build mode",
+          description: "Remettre ce fil en mode de construction normal",
         },
       ] satisfies ReadonlyArray<Extract<ComposerCommandItem, { type: "slash-command" }>>;
       const providerSlashCommandItems = (selectedProviderStatus?.slashCommands ?? []).map(
@@ -979,7 +979,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
           provider: selectedProvider,
           command,
           label: `/${command.name}`,
-          description: command.description ?? command.input?.hint ?? "Run provider command",
+          description: command.description ?? command.input?.hint ?? "Exécuter la commande du fournisseur",
         }),
       );
       const query = composerTrigger.query.trim().toLowerCase();
@@ -1000,7 +1000,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
           description:
             skill.shortDescription ??
             skill.description ??
-            (skill.scope ? `${skill.scope} skill` : "Run provider skill"),
+            (skill.scope ? `Compétence ${skill.scope}` : "Exécuter la compétence du fournisseur"),
         }),
       );
     }
@@ -1073,11 +1073,11 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     composerTriggerKind === "path" && pathTriggerQuery.length > 0 && workspaceEntries.isPending;
   const composerMenuEmptyState = useMemo(() => {
     if (composerTriggerKind === "skill") {
-      return "No skills found. Try / to browse provider commands.";
+      return "Aucune compétence trouvée. Essaie / pour parcourir les commandes du fournisseur.";
     }
     return composerTriggerKind === "path"
-      ? "No matching files or folders."
-      : "No matching command.";
+      ? "Aucun fichier ou dossier correspondant."
+      : "Aucune commande correspondante.";
   }, [composerTriggerKind]);
 
   // ------------------------------------------------------------------
@@ -1136,7 +1136,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
   );
   const collapsedComposerPrimaryActionDisabled =
     phase === "running" || isSendBusy || isConnecting || !composerSendState.hasSendableContent;
-  const collapsedComposerPrimaryActionLabel = "Send message";
+  const collapsedComposerPrimaryActionLabel = "Envoyer le message";
   const showMobilePendingAnswerActions =
     isMobileViewport && !isComposerCollapsedMobile && pendingPrimaryAction !== null;
 
@@ -1765,7 +1765,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     if (pendingUserInputs.length > 0) {
       toastManager.add({
         type: "error",
-        title: "Attach images after answering plan questions.",
+        title: "Joins les images après avoir répondu aux questions du plan.",
       });
       return;
     }
@@ -1774,15 +1774,15 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     let error: string | null = null;
     for (const file of files) {
       if (!file.type.startsWith("image/")) {
-        error = `Unsupported file type for '${file.name}'. Please attach image files only.`;
+        error = `Type de fichier non pris en charge pour « ${file.name} ». Joins seulement des fichiers image.`;
         continue;
       }
       if (file.size > PROVIDER_SEND_TURN_MAX_IMAGE_BYTES) {
-        error = `'${file.name}' exceeds the ${IMAGE_SIZE_LIMIT_LABEL} attachment limit.`;
+        error = `« ${file.name} » dépasse la limite de ${IMAGE_SIZE_LIMIT_LABEL} par pièce jointe.`;
         continue;
       }
       if (nextImageCount >= PROVIDER_SEND_TURN_MAX_ATTACHMENTS) {
-        error = `You can attach up to ${PROVIDER_SEND_TURN_MAX_ATTACHMENTS} images per message.`;
+        error = `Tu peux joindre jusqu'à ${PROVIDER_SEND_TURN_MAX_ATTACHMENTS} images par message.`;
         break;
       }
       const previewUrl = URL.createObjectURL(file);
@@ -2162,9 +2162,9 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                     )}
                     onPointerDown={(event) => event.preventDefault()}
                     onClick={expandMobileComposer}
-                    aria-label="Write custom answer"
+                    aria-label="Écrire une réponse personnalisée"
                   >
-                    {activePendingProgress?.customAnswer || "Write custom answer"}
+                    {activePendingProgress?.customAnswer || "Écrire une réponse personnalisée"}
                   </button>
                   {activePendingProgress?.activeQuestion?.multiSelect ? (
                     <ComposerPrimaryActions
@@ -2201,12 +2201,12 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                 )}
                 onPointerDown={(event) => event.preventDefault()}
                 onClick={expandMobileComposer}
-                aria-label="Expand composer"
+                aria-label="Déployer le compositeur"
               >
                 {activePendingProgress
                   ? activePendingProgress.customAnswer ||
-                    "Type your own answer, or leave this blank to use the selected option"
-                  : prompt.trim() || "Ask anything..."}
+                    "Écris ta propre réponse, ou laisse ce champ vide pour utiliser l'option sélectionnée"
+                  : prompt.trim() || "Demande n'importe quoi..."}
               </button>
               <button
                 type="button"
@@ -2326,7 +2326,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                           <button
                             type="button"
                             className="h-full w-full cursor-zoom-in"
-                            aria-label={`Preview ${image.name}`}
+                            aria-label={`Aperçu de ${image.name}`}
                             onClick={() => {
                               const preview = buildExpandedImagePreview(composerImages, image.id);
                               if (!preview) return;
@@ -2350,7 +2350,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                               render={
                                 <span
                                   role="img"
-                                  aria-label="Draft attachment may not persist"
+                                  aria-label="La pièce jointe du brouillon pourrait ne pas être conservée"
                                   className="absolute left-1 top-1 inline-flex items-center justify-center rounded bg-background/85 p-0.5 text-amber-600"
                                 >
                                   <CircleAlertIcon className="size-3" />
@@ -2361,8 +2361,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                               side="top"
                               className="max-w-64 whitespace-normal leading-tight"
                             >
-                              Draft attachment could not be saved locally and may be lost on
-                              navigation.
+                              La pièce jointe du brouillon n'a pas pu être enregistrée localement et
+                              pourrait être perdue lors de la navigation.
                             </TooltipPopup>
                           </Tooltip>
                         )}
@@ -2371,7 +2371,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                           size="icon-xs"
                           className="absolute right-1 top-1 bg-background/80 hover:bg-background/90"
                           onClick={() => removeComposerImage(image.id)}
-                          aria-label={`Remove ${image.name}`}
+                          aria-label={`Retirer ${image.name}`}
                         >
                           <XIcon />
                         </Button>
@@ -2404,18 +2404,18 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                 onPaste={onComposerPaste}
                 placeholder={
                   isComposerApprovalState
-                    ? (activePendingApproval?.detail ?? "Resolve this approval request to continue")
+                    ? (activePendingApproval?.detail ?? "Résous cette demande d'approbation pour continuer")
                     : activePendingProgress
-                      ? "Type your own answer, or leave this blank to use the selected option"
+                      ? "Écris ta propre réponse, ou laisse ce champ vide pour utiliser l'option sélectionnée"
                       : showPlanFollowUpPrompt && activeProposedPlan
-                        ? "Add feedback to refine the plan, or leave this blank to implement it"
+                        ? "Ajoute des commentaires pour peaufiner le plan, ou laisse ce champ vide pour l'implémenter"
                         : environmentUnavailable
                           ? `${environmentUnavailable.label}: ${connectionStatusText(
                               environmentUnavailable.connection,
                             )}`
                           : phase === "disconnected"
-                            ? "Ask for follow-up changes or attach images"
-                            : "Ask anything, @tag files/folders, $use skills, or / for commands"
+                            ? "Demande des changements de suivi ou joins des images"
+                            : "Demande n'importe quoi, @identifie des fichiers/dossiers, $utilise des compétences, ou / pour les commandes"
                 }
                 disabled={
                   isConnecting ||

@@ -84,7 +84,7 @@ function groupCommandItems(
   groupSlashCommandSections: boolean,
 ): ComposerCommandGroup[] {
   if (triggerKind === "skill") {
-    return items.length > 0 ? [{ id: "skills", label: "Skills", items }] : [];
+    return items.length > 0 ? [{ id: "skills", label: "Compétences", items }] : [];
   }
   if (triggerKind !== "slash-command" || !groupSlashCommandSections) {
     return [{ id: "default", label: null, items }];
@@ -95,10 +95,10 @@ function groupCommandItems(
 
   const groups: ComposerCommandGroup[] = [];
   if (builtInItems.length > 0) {
-    groups.push({ id: "built-in", label: "Built-in", items: builtInItems });
+    groups.push({ id: "built-in", label: "Intégrées", items: builtInItems });
   }
   if (providerItems.length > 0) {
-    groups.push({ id: "provider", label: "Provider", items: providerItems });
+    groups.push({ id: "provider", label: "Fournisseur", items: providerItems });
   }
   return groups;
 }
@@ -173,23 +173,23 @@ export const ComposerCommandMenu = memo(function ComposerCommandMenu(props: {
             {props.triggerKind === "skill" ? (
               <CommandGroup>
                 <CommandGroupLabel className="px-0 pt-0 pb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/55">
-                  Skills
+                  Compétences
                 </CommandGroupLabel>
                 <p className="text-muted-foreground/70 text-xs">
                   {props.isLoading
-                    ? "Searching workspace skills..."
+                    ? "Recherche des compétences de l'espace de travail..."
                     : (props.emptyStateText ??
-                      "No skills found. Try / to browse provider commands.")}
+                      "Aucune compétence trouvée. Essaie / pour parcourir les commandes du fournisseur.")}
                 </p>
               </CommandGroup>
             ) : (
               <p className="text-muted-foreground/70 text-xs">
                 {props.isLoading
-                  ? "Searching workspace files..."
+                  ? "Recherche des fichiers de l'espace de travail..."
                   : (props.emptyStateText ??
                     (props.triggerKind === "path"
-                      ? "No matching files or folders."
-                      : "No matching command."))}
+                      ? "Aucun fichier ou dossier correspondant."
+                      : "Aucune commande correspondante."))}
               </p>
             )}
           </div>

@@ -61,12 +61,12 @@ export function buildGitActionProgressStages(input: {
   terminology?: ChangeRequestTerminology;
 }): string[] {
   const terminology = input.terminology ?? DEFAULT_CHANGE_REQUEST_TERMINOLOGY;
-  const branchStages = input.featureBranch ? ["Preparing feature ref..."] : [];
-  const pushStage = input.pushTarget ? `Pushing to ${input.pushTarget}...` : "Pushing...";
+  const branchStages = input.featureBranch ? ["Préparation du ref de fonctionnalité..."] : [];
+  const pushStage = input.pushTarget ? `Push vers ${input.pushTarget}...` : "Push en cours...";
   const prStages = [
-    `Preparing ${terminology.shortLabel}...`,
-    `Generating ${terminology.shortLabel} content...`,
-    `Creating ${terminology.singular}...`,
+    `Préparation de ${terminology.shortLabel}...`,
+    `Génération du contenu de ${terminology.shortLabel}...`,
+    `Création de ${terminology.singular}...`,
   ];
 
   if (input.action === "push") {
@@ -80,8 +80,8 @@ export function buildGitActionProgressStages(input: {
   const commitStages = !shouldIncludeCommitStages
     ? []
     : input.hasCustomCommitMessage
-      ? ["Committing..."]
-      : ["Generating commit message...", "Committing..."];
+      ? ["Commit en cours..."]
+      : ["Génération du message de commit...", "Commit en cours..."];
   if (input.action === "commit") {
     return [...branchStages, ...commitStages];
   }
@@ -148,14 +148,14 @@ export function buildMenuItems(
     hasOpenPr
       ? {
           id: "pr",
-          label: `View ${terminology.shortLabel}`,
+          label: `Voir ${terminology.shortLabel}`,
           disabled: !canOpenPr,
           icon: "pr",
           kind: "open_pr",
         }
       : {
           id: "pr",
-          label: `Create ${terminology.shortLabel}`,
+          label: `Créer ${terminology.shortLabel}`,
           disabled: !canCreatePr,
           icon: "pr",
           kind: "open_dialog",
@@ -171,7 +171,7 @@ export function resolveQuickAction(
   hasPrimaryRemote = true,
 ): GitQuickAction {
   if (isBusy) {
-    return { label: "Commit", disabled: true, kind: "show_hint", hint: "Git action in progress." };
+    return { label: "Commit", disabled: true, kind: "show_hint", hint: "Action git en cours." };
   }
 
   if (!gitStatus) {
@@ -179,7 +179,7 @@ export function resolveQuickAction(
       label: "Commit",
       disabled: true,
       kind: "show_hint",
-      hint: "Git status is unavailable.",
+      hint: "Le statut git n'est pas disponible.",
     };
   }
 
@@ -197,7 +197,7 @@ export function resolveQuickAction(
       label: "Commit",
       disabled: true,
       kind: "show_hint",
-      hint: `Create and checkout a ref before pushing or opening a ${terminology.singular}.`,
+      hint: `Crée et fais un checkout d'un ref avant de push ou d'ouvrir un ${terminology.singular}.`,
     };
   }
 
@@ -206,10 +206,10 @@ export function resolveQuickAction(
       return { label: "Commit", disabled: false, kind: "run_action", action: "commit" };
     }
     if (hasOpenPr || isDefaultRef) {
-      return { label: "Commit & push", disabled: false, kind: "run_action", action: "commit_push" };
+      return { label: "Commit et push", disabled: false, kind: "run_action", action: "commit_push" };
     }
     return {
-      label: `Commit, push & ${terminology.shortLabel}`,
+      label: `Commit, push et ${terminology.shortLabel}`,
       disabled: false,
       kind: "run_action",
       action: "commit_push_pr",
@@ -219,23 +219,23 @@ export function resolveQuickAction(
   if (!gitStatus.hasUpstream) {
     if (!hasPrimaryRemote) {
       if (hasOpenPr && !isAhead) {
-        return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
+        return { label: `Voir ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
       }
       return {
-        label: "Publish repository",
+        label: "Publier le repo",
         disabled: false,
         kind: "open_publish",
       };
     }
     if (!isAhead) {
       if (hasOpenPr) {
-        return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
+        return { label: `Voir ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
       }
       return {
         label: "Push",
         disabled: true,
         kind: "show_hint",
-        hint: "No local commits to push.",
+        hint: "Aucun commit local à push.",
       };
     }
     if (hasOpenPr || isDefaultRef) {
@@ -247,7 +247,7 @@ export function resolveQuickAction(
       };
     }
     return {
-      label: `Push & create ${terminology.shortLabel}`,
+      label: `Push et créer ${terminology.shortLabel}`,
       disabled: false,
       kind: "run_action",
       action: "create_pr",
@@ -256,10 +256,10 @@ export function resolveQuickAction(
 
   if (isDiverged) {
     return {
-      label: "Sync ref",
+      label: "Synchroniser le ref",
       disabled: true,
       kind: "show_hint",
-      hint: "Branch has diverged from upstream. Rebase/merge first.",
+      hint: "La branch a divergé de l'upstream. Fais un rebase ou un merge d'abord.",
     };
   }
 
@@ -281,7 +281,7 @@ export function resolveQuickAction(
       };
     }
     return {
-      label: `Push & create ${terminology.shortLabel}`,
+      label: `Push et créer ${terminology.shortLabel}`,
       disabled: false,
       kind: "run_action",
       action: "create_pr",
@@ -289,12 +289,12 @@ export function resolveQuickAction(
   }
 
   if (hasOpenPr && gitStatus.hasUpstream) {
-    return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
+    return { label: `Voir ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
   }
 
   if (hasDefaultBranchDelta && !isDefaultRef) {
     return {
-      label: `Create ${terminology.shortLabel}`,
+      label: `Créer ${terminology.shortLabel}`,
       disabled: false,
       kind: "run_action",
       action: "create_pr",
@@ -305,7 +305,7 @@ export function resolveQuickAction(
     label: "Commit",
     disabled: true,
     kind: "show_hint",
-    hint: "Branch is up to date. No action needed.",
+    hint: "La branch est à jour. Aucune action requise.",
   };
 }
 
@@ -329,35 +329,35 @@ export function resolveDefaultBranchActionDialogCopy(input: {
   terminology?: ChangeRequestTerminology;
 }): DefaultBranchActionDialogCopy {
   const branchLabel = input.branchName;
-  const suffix = ` on "${branchLabel}". You can continue on this ref or create a feature ref and run the same action there.`;
+  const suffix = ` sur "${branchLabel}". Tu peux continuer sur ce ref ou créer un ref de fonctionnalité et exécuter la même action là-bas.`;
   const terminology = input.terminology ?? DEFAULT_CHANGE_REQUEST_TERMINOLOGY;
 
   if (input.action === "push" || input.action === "commit_push") {
     if (input.includesCommit) {
       return {
-        title: "Commit & push to default ref?",
-        description: `This action will commit and push changes${suffix}`,
-        continueLabel: `Commit & push to ${branchLabel}`,
+        title: "Commit et push vers le ref par défaut?",
+        description: `Cette action va commit et push les changements${suffix}`,
+        continueLabel: `Commit et push vers ${branchLabel}`,
       };
     }
     return {
-      title: "Push to default ref?",
-      description: `This action will push local commits${suffix}`,
-      continueLabel: `Push to ${branchLabel}`,
+      title: "Push vers le ref par défaut?",
+      description: `Cette action va push les commits locaux${suffix}`,
+      continueLabel: `Push vers ${branchLabel}`,
     };
   }
 
   if (input.includesCommit) {
     return {
-      title: `Commit, push & create ${terminology.shortLabel} from default ref?`,
-      description: `This action will commit, push, and create a ${terminology.singular}${suffix}`,
-      continueLabel: `Commit, push & create ${terminology.shortLabel}`,
+      title: `Commit, push et créer ${terminology.shortLabel} depuis le ref par défaut?`,
+      description: `Cette action va commit, push, et créer un ${terminology.singular}${suffix}`,
+      continueLabel: `Commit, push et créer ${terminology.shortLabel}`,
     };
   }
   return {
-    title: `Push & create ${terminology.shortLabel} from default ref?`,
-    description: `This action will push local commits and create a ${terminology.singular}${suffix}`,
-    continueLabel: `Push & create ${terminology.shortLabel}`,
+    title: `Push et créer ${terminology.shortLabel} depuis le ref par défaut?`,
+    description: `Cette action va push les commits locaux et créer un ${terminology.singular}${suffix}`,
+    continueLabel: `Push et créer ${terminology.shortLabel}`,
   };
 }
 
