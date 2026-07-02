@@ -57,6 +57,53 @@ Le packaging Windows se fait en **deux temps** :
    nohup pnpm dist:desktop:win > /tmp/t3code-build-win.log 2>&1 &
    ```
 
+## Piège BLOQUANT : symlinks winCodeSign (privilège manquant)
+
+electron-builder télécharge le paquet `winCodeSign` et l'extrait avec 7-Zip. Ce
+paquet contient des **liens symboliques** (dylibs macOS `libcrypto`/`libssl`).
+Créer un symlink sous Windows exige un privilège que les comptes standard n'ont
+**pas** par défaut → l'extraction échoue et le build s'arrête :
+
+```
+ERROR: Cannot create symbolic link : Le client ne dispose pas d'un privilège nécessaire.
+  ...winCodeSign\...\darwin\10.12\lib\libcrypto.dylib
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+(Ironique : en build **non signé** ces dylibs macOS ne servent à rien, mais
+electron-builder extrait quand même tout le paquet.)
+
+**Diagnostic** (session courante) :
+
+```powershell
+# Mode développeur ? (vide/absent = OFF)
+(Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name AllowDevelopmentWithoutDevLicense -EA SilentlyContinue).AllowDevelopmentWithoutDevLicense
+# Privilège présent dans le token ?
+whoami /priv | Select-String SeCreateSymbolicLinkPrivilege
+```
+
+**Solutions (au choix) :**
+
+1. **Activer le Mode développeur Windows** (persistant, recommandé — nécessite une
+   élévation admin une seule fois) :
+
+   ```powershell
+   # Dans un terminal ADMIN :
+   reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v AllowDevelopmentWithoutDevLicense /d 1
+   ```
+
+   ou : Paramètres → Confidentialité et sécurité → Pour les développeurs → Mode développeur → Activé.
+
+2. **Builder depuis un terminal admin** (l'admin possède directement
+   `SeCreateSymbolicLinkPrivilege`, pas besoin du Mode dev).
+
+**Après avoir débloqué, purger le cache partiel avant de relancer :**
+
+```bash
+rm -rf "/c/Users/lokim/AppData/Local/electron-builder/Cache/winCodeSign"
+pnpm dist:desktop:win --skip-build   # bundles déjà buildés
+```
+
 ## Pièges Windows connus (spécificités de ce build)
 
 - **Backend WSL embarqué** : les artefacts Windows embarquent AUSSI un backend Linux
