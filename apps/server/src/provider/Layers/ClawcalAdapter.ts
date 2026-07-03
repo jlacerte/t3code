@@ -1279,21 +1279,33 @@ export function makeClawcalAdapter(
       });
 
     const rollbackThread: ClawcalAdapterShape["rollbackThread"] = (threadId, numTurns) =>
-      Effect.gen(function* () {
-        yield* requireSession(threadId);
-        if (!Number.isInteger(numTurns) || numTurns < 1) {
-          return yield* new ProviderAdapterValidationError({
-            provider: PROVIDER,
-            operation: "rollbackThread",
-            issue: "numTurns must be an integer >= 1.",
-          });
-        }
-        return yield* new ProviderAdapterRequestError({
-          provider: PROVIDER,
-          method: "thread/rollback",
-          detail: "Clawcal ACP sessions do not support provider-side rollback yet.",
-        });
-      });
+      withThreadLock(
+        threadId,
+        Effect.gen(function* () {
+          const ctx = yield* requireSession(threadId);
+          if (!Number.isInteger(numTurns) || numTurns < 1) {
+            return yield* new ProviderAdapterValidationError({
+              provider: PROVIDER,
+              operation: "rollbackThread",
+              issue: "numTurns must be an integer >= 1.",
+            });
+          }
+          // Clawcal extension: truncates the agent-side `messages` history so
+          // the conversation matches the checkpoint-restored worktree.
+          yield* ctx.acp
+            .request("_clawcal/session/rollback", {
+              sessionId: ctx.acpSessionId,
+              turns: numTurns,
+            })
+            .pipe(
+              Effect.mapError((error) =>
+                mapAcpToAdapterError(PROVIDER, threadId, "_clawcal/session/rollback", error),
+              ),
+            );
+          ctx.turns = ctx.turns.slice(0, Math.max(0, ctx.turns.length - numTurns));
+          return { threadId, turns: ctx.turns };
+        }),
+      );
 
     const stopSession: ClawcalAdapterShape["stopSession"] = (threadId) =>
       withThreadLock(
