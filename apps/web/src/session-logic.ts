@@ -639,6 +639,8 @@ export function deriveWorkLogEntries(
     if (activity.kind === "tool.started") continue;
     if (activity.kind === "task.started") continue;
     if (activity.kind === "context-window.updated") continue;
+    // Rendered inside the turn fold label, not as its own row.
+    if (activity.kind === "turn.summary") continue;
     if (activity.summary === "Checkpoint captured") continue;
     if (isPlanBoundaryToolActivity(activity)) continue;
     entries.push(toDerivedWorkLogEntry(activity));
@@ -647,6 +649,62 @@ export function deriveWorkLogEntries(
     const { activityKind, collapseKey: _collapseKey, ...rest } = entry;
     return Object.assign(rest, { sourceActivityKind: activityKind });
   });
+}
+
+/**
+ * Per-turn processing summary shipped by the Clawcal provider (its ACP
+ * `_meta.clawcal`, surfaced as `turn.summary` activities). Every field is
+ * optional: older clawcal versions or partial (cancelled) turns may omit any
+ * of them, and the label simply drops the missing segments.
+ */
+export interface ClawcalTurnSummary {
+  iterations?: number;
+  toolCalls?: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  hadReasoning?: boolean;
+  durationMs?: number;
+}
+
+function finiteNonNegative(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : undefined;
+}
+
+export function deriveClawcalTurnSummaries(
+  activities: ReadonlyArray<OrchestrationThreadActivity>,
+): ReadonlyMap<TurnId, ClawcalTurnSummary> {
+  const summaries = new Map<TurnId, ClawcalTurnSummary>();
+  for (const activity of [...activities].toSorted(compareActivitiesByOrder)) {
+    if (activity.kind !== "turn.summary" || activity.turnId === null) {
+      continue;
+    }
+    const payload =
+      activity.payload && typeof activity.payload === "object"
+        ? (activity.payload as Record<string, unknown>)
+        : null;
+    const clawcal =
+      payload?.clawcal && typeof payload.clawcal === "object" && !Array.isArray(payload.clawcal)
+        ? (payload.clawcal as Record<string, unknown>)
+        : null;
+    if (!clawcal) {
+      continue;
+    }
+    const summary: ClawcalTurnSummary = {};
+    const iterations = finiteNonNegative(clawcal.iterations);
+    if (iterations !== undefined) summary.iterations = iterations;
+    const toolCalls = finiteNonNegative(clawcal.toolCalls);
+    if (toolCalls !== undefined) summary.toolCalls = toolCalls;
+    const promptTokens = finiteNonNegative(clawcal.promptTokens);
+    if (promptTokens !== undefined) summary.promptTokens = promptTokens;
+    const completionTokens = finiteNonNegative(clawcal.completionTokens);
+    if (completionTokens !== undefined) summary.completionTokens = completionTokens;
+    if (typeof clawcal.hadReasoning === "boolean") summary.hadReasoning = clawcal.hadReasoning;
+    const durationMs = finiteNonNegative(clawcal.durationMs);
+    if (durationMs !== undefined) summary.durationMs = durationMs;
+    // Ordered iteration: the latest summary for a turn wins.
+    summaries.set(activity.turnId, summary);
+  }
+  return summaries;
 }
 
 function isPlanBoundaryToolActivity(activity: OrchestrationThreadActivity): boolean {

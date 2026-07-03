@@ -10,6 +10,7 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   deriveActiveWorkStartedAt,
   deriveActivePlanState,
+  deriveClawcalTurnSummaries,
   derivePendingApprovals,
   derivePendingUserInputs,
   deriveTimelineEntries,
@@ -1684,5 +1685,82 @@ describe("deriveActiveWorkStartedAt", () => {
         "2026-02-27T21:11:00.000Z",
       ),
     ).toBe("2026-02-27T21:11:00.000Z");
+  });
+});
+
+describe("deriveClawcalTurnSummaries", () => {
+  it("collects the latest summary per turn and parses defensively", () => {
+    const summaries = deriveClawcalTurnSummaries([
+      makeActivity({
+        kind: "turn.summary",
+        tone: "info",
+        summary: "Turn processing summary",
+        turnId: "turn-1",
+        sequence: 1,
+        payload: {
+          clawcal: {
+            iterations: 2,
+            toolCalls: 3,
+            promptTokens: 1200,
+            completionTokens: 340,
+            hadReasoning: true,
+            durationMs: 27000,
+          },
+        },
+      }),
+      // Later summary for the same turn wins
+      makeActivity({
+        kind: "turn.summary",
+        tone: "info",
+        summary: "Turn processing summary",
+        turnId: "turn-1",
+        sequence: 2,
+        payload: { clawcal: { iterations: 4 } },
+      }),
+      // Garbage payloads are ignored
+      makeActivity({
+        kind: "turn.summary",
+        tone: "info",
+        turnId: "turn-2",
+        sequence: 3,
+        payload: { clawcal: "pas un objet" },
+      }),
+      makeActivity({
+        kind: "turn.summary",
+        tone: "info",
+        turnId: "turn-3",
+        sequence: 4,
+        payload: {
+          clawcal: { iterations: "deux", toolCalls: -1, hadReasoning: "oui", promptTokens: 5 },
+        },
+      }),
+      // Other kinds are ignored
+      makeActivity({ kind: "tool.completed", turnId: "turn-4", sequence: 5 }),
+    ]);
+
+    expect(summaries.get(TurnId.make("turn-1"))).toEqual({ iterations: 4 });
+    expect(summaries.has(TurnId.make("turn-2"))).toBe(false);
+    expect(summaries.get(TurnId.make("turn-3"))).toEqual({ promptTokens: 5 });
+    expect(summaries.has(TurnId.make("turn-4"))).toBe(false);
+  });
+
+  it("keeps turn.summary activities out of the work log", () => {
+    const entries = deriveWorkLogEntries([
+      makeActivity({
+        kind: "turn.summary",
+        tone: "info",
+        summary: "Turn processing summary",
+        turnId: "turn-1",
+        sequence: 1,
+        payload: { clawcal: { iterations: 2 } },
+      }),
+      makeActivity({
+        kind: "tool.completed",
+        summary: "Ran command",
+        turnId: "turn-1",
+        sequence: 2,
+      }),
+    ]);
+    expect(entries.map((entry) => entry.sourceActivityKind)).toEqual(["tool.completed"]);
   });
 });

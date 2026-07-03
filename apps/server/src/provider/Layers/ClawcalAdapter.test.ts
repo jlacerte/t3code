@@ -406,6 +406,71 @@ it.layer(clawcalAdapterTestLayer)("ClawcalAdapterLive", (it) => {
     }),
   );
 
+  it.effect("forwards the Clawcal _meta turn summary on turn.completed", () =>
+    Effect.gen(function* () {
+      const threadId = ThreadId.make("clawcal-turn-summary");
+      const wrapperPath = yield* Effect.promise(() =>
+        makeMockClawcalWrapper({
+          // @effect-diagnostics-next-line preferSchemaOverJson:off
+          T3_ACP_PROMPT_META_JSON: JSON.stringify({
+            clawcal: {
+              durationMs: 27000,
+              iterations: 2,
+              toolCalls: 3,
+              promptTokens: 1200,
+              completionTokens: 340,
+              hadReasoning: true,
+            },
+          }),
+        }),
+      );
+      const adapter = yield* makeTestAdapter(wrapperPath);
+
+      const runtimeEvents: ProviderRuntimeEvent[] = [];
+      const turnCompleted = yield* Deferred.make<void>();
+      const runtimeEventsFiber = yield* Stream.runForEach(adapter.streamEvents, (event) =>
+        Effect.sync(() => {
+          runtimeEvents.push(event);
+        }).pipe(
+          Effect.andThen(
+            event.type === "turn.completed"
+              ? Deferred.succeed(turnCompleted, undefined)
+              : Effect.void,
+          ),
+        ),
+      ).pipe(Effect.forkChild);
+
+      yield* adapter.startSession({
+        threadId,
+        provider: ProviderDriverKind.make("clawcal"),
+        cwd: process.cwd(),
+        runtimeMode: "full-access",
+        modelSelection: { instanceId: ProviderInstanceId.make("clawcal"), model: "grok-build" },
+      });
+      yield* adapter.sendTurn({ threadId, input: "travaille", attachments: [] });
+      yield* Deferred.await(turnCompleted);
+      yield* Fiber.interrupt(runtimeEventsFiber);
+
+      const completed = runtimeEvents.find(
+        (event): event is Extract<ProviderRuntimeEvent, { type: "turn.completed" }> =>
+          event.type === "turn.completed",
+      );
+      assert.isDefined(completed);
+      assert.deepStrictEqual(completed?.payload.usage, {
+        clawcal: {
+          durationMs: 27000,
+          iterations: 2,
+          toolCalls: 3,
+          promptTokens: 1200,
+          completionTokens: 340,
+          hadReasoning: true,
+        },
+      });
+
+      yield* adapter.stopSession(threadId);
+    }),
+  );
+
   it.effect("rolls back the agent conversation through the Clawcal ACP extension", () =>
     Effect.gen(function* () {
       const threadId = ThreadId.make("clawcal-rollback");

@@ -3,6 +3,7 @@ import {
   formatDuration,
   workEntryIndicatesToolNeutralStatus,
   workLogEntryIsToolLike,
+  type ClawcalTurnSummary,
   type TimelineEntry,
   type WorkLogEntry,
 } from "../../session-logic";
@@ -243,11 +244,55 @@ function deriveUnsettledTurnId(
  * "Worked for ..." row anchored at the turn's first foldable entry; the
  * terminal assistant message stays visible below the fold.
  */
+function formatCompactTokenCount(count: number): string {
+  if (count < 1000) {
+    return `${Math.round(count)}`;
+  }
+  const thousands = count / 1000;
+  const formatted = thousands >= 100 ? `${Math.round(thousands)}` : thousands.toFixed(1);
+  return `${formatted.replace(/\.0$/, "")}k`;
+}
+
+/**
+ * "· 3 outils · 1.2k/340 tok · 2 itérations · raisonnement" segments from a
+ * Clawcal per-turn summary. Missing or zero fields drop their segment so a
+ * partial summary degrades to the plain duration label.
+ */
+export function formatTurnSummarySegments(summary: ClawcalTurnSummary): string[] {
+  const segments: string[] = [];
+  if (summary.toolCalls !== undefined && summary.toolCalls > 0) {
+    segments.push(summary.toolCalls === 1 ? "1 outil" : `${summary.toolCalls} outils`);
+  }
+  const promptTokens = summary.promptTokens ?? 0;
+  const completionTokens = summary.completionTokens ?? 0;
+  if (promptTokens > 0 || completionTokens > 0) {
+    segments.push(
+      `${formatCompactTokenCount(promptTokens)}/${formatCompactTokenCount(completionTokens)} tok`,
+    );
+  }
+  if (summary.iterations !== undefined && summary.iterations >= 2) {
+    segments.push(`${summary.iterations} itérations`);
+  }
+  if (summary.hadReasoning === true) {
+    segments.push("raisonnement");
+  }
+  return segments;
+}
+
+function appendTurnSummary(label: string, summary: ClawcalTurnSummary | undefined): string {
+  if (!summary) {
+    return label;
+  }
+  const segments = formatTurnSummarySegments(summary);
+  return segments.length > 0 ? [label, ...segments].join(" · ") : label;
+}
+
 function deriveTurnFolds(input: {
   timelineEntries: ReadonlyArray<TimelineEntry>;
   terminalAssistantMessageIds: ReadonlySet<string>;
   latestTurn: TimelineLatestTurn | null;
   unsettledTurnId: TurnId | null;
+  turnSummaryByTurnId: ReadonlyMap<TurnId, ClawcalTurnSummary> | null;
 }): ReadonlyMap<string, TurnFold> {
   interface TurnGroup {
     entries: Array<TimelineEntry>;
@@ -344,13 +389,14 @@ function deriveTurnFolds(input: {
               lastEntryEnd,
           );
     const duration = elapsedMs !== null ? formatDuration(elapsedMs) : null;
-    const label = isLatestInterruptedTurn
+    const baseLabel = isLatestInterruptedTurn
       ? duration
         ? `Tu as arrêté après ${duration}`
         : "Tu as arrêté cette réponse"
       : duration
         ? `A travaillé pendant ${duration}`
         : "A travaillé";
+    const label = appendTurnSummary(baseLabel, input.turnSummaryByTurnId?.get(turnId));
 
     foldsByAnchorEntryId.set(firstEntry.id, {
       turnId,
@@ -373,6 +419,7 @@ export function deriveMessagesTimelineRows(input: {
   activeTurnStartedAt: string | null;
   turnDiffSummaryByAssistantMessageId: ReadonlyMap<MessageId, TurnDiffSummary>;
   revertTurnCountByUserMessageId: ReadonlyMap<MessageId, number>;
+  turnSummaryByTurnId?: ReadonlyMap<TurnId, ClawcalTurnSummary> | null | undefined;
 }): MessagesTimelineRow[] {
   const nextRows: MessagesTimelineRow[] = [];
   const durationStartByMessageId = computeMessageDurationStart(
@@ -388,6 +435,7 @@ export function deriveMessagesTimelineRows(input: {
     terminalAssistantMessageIds,
     latestTurn: input.latestTurn ?? null,
     unsettledTurnId,
+    turnSummaryByTurnId: input.turnSummaryByTurnId ?? null,
   });
   const collapsedEntryIds = new Set<string>();
   for (const fold of foldsByAnchorEntryId.values()) {

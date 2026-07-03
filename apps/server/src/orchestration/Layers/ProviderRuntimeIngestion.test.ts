@@ -360,6 +360,109 @@ describe("ProviderRuntimeIngestion", () => {
     expect(thread.session?.lastError).toBe("turn failed");
   });
 
+  it("projects a Clawcal turn summary from turn.completed usage into a turn.summary activity", async () => {
+    const harness = await createHarness();
+    const now = "2026-01-01T00:00:00.000Z";
+
+    harness.emit({
+      type: "turn.started",
+      eventId: asEventId("evt-summary-turn-started"),
+      provider: ProviderDriverKind.make("codex"),
+      threadId: asThreadId("thread-1"),
+      createdAt: now,
+      turnId: asTurnId("turn-summary-1"),
+    });
+    await waitForThread(
+      harness.readModel,
+      (thread) => thread.session?.activeTurnId === "turn-summary-1",
+    );
+
+    harness.emit({
+      type: "turn.completed",
+      eventId: asEventId("evt-summary-turn-completed"),
+      provider: ProviderDriverKind.make("codex"),
+      threadId: asThreadId("thread-1"),
+      createdAt: now,
+      turnId: asTurnId("turn-summary-1"),
+      payload: {
+        state: "completed",
+        stopReason: "end_turn",
+        usage: {
+          clawcal: {
+            durationMs: 27000,
+            iterations: 2,
+            toolCalls: 3,
+            promptTokens: 1200,
+            completionTokens: 340,
+            hadReasoning: true,
+          },
+        },
+      },
+    });
+
+    const thread = await waitForThread(harness.readModel, (entry) =>
+      entry.activities.some(
+        (activity: ProviderRuntimeTestActivity) => activity.kind === "turn.summary",
+      ),
+    );
+    const activity = thread.activities.find(
+      (entry: ProviderRuntimeTestActivity) => entry.kind === "turn.summary",
+    );
+    expect(activity?.turnId).toBe("turn-summary-1");
+    expect(activity?.payload).toEqual({
+      clawcal: {
+        durationMs: 27000,
+        iterations: 2,
+        toolCalls: 3,
+        promptTokens: 1200,
+        completionTokens: 340,
+        hadReasoning: true,
+      },
+    });
+  });
+
+  it("emits no activity when turn.completed carries no clawcal summary", async () => {
+    const harness = await createHarness();
+    const now = "2026-01-01T00:00:00.000Z";
+
+    harness.emit({
+      type: "turn.started",
+      eventId: asEventId("evt-no-summary-turn-started"),
+      provider: ProviderDriverKind.make("codex"),
+      threadId: asThreadId("thread-1"),
+      createdAt: now,
+      turnId: asTurnId("turn-no-summary"),
+    });
+    await waitForThread(
+      harness.readModel,
+      (thread) => thread.session?.activeTurnId === "turn-no-summary",
+    );
+
+    harness.emit({
+      type: "turn.completed",
+      eventId: asEventId("evt-no-summary-turn-completed"),
+      provider: ProviderDriverKind.make("codex"),
+      threadId: asThreadId("thread-1"),
+      createdAt: now,
+      turnId: asTurnId("turn-no-summary"),
+      payload: {
+        state: "completed",
+        stopReason: "end_turn",
+        usage: { inputTokens: 12 },
+      },
+    });
+
+    const thread = await waitForThread(
+      harness.readModel,
+      (entry) => entry.session?.activeTurnId === null,
+    );
+    expect(
+      thread.activities.some(
+        (activity: ProviderRuntimeTestActivity) => activity.kind === "turn.summary",
+      ),
+    ).toBe(false);
+  });
+
   it("applies provider session.state.changed transitions directly", async () => {
     const harness = await createHarness();
     const waitingAt = "2026-01-01T00:00:00.000Z";

@@ -512,6 +512,33 @@ function runtimeEventToActivities(
       ];
     }
 
+    case "turn.completed": {
+      // Providers may ship a per-turn processing summary in the open `usage`
+      // field (today: Clawcal's `_meta.clawcal` — tool calls, tokens,
+      // iterations). Surface it as an activity so the timeline fold label can
+      // enrich "A travaillé pendant Xs"; anything else in `usage` is ignored.
+      const usage = event.payload.usage;
+      const clawcal =
+        usage && typeof usage === "object" && !Array.isArray(usage)
+          ? (usage as Record<string, unknown>)["clawcal"]
+          : undefined;
+      if (!clawcal || typeof clawcal !== "object" || Array.isArray(clawcal)) {
+        return [];
+      }
+      return [
+        {
+          id: event.eventId,
+          createdAt: event.createdAt,
+          tone: "info",
+          kind: "turn.summary",
+          summary: "Turn processing summary",
+          payload: { clawcal },
+          turnId: toTurnId(event.turnId) ?? null,
+          ...maybeSequence,
+        },
+      ];
+    }
+
     case "thread.state.changed": {
       if (event.payload.state !== "compacted") {
         return [];
