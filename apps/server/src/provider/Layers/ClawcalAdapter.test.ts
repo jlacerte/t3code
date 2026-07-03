@@ -406,6 +406,68 @@ it.layer(clawcalAdapterTestLayer)("ClawcalAdapterLive", (it) => {
     }),
   );
 
+  it.effect("rolls back the agent conversation through the Clawcal ACP extension", () =>
+    Effect.gen(function* () {
+      const threadId = ThreadId.make("clawcal-rollback");
+      const tempDir = yield* Effect.promise(() =>
+        NodeFSP.mkdtemp(NodePath.join(NodeOS.tmpdir(), "clawcal-rollback-log-")),
+      );
+      const requestLogPath = NodePath.join(tempDir, "requests.ndjson");
+      yield* Effect.promise(() => NodeFSP.writeFile(requestLogPath, "", "utf8"));
+      const wrapperPath = yield* Effect.promise(() =>
+        makeMockClawcalWrapper({
+          T3_ACP_REQUEST_LOG_PATH: requestLogPath,
+        }),
+      );
+      const adapter = yield* makeTestAdapter(wrapperPath);
+
+      yield* adapter.startSession({
+        threadId,
+        provider: ProviderDriverKind.make("clawcal"),
+        cwd: process.cwd(),
+        runtimeMode: "full-access",
+        modelSelection: { instanceId: ProviderInstanceId.make("clawcal"), model: "grok-build" },
+      });
+      yield* adapter.sendTurn({ threadId, input: "premier tour", attachments: [] });
+      yield* adapter.sendTurn({ threadId, input: "second tour", attachments: [] });
+
+      const beforeRollback = yield* adapter.readThread(threadId);
+      assert.equal(beforeRollback.turns.length, 2);
+
+      const snapshot = yield* adapter.rollbackThread(threadId, 1);
+      assert.equal(snapshot.turns.length, 1);
+
+      yield* waitForFileContent(requestLogPath, 80, "_clawcal/session/rollback");
+      const requests = yield* Effect.promise(() => readJsonLines(requestLogPath));
+      const rollback = requests.find((entry) => entry.method === "_clawcal/session/rollback");
+      assert.isDefined(rollback);
+      assert.deepInclude(rollback?.params as Record<string, unknown>, { turns: 1 });
+
+      yield* adapter.stopSession(threadId);
+    }),
+  );
+
+  it.effect("surfaces rollback failures as adapter request errors", () =>
+    Effect.gen(function* () {
+      const threadId = ThreadId.make("clawcal-rollback-invalid");
+      const wrapperPath = yield* Effect.promise(() => makeMockClawcalWrapper());
+      const adapter = yield* makeTestAdapter(wrapperPath);
+
+      yield* adapter.startSession({
+        threadId,
+        provider: ProviderDriverKind.make("clawcal"),
+        cwd: process.cwd(),
+        runtimeMode: "full-access",
+        modelSelection: { instanceId: ProviderInstanceId.make("clawcal"), model: "grok-build" },
+      });
+
+      const validationError = yield* Effect.flip(adapter.rollbackThread(threadId, 0));
+      assert.equal(validationError._tag, "ProviderAdapterValidationError");
+
+      yield* adapter.stopSession(threadId);
+    }),
+  );
+
   it.effect("auto-approves permission requests in full-access mode", () =>
     Effect.gen(function* () {
       const threadId = ThreadId.make("clawcal-full-access-auto-approve");

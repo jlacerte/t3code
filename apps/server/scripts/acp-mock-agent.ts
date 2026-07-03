@@ -884,6 +884,22 @@ const program = Effect.gen(function* () {
       });
     }
 
+    if (method === "_clawcal/session/rollback") {
+      const turns =
+        typeof params === "object" && params !== null && "turns" in params
+          ? params.turns
+          : undefined;
+      if (typeof turns !== "number" || !Number.isInteger(turns) || turns < 1) {
+        return Effect.fail(
+          AcpError.AcpRequestError.invalidParams("rollback requires an integer turns >= 1", {
+            method,
+            params,
+          }),
+        );
+      }
+      return Effect.succeed({ remainingTurns: 0 });
+    }
+
     if (method !== "session/mode/set") {
       return Effect.fail(AcpError.AcpRequestError.methodNotFound(method));
     }
