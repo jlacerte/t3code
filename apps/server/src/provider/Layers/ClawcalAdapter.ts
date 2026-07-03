@@ -160,6 +160,26 @@ function selectAutoApprovedPermissionOption(
   );
 }
 
+/**
+ * Per-turn processing summary shipped by Clawcal in the `_meta.clawcal` of
+ * the `session/prompt` response (jlacerte/clawcal, t3code#2). Wrapped as
+ * `{ clawcal }` into the open `usage` field of the `turn.completed` payload;
+ * ingestion turns it into a `turn.summary` activity for the timeline label.
+ */
+export function clawcalTurnUsage(
+  result: EffectAcpSchema.PromptResponse,
+): Record<string, unknown> | undefined {
+  const meta = result._meta;
+  if (!meta || typeof meta !== "object") {
+    return undefined;
+  }
+  const clawcal = (meta as Record<string, unknown>)["clawcal"];
+  if (!clawcal || typeof clawcal !== "object" || Array.isArray(clawcal)) {
+    return undefined;
+  }
+  return { clawcal };
+}
+
 export function clawcalPromptSettlementBelongsToContext(input: {
   readonly liveAcpSessionId: string;
   readonly expectedAcpSessionId: string;
@@ -256,6 +276,8 @@ export function makeClawcalAdapter(
         readonly emitTurnCompletion?: boolean;
         /** Interrupt/cancel: drop every outstanding prompt slot and settle once. */
         readonly settleAllPrompts?: boolean;
+        /** Clawcal turn summary forwarded on the turn.completed payload. */
+        readonly usage?: Record<string, unknown> | undefined;
       },
     ) =>
       Effect.gen(function* () {
@@ -303,6 +325,7 @@ export function makeClawcalAdapter(
                 payload: {
                   state: options.completedStopReason === "cancelled" ? "cancelled" : "completed",
                   stopReason: options.completedStopReason ?? null,
+                  ...(options.usage ? { usage: options.usage } : {}),
                 },
               });
             }
@@ -379,6 +402,7 @@ export function makeClawcalAdapter(
             payload: {
               state: options.completedStopReason === "cancelled" ? "cancelled" : "completed",
               stopReason: options.completedStopReason ?? null,
+              ...(options.usage ? { usage: options.usage } : {}),
             },
           });
         }
@@ -1076,6 +1100,7 @@ export function makeClawcalAdapter(
                   payload: {
                     state: result.stopReason === "cancelled" ? "cancelled" : "completed",
                     stopReason: result.stopReason ?? null,
+                    ...(clawcalTurnUsage(result) ? { usage: clawcalTurnUsage(result) } : {}),
                   },
                 });
                 ctx.interruptedTurnIds.delete(prepared.turnId);
@@ -1141,6 +1166,9 @@ export function makeClawcalAdapter(
                       prepared.acpSessionId,
                       {
                         completedStopReason: promptResult.stopReason ?? null,
+                        ...(clawcalTurnUsage(promptResult)
+                          ? { usage: clawcalTurnUsage(promptResult) }
+                          : {}),
                       },
                     );
                   }),

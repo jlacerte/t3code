@@ -3,6 +3,7 @@ import {
   computeStableMessagesTimelineRows,
   computeMessageDurationStart,
   deriveMessagesTimelineRows,
+  formatTurnSummarySegments,
   normalizeCompactToolLabel,
   resolveAssistantMessageCopyState,
 } from "./MessagesTimeline.logic";
@@ -1010,6 +1011,178 @@ describe("deriveMessagesTimelineRows", () => {
     expect(expandedRows.find((row) => row.kind === "work-toggle")).toMatchObject({
       expanded: true,
     });
+  });
+});
+
+describe("formatTurnSummarySegments", () => {
+  it("formats the full summary in order", () => {
+    expect(
+      formatTurnSummarySegments({
+        toolCalls: 3,
+        promptTokens: 1200,
+        completionTokens: 340,
+        iterations: 2,
+        hadReasoning: true,
+      }),
+    ).toEqual(["3 outils", "1.2k/340 tok", "2 itérations", "raisonnement"]);
+  });
+
+  it("drops empty or trivial segments", () => {
+    expect(
+      formatTurnSummarySegments({
+        toolCalls: 0,
+        promptTokens: 0,
+        completionTokens: 0,
+        iterations: 1,
+        hadReasoning: false,
+      }),
+    ).toEqual([]);
+    expect(formatTurnSummarySegments({})).toEqual([]);
+  });
+
+  it("uses singular forms and compact token counts", () => {
+    expect(
+      formatTurnSummarySegments({ toolCalls: 1, promptTokens: 150000, completionTokens: 999 }),
+    ).toEqual(["1 outil", "150k/999 tok"]);
+  });
+});
+
+describe("turn fold label with a Clawcal summary", () => {
+  it("appends the summary segments to the worked-for label", () => {
+    const timelineEntries = [
+      {
+        id: "user-entry",
+        kind: "message" as const,
+        createdAt: "2026-01-01T00:00:00Z",
+        message: {
+          id: "user-1" as never,
+          role: "user" as const,
+          text: "fais le travail",
+          turnId: null,
+          createdAt: "2026-01-01T00:00:00Z",
+          updatedAt: "2026-01-01T00:00:00Z",
+          streaming: false,
+        },
+      },
+      {
+        id: "assistant-thought-entry",
+        kind: "message" as const,
+        createdAt: "2026-01-01T00:00:05Z",
+        message: {
+          id: "assistant-thought" as never,
+          role: "assistant" as const,
+          text: "Je regarde.",
+          turnId: "turn-1" as never,
+          createdAt: "2026-01-01T00:00:05Z",
+          updatedAt: "2026-01-01T00:00:06Z",
+          streaming: false,
+        },
+      },
+      {
+        id: "assistant-final-entry",
+        kind: "message" as const,
+        createdAt: "2026-01-01T00:00:20Z",
+        message: {
+          id: "assistant-final" as never,
+          role: "assistant" as const,
+          text: "Terminé",
+          turnId: "turn-1" as never,
+          createdAt: "2026-01-01T00:00:20Z",
+          updatedAt: "2026-01-01T00:00:27Z",
+          streaming: false,
+        },
+      },
+    ];
+
+    const rows = deriveMessagesTimelineRows({
+      timelineEntries,
+      isWorking: false,
+      activeTurnStartedAt: null,
+      turnDiffSummaryByAssistantMessageId: new Map(),
+      revertTurnCountByUserMessageId: new Map(),
+      turnSummaryByTurnId: new Map([
+        [
+          "turn-1" as never,
+          {
+            toolCalls: 3,
+            promptTokens: 1200,
+            completionTokens: 340,
+            iterations: 2,
+            hadReasoning: true,
+          },
+        ],
+      ]),
+    });
+
+    const foldRow = rows.find(
+      (row): row is Extract<(typeof rows)[number], { kind: "turn-fold" }> =>
+        row.kind === "turn-fold",
+    );
+    expect(foldRow?.label).toBe(
+      "A travaillé pendant 27s · 3 outils · 1.2k/340 tok · 2 itérations · raisonnement",
+    );
+  });
+
+  it("keeps the plain label when the summary has no displayable segment", () => {
+    const timelineEntries = [
+      {
+        id: "user-entry",
+        kind: "message" as const,
+        createdAt: "2026-01-01T00:00:00Z",
+        message: {
+          id: "user-1" as never,
+          role: "user" as const,
+          text: "salut",
+          turnId: null,
+          createdAt: "2026-01-01T00:00:00Z",
+          updatedAt: "2026-01-01T00:00:00Z",
+          streaming: false,
+        },
+      },
+      {
+        id: "assistant-thought-entry",
+        kind: "message" as const,
+        createdAt: "2026-01-01T00:00:02Z",
+        message: {
+          id: "assistant-thought" as never,
+          role: "assistant" as const,
+          text: "Un instant.",
+          turnId: "turn-1" as never,
+          createdAt: "2026-01-01T00:00:02Z",
+          updatedAt: "2026-01-01T00:00:03Z",
+          streaming: false,
+        },
+      },
+      {
+        id: "assistant-final-entry",
+        kind: "message" as const,
+        createdAt: "2026-01-01T00:00:10Z",
+        message: {
+          id: "assistant-final" as never,
+          role: "assistant" as const,
+          text: "Bonjour",
+          turnId: "turn-1" as never,
+          createdAt: "2026-01-01T00:00:10Z",
+          updatedAt: "2026-01-01T00:00:12Z",
+          streaming: false,
+        },
+      },
+    ];
+
+    const rows = deriveMessagesTimelineRows({
+      timelineEntries,
+      isWorking: false,
+      activeTurnStartedAt: null,
+      turnDiffSummaryByAssistantMessageId: new Map(),
+      revertTurnCountByUserMessageId: new Map(),
+      turnSummaryByTurnId: new Map([["turn-1" as never, { iterations: 1, toolCalls: 0 }]]),
+    });
+
+    const foldRow = rows.find(
+      (row): row is Extract<(typeof rows)[number], { kind: "turn-fold" }> =>
+        row.kind === "turn-fold",
+    );
+    expect(foldRow?.label).toBe("A travaillé pendant 12s");
   });
 });
 
