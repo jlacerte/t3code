@@ -211,6 +211,119 @@ it.layer(NodeServices.layer)("checkClawcalProviderStatus", (it) => {
     }),
   );
 
+  it.effect("merges clawcal personas ahead of the discovered Ollama models", () =>
+    Effect.gen(function* () {
+      const personasJson =
+        '[{"id":"persona:soumissions","name":"Soumissions","model":"mistral-nemo:latest"}]';
+      const snapshot = yield* Effect.scoped(
+        Effect.gen(function* () {
+          const fs = yield* FileSystem.FileSystem;
+          const path = yield* Path.Path;
+          const dir = yield* fs.makeTempDirectoryScoped({ prefix: "t3code-clawcal-personas-" });
+          const clawcalPath = path.join(dir, "clawcal");
+          yield* fs.writeFileString(
+            clawcalPath,
+            [
+              "#!/bin/sh",
+              'if [ "$1" = "personas" ]; then',
+              `  printf '%s\\n' '${personasJson}'`,
+              "  exit 0",
+              "fi",
+              'printf "clawcal 0.1.0\\n"',
+              "exit 0",
+              "",
+            ].join("\n"),
+          );
+          yield* fs.chmod(clawcalPath, 0o755);
+
+          return yield* checkClawcalProviderStatus(
+            decodeClawcalSettings({ enabled: true, binaryPath: clawcalPath }),
+          ).pipe(Effect.provideService(HttpClient.HttpClient, ollamaTagsHttpClient(["qwen3:14b"])));
+        }),
+      );
+
+      expect(snapshot.status).toBe("ready");
+      expect(snapshot.models.map((model) => model.slug)).toEqual([
+        "persona:soumissions",
+        "qwen3:14b",
+      ]);
+      expect(snapshot.models[0]?.name).toBe("Soumissions");
+    }),
+  );
+
+  it.effect("keeps the catalog unchanged when the personas subcommand fails", () =>
+    Effect.gen(function* () {
+      const snapshot = yield* Effect.scoped(
+        Effect.gen(function* () {
+          const fs = yield* FileSystem.FileSystem;
+          const path = yield* Path.Path;
+          const dir = yield* fs.makeTempDirectoryScoped({
+            prefix: "t3code-clawcal-personas-old-",
+          });
+          const clawcalPath = path.join(dir, "clawcal");
+          // An older clawcal binary: `personas` is not a known subcommand.
+          yield* fs.writeFileString(
+            clawcalPath,
+            [
+              "#!/bin/sh",
+              'if [ "$1" = "personas" ]; then',
+              '  printf "unknown command\\n" >&2',
+              "  exit 2",
+              "fi",
+              'printf "clawcal 0.1.0\\n"',
+              "exit 0",
+              "",
+            ].join("\n"),
+          );
+          yield* fs.chmod(clawcalPath, 0o755);
+
+          return yield* checkClawcalProviderStatus(
+            decodeClawcalSettings({ enabled: true, binaryPath: clawcalPath }),
+          ).pipe(Effect.provideService(HttpClient.HttpClient, ollamaTagsHttpClient(["qwen3:14b"])));
+        }),
+      );
+
+      expect(snapshot.status).toBe("ready");
+      expect(snapshot.models.map((model) => model.slug)).toEqual(["qwen3:14b"]);
+    }),
+  );
+
+  it.effect("ignores personas output that is not valid JSON", () =>
+    Effect.gen(function* () {
+      const snapshot = yield* Effect.scoped(
+        Effect.gen(function* () {
+          const fs = yield* FileSystem.FileSystem;
+          const path = yield* Path.Path;
+          const dir = yield* fs.makeTempDirectoryScoped({
+            prefix: "t3code-clawcal-personas-bad-",
+          });
+          const clawcalPath = path.join(dir, "clawcal");
+          yield* fs.writeFileString(
+            clawcalPath,
+            [
+              "#!/bin/sh",
+              'if [ "$1" = "personas" ]; then',
+              '  printf "pas du json\\n"',
+              "  exit 0",
+              "fi",
+              'printf "clawcal 0.1.0\\n"',
+              "exit 0",
+              "",
+            ].join("\n"),
+          );
+          yield* fs.chmod(clawcalPath, 0o755);
+
+          return yield* checkClawcalProviderStatus(
+            decodeClawcalSettings({ enabled: true, binaryPath: clawcalPath }),
+          ).pipe(Effect.provideService(HttpClient.HttpClient, ollamaTagsHttpClient(["qwen3:14b"])));
+        }),
+      );
+
+      expect(snapshot.status).toBe("ready");
+      expect(snapshot.models.map((model) => model.slug)).toEqual(["qwen3:14b"]);
+    }),
+  );
+
   it.effect("warns when Ollama is reachable but has no installed models", () =>
     Effect.gen(function* () {
       const snapshot = yield* Effect.scoped(
