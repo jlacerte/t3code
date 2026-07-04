@@ -3,6 +3,7 @@
 import * as NodeFS from "node:fs";
 
 import * as Effect from "effect/Effect";
+import * as Schema from "effect/Schema";
 
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
@@ -874,11 +875,15 @@ const program = Effect.gen(function* () {
         },
       });
 
+      const promptMeta = promptMetaJson
+        ? ((yield* Schema.decodeUnknownEffect(Schema.UnknownFromJsonString)(promptMetaJson).pipe(
+            Effect.orDie,
+          )) as { readonly [x: string]: unknown })
+        : undefined;
+
       return {
         stopReason: "end_turn",
-        ...(promptMetaJson
-          ? { _meta: JSON.parse(promptMetaJson) as { readonly [x: string]: unknown } }
-          : {}),
+        ...(promptMeta ? { _meta: promptMeta } : {}),
       };
     }),
   );

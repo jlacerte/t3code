@@ -52,6 +52,15 @@ const OllamaTagsResponse = Schema.Struct({
   ),
 });
 
+const ClawcalPersonaEntry = Schema.Struct({
+  id: Schema.String,
+  name: Schema.String,
+  model: Schema.optional(Schema.String),
+});
+const decodeClawcalPersonas = Schema.decodeEffect(
+  Schema.fromJsonString(Schema.Array(ClawcalPersonaEntry)),
+);
+
 export function buildInitialClawcalProviderSnapshot(
   clawcalSettings: ClawcalSettings,
 ): Effect.Effect<ServerProviderDraft> {
@@ -153,13 +162,14 @@ export const fetchOllamaModels = (
     return Option.some(models);
   });
 
-const runClawcalVersionCommand = (
+const runClawcalCommand = (
   clawcalSettings: ClawcalSettings,
+  args: ReadonlyArray<string>,
   environment: NodeJS.ProcessEnv = process.env,
 ) =>
   Effect.gen(function* () {
     const command = clawcalSettings.binaryPath || "clawcal";
-    const spawnCommand = yield* resolveSpawnCommand(command, ["--version"], {
+    const spawnCommand = yield* resolveSpawnCommand(command, args, {
       env: environment,
     });
     return yield* spawnAndCollect(
@@ -169,6 +179,57 @@ const runClawcalVersionCommand = (
         shell: spawnCommand.shell,
       }),
     );
+  });
+
+const runClawcalVersionCommand = (
+  clawcalSettings: ClawcalSettings,
+  environment: NodeJS.ProcessEnv = process.env,
+) => runClawcalCommand(clawcalSettings, ["--version"], environment);
+
+/**
+ * List the personas configured in `~/.clawcal/personas/` via
+ * `clawcal personas --json`, mapped to persona:<id> model entries for the
+ * catalog. Any failure (older binary without the subcommand, timeout,
+ * non-JSON output) resolves to an empty list: personas are an optional
+ * enrichment, never a reason to degrade the provider status.
+ */
+const fetchClawcalPersonas = (
+  clawcalSettings: ClawcalSettings,
+  environment: NodeJS.ProcessEnv = process.env,
+): Effect.Effect<
+  ReadonlyArray<ServerProviderModel>,
+  never,
+  ChildProcessSpawner.ChildProcessSpawner
+> =>
+  Effect.gen(function* () {
+    const result = yield* runClawcalCommand(
+      clawcalSettings,
+      ["personas", "--json"],
+      environment,
+    ).pipe(Effect.timeoutOption(VERSION_PROBE_TIMEOUT_MS), Effect.result);
+    if (Result.isFailure(result) || Option.isNone(result.success)) {
+      return [];
+    }
+    const output = result.success.value;
+    if (output.code !== 0) {
+      return [];
+    }
+    const entries = yield* decodeClawcalPersonas(output.stdout.trim()).pipe(
+      Effect.orElseSucceed(() => null),
+    );
+    if (entries === null) {
+      return [];
+    }
+    const seen = new Set<string>();
+    return entries.flatMap((entry): ReadonlyArray<ServerProviderModel> => {
+      const slug = entry.id.trim();
+      const name = entry.name.trim();
+      if (!slug || !name || seen.has(slug)) {
+        return [];
+      }
+      seen.add(slug);
+      return [{ slug, name, isCustom: false, capabilities: EMPTY_CAPABILITIES }];
+    });
   });
 
 export const checkClawcalProviderStatus = Effect.fn("checkClawcalProviderStatus")(function* (
@@ -264,6 +325,7 @@ export const checkClawcalProviderStatus = Effect.fn("checkClawcalProviderStatus"
     });
   }
 
+  const personaModels = yield* fetchClawcalPersonas(clawcalSettings, environment);
   const ollamaUrl = resolveClawcalOllamaUrl(clawcalSettings);
   const discoveredModels = yield* fetchOllamaModels(ollamaUrl);
   if (Option.isNone(discoveredModels)) {
@@ -302,7 +364,10 @@ export const checkClawcalProviderStatus = Effect.fn("checkClawcalProviderStatus"
     presentation: CLAWCAL_PRESENTATION,
     enabled: clawcalSettings.enabled,
     checkedAt,
-    models: clawcalModelsFromSettings(clawcalSettings.customModels, discoveredModels.value),
+    models: [
+      ...personaModels,
+      ...clawcalModelsFromSettings(clawcalSettings.customModels, discoveredModels.value),
+    ],
     probe: {
       installed: true,
       version,
