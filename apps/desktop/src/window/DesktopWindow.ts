@@ -260,7 +260,7 @@ export const make = Effect.gen(function* () {
       ...(environment.platform === "darwin" ? { disableAutoHideCursor: true } : {}),
       backgroundColor: getInitialWindowBackgroundColor(shouldUseDarkColors),
       ...iconOption,
-      title: environment.displayName,
+      title: environment.branding.baseName,
       ...getWindowTitleBarOptions(shouldUseDarkColors, environment.platform),
       webPreferences: {
         preload: environment.preloadPath,
@@ -362,7 +362,7 @@ export const make = Effect.gen(function* () {
 
     window.on("page-title-updated", (event) => {
       event.preventDefault();
-      window.setTitle(environment.displayName);
+      window.setTitle(environment.branding.baseName);
     });
 
     let developmentLoadRetryIndex = 0;
@@ -419,7 +419,7 @@ export const make = Effect.gen(function* () {
       }
       clearDevelopmentLoadRetry();
       developmentLoadRetryIndex = 0;
-      window.setTitle(environment.displayName);
+      window.setTitle(environment.branding.baseName);
     });
     window.webContents.on(
       "did-fail-load",
@@ -528,7 +528,7 @@ export const make = Effect.gen(function* () {
       show: false,
       skipTaskbar: false,
       backgroundColor: getInitialWindowBackgroundColor(shouldUseDarkColors),
-      title: environment.displayName,
+      title: environment.branding.baseName,
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,

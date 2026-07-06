@@ -162,7 +162,7 @@ function ActiveSshPasswordPrompt({
           <DialogDescription>
             T3 a besoin de ton mot de passe SSH pour se connecter à <code>{target}</code>. Le mot de
             passe est transmis au processus SSH local pour cette tentative de connexion et n'est pas
-            enregistré par T3 Code.
+            enregistré par T3CodeQC.
           </DialogDescription>
         </DialogHeader>
         <DialogPanel className="space-y-3" scrollFade={false}>

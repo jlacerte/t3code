@@ -257,7 +257,7 @@ function UnknownWhenVariableWarning({
         }
       />
       <TooltipPopup side="top" className="max-w-72 whitespace-normal leading-relaxed">
-        T3 Code ne reconnaît pas encore cette condition. Elle peut quand même être enregistrée,
+        T3CodeQC ne reconnaît pas encore cette condition. Elle peut quand même être enregistrée,
         mais elle risque de ne pas s'appliquer à moins que le runtime la fournisse.
       </TooltipPopup>
     </Tooltip>
@@ -1282,7 +1282,7 @@ export function KeybindingsSettingsPanel() {
           <div className="flex items-start gap-2 border-b border-warning/20 bg-warning/5 px-3 py-2.5 text-[12px] leading-relaxed text-muted-foreground sm:px-4">
             <InfoIcon className="mt-0.5 size-3.5 shrink-0 text-warning" />
             <p>
-              Certains raccourcis peuvent être captés par le navigateur avant que T3 Code les
+              Certains raccourcis peuvent être captés par le navigateur avant que T3CodeQC les
               reçoive. Utilise l'application de bureau pour une meilleure prise en charge des
               raccourcis.
             </p>

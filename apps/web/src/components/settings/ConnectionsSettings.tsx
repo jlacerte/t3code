@@ -3148,7 +3148,7 @@ export function ConnectionsSettings() {
         {desktopWslState.enabled ? (
           <SettingsRow
             title="WSL seulement"
-            description="Arrête le backend Windows et exécute seulement le backend WSL. Utile si tu développes entièrement dans WSL et ne veux pas d'un deuxième processus backend. T3 Code redémarre quand tu changes ceci."
+            description="Arrête le backend Windows et exécute seulement le backend WSL. Utile si tu développes entièrement dans WSL et ne veux pas d'un deuxième processus backend. T3CodeQC redémarre quand tu changes ceci."
             className="bg-muted/20 pl-7 sm:pl-8"
             control={
               <Switch
@@ -3349,8 +3349,8 @@ export function ConnectionsSettings() {
                 </AlertDialogTitle>
                 <AlertDialogDescription>
                   {pendingDesktopServerExposureMode === "network-accessible"
-                    ? "T3 Code va redémarrer pour exposer cet environnement sur le réseau."
-                    : "T3 Code va redémarrer et limiter cet environnement à nouveau à cette machine."}
+                    ? "T3CodeQC va redémarrer pour exposer cet environnement sur le réseau."
+                    : "T3CodeQC va redémarrer et limiter cet environnement à nouveau à cette machine."}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -3408,15 +3408,15 @@ export function ConnectionsSettings() {
                 <AlertDialogDescription>
                   {pendingWslChange?.kind === "disable"
                     ? pendingWslChange.wasWslOnly
-                      ? "T3 Code va redémarrer sur le backend Windows. Les threads et projets ouverts sur WSL restent en sécurité dans la distro et redeviennent disponibles quand tu réactives WSL."
-                      : "Le backend WSL va s'arrêter. Les threads et projets ouverts sur WSL restent en sécurité dans la distro, mais ils seront indisponibles dans T3 Code jusqu'à ce que tu réactives WSL."
+                      ? "T3CodeQC va redémarrer sur le backend Windows. Les threads et projets ouverts sur WSL restent en sécurité dans la distro et redeviennent disponibles quand tu réactives WSL."
+                      : "Le backend WSL va s'arrêter. Les threads et projets ouverts sur WSL restent en sécurité dans la distro, mais ils seront indisponibles dans T3CodeQC jusqu'à ce que tu réactives WSL."
                     : pendingWslChange?.kind === "distro"
-                      ? "T3 Code va redémarrer le backend WSL sur la nouvelle distro. Les sessions encore en cours sur la distro actuelle seront interrompues."
+                      ? "T3CodeQC va redémarrer le backend WSL sur la nouvelle distro. Les sessions encore en cours sur la distro actuelle seront interrompues."
                       : pendingWslChange?.kind === "enable"
                         ? "Exécuter le backend WSL en parallèle du backend Windows, ou arrêter le backend Windows et utiliser seulement WSL? Tu peux changer ceci plus tard dans les paramètres."
                         : pendingWslChange?.nextValue
-                          ? "T3 Code va redémarrer et démarrer seulement le backend WSL. Tes projets côté Windows ne seront pas accessibles jusqu'à ce que tu désactives ceci à nouveau."
-                          : "T3 Code va redémarrer et ramener le backend Windows en parallèle de WSL."}
+                          ? "T3CodeQC va redémarrer et démarrer seulement le backend WSL. Tes projets côté Windows ne seront pas accessibles jusqu'à ce que tu désactives ceci à nouveau."
+                          : "T3CodeQC va redémarrer et ramener le backend Windows en parallèle de WSL."}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -3502,7 +3502,7 @@ export function ConnectionsSettings() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Désactiver Tailscale HTTPS?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  T3 Code va redémarrer le backend local sans Tailscale Serve.
+                  T3CodeQC va redémarrer le backend local sans Tailscale Serve.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -3540,7 +3540,7 @@ export function ConnectionsSettings() {
               <DialogHeader>
                 <DialogTitle>Configurer Tailscale HTTPS?</DialogTitle>
                 <DialogDescription>
-                  T3 Code va redémarrer le backend local avec Tailscale Serve activé et demander à
+                  T3CodeQC va redémarrer le backend local avec Tailscale Serve activé et demander à
                   Tailscale de relayer le trafic HTTPS vers ce backend.
                 </DialogDescription>
               </DialogHeader>

@@ -96,7 +96,7 @@ function EmptyMobileClients() {
       <EmptyHeader>
         <EmptyTitle>Aucun client mobile</EmptyTitle>
         <EmptyDescription>
-          Connecte-toi à T3 Code sur ton iPhone pour l'enregistrer pour les notifications push et
+          Connecte-toi à T3CodeQC sur ton iPhone pour l'enregistrer pour les notifications push et
           les Live Activities.
         </EmptyDescription>
       </EmptyHeader>

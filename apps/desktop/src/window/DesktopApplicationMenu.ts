@@ -59,7 +59,7 @@ const checkForUpdatesFromMenu = Effect.gen(function* () {
     yield* electronDialog.showMessageBox({
       type: "info",
       title: "Tu es à jour!",
-      message: `T3 Code ${updateState.currentVersion} est actuellement la version la plus récente.`,
+      message: `T3CodeQC ${updateState.currentVersion} est actuellement la version la plus récente.`,
       buttons: ["OK"],
     });
   } else if (updateState.status === "error") {

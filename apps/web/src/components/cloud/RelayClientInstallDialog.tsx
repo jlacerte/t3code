@@ -69,8 +69,8 @@ export function RelayClientInstallDialog() {
           </DialogTitle>
           <DialogDescription>
             {isInstalling
-              ? "T3 Code prépare cet environnement pour un accès sécurisé via T3 Connect."
-              : "T3 Code a besoin du client relais pour rendre cet environnement accessible via T3 Connect."}
+              ? "T3CodeQC prépare cet environnement pour un accès sécurisé via T3 Connect."
+              : "T3CodeQC a besoin du client relais pour rendre cet environnement accessible via T3 Connect."}
           </DialogDescription>
         </DialogHeader>
         <DialogPanel scrollFade={false}>
@@ -91,14 +91,14 @@ export function RelayClientInstallDialog() {
                 value={activeStepIndex + 1}
               />
               <p className="text-xs leading-relaxed text-muted-foreground">
-                Garde T3 Code ouvert pendant l'installation du client relais.
+                Garde T3CodeQC ouvert pendant l'installation du client relais.
               </p>
             </div>
           ) : (
             <div className="rounded-xl border border-border/70 bg-muted/35 p-3">
               <p className="text-sm font-medium text-foreground">Client relais géré</p>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                T3 Code va télécharger et installer la version{" "}
+                T3CodeQC va télécharger et installer la version{" "}
                 {view.status === "confirming" ? view.version : ""} localement.
               </p>
             </div>

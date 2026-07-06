@@ -522,7 +522,7 @@ export function GeneralSettingsPanel() {
       <SettingsSection title="Général">
         <SettingsRow
           title="Thème"
-          description="Choisis l'apparence de T3 Code dans toute l'application."
+          description="Choisis l'apparence de T3CodeQC dans toute l'application."
           resetAction={
             theme !== "system" ? (
               <SettingResetButton label="thème" onClick={() => setTheme("system")} />

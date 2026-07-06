@@ -40,7 +40,7 @@ export function getProviderSummary(provider: ServerProvider | undefined) {
       headline: "Désactivé",
       detail:
         provider.message ??
-        "Ce fournisseur est installé mais désactivé pour les nouvelles sessions dans T3 Code.",
+        "Ce fournisseur est installé mais désactivé pour les nouvelles sessions dans T3CodeQC.",
     };
   }
   if (!provider.installed) {

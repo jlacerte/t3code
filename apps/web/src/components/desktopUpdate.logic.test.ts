@@ -213,7 +213,7 @@ describe("desktop update UI helpers", () => {
         availableVersion: "1.1.0",
         downloadedVersion: "1.1.1",
       }),
-    ).toContain("Installer la mise à jour 1.1.1 et redémarrer T3 Code?");
+    ).toContain("Installer la mise à jour 1.1.1 et redémarrer T3CodeQC?");
   });
 
   it("falls back to generic install confirmation copy when no version is available", () => {
@@ -222,7 +222,7 @@ describe("desktop update UI helpers", () => {
         availableVersion: null,
         downloadedVersion: null,
       }),
-    ).toContain("Installer la mise à jour et redémarrer T3 Code?");
+    ).toContain("Installer la mise à jour et redémarrer T3CodeQC?");
   });
 });
 

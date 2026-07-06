@@ -51,7 +51,7 @@ interface RightPanelTabsProps {
 }
 
 const SURFACE_DISABLED_REASONS = {
-  browser: "Les aperçus du navigateur sont disponibles seulement dans l'application de bureau T3 Code.",
+  browser: "Les aperçus du navigateur sont disponibles seulement dans l'application de bureau T3CodeQC.",
   files: "Les fichiers sont disponibles seulement quand un projet est ouvert.",
   diff: "Diff est disponible seulement pour les fils serveur dans des repos Git.",
 } as const;

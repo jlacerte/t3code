@@ -44,12 +44,12 @@ export function getArm64IntelBuildWarningDescription(state: DesktopUpdateState):
 
   const action = resolveDesktopUpdateButtonAction(state);
   if (action === "download") {
-    return "Ce Mac a un processeur Apple Silicon, mais T3 Code utilise encore la version Intel sous Rosetta. Télécharge la mise à jour disponible pour passer à la version native Apple Silicon.";
+    return "Ce Mac a un processeur Apple Silicon, mais T3CodeQC utilise encore la version Intel sous Rosetta. Télécharge la mise à jour disponible pour passer à la version native Apple Silicon.";
   }
   if (action === "install") {
-    return "Ce Mac a un processeur Apple Silicon, mais T3 Code utilise encore la version Intel sous Rosetta. Redémarre pour installer la version Apple Silicon téléchargée.";
+    return "Ce Mac a un processeur Apple Silicon, mais T3CodeQC utilise encore la version Intel sous Rosetta. Redémarre pour installer la version Apple Silicon téléchargée.";
   }
-  return "Ce Mac a un processeur Apple Silicon, mais T3 Code utilise encore la version Intel sous Rosetta. La prochaine mise à jour de l'application la remplacera par la version native Apple Silicon.";
+  return "Ce Mac a un processeur Apple Silicon, mais T3CodeQC utilise encore la version Intel sous Rosetta. La prochaine mise à jour de l'application la remplacera par la version native Apple Silicon.";
 }
 
 export function getDesktopUpdateButtonTooltip(state: DesktopUpdateState): string {
@@ -80,7 +80,7 @@ export function getDesktopUpdateInstallConfirmationMessage(
   state: Pick<DesktopUpdateState, "availableVersion" | "downloadedVersion">,
 ): string {
   const version = state.downloadedVersion ?? state.availableVersion;
-  return `Installer la mise à jour${version ? ` ${version}` : ""} et redémarrer T3 Code?\n\nToutes les tâches en cours seront interrompues. Assure-toi d'être prêt avant de continuer.`;
+  return `Installer la mise à jour${version ? ` ${version}` : ""} et redémarrer T3CodeQC?\n\nToutes les tâches en cours seront interrompues. Assure-toi d'être prêt avant de continuer.`;
 }
 
 export function getDesktopUpdateActionError(result: DesktopUpdateActionResult): string | null {
