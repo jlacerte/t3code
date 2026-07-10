@@ -30,14 +30,16 @@ echo "== Statut des providers =="
 if [ -d "$T3_CACHE_DIR" ]; then
   for f in "$T3_CACHE_DIR"/*.json; do
     [ -e "$f" ] || continue
-    python3 -c "
+    python3 - "$f" <<'PYEOF'
 import json, sys
+
+f = sys.argv[1]
 try:
-    d = json.load(open('$f'))
+    d = json.load(open(f))
 except Exception as e:
-    print('$f: illisible (' + str(e) + ')')
+    print(f'{f}: illisible ({e})')
     sys.exit(0)
-name = d.get('displayName', '$f')
+name = d.get('displayName', f)
 status = d.get('status', '?')
 nmodels = len(d.get('models', []))
 message = d.get('message')
@@ -45,7 +47,7 @@ line = f'{name:<12} {status:<10} {nmodels} modèle(s)'
 if message:
     line += f'  -- {message}'
 print(line)
-"
+PYEOF
   done
 else
   echo "aucun cache de provider trouvé ($T3_CACHE_DIR)"

@@ -26,5 +26,8 @@ resolve_app_path() {
 }
 
 list_t3_pids() {
-  pgrep -f "T3CodeQC" 2>/dev/null || true
+  # Restreint au binaire dans le bundle .app pour ne pas matcher (et tuer)
+  # un processus quelconque dont la ligne de commande contient "T3CodeQC"
+  # (ex.: un tail -f sur un log, un éditeur ouvert sur ce chemin).
+  pgrep -f "T3CodeQC\.app/Contents/" 2>/dev/null || true
 }

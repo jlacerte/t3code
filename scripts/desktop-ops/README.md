@@ -11,9 +11,12 @@ peut laisser un processus backend fantôme avec une config obsolète.
   backend, et le statut de chaque provider (ready/disabled/erreur) à partir
   des caches dans `~/.t3/caches`.
 - `diagnose-desktop.sh [nb_lignes]` — capture un instantané complet (statut,
-  config providerInstances avec secrets redacted, logs récents, caches) dans
-  un dossier temporaire, pour appuyer une future session de débogage.
+  config providerInstances filtrée par liste blanche de clés non sensibles,
+  logs récents, caches) dans un dossier temporaire, pour appuyer une future
+  session de débogage.
 
 Ces scripts respectent `T3CODE_HOME` s'il est défini, sinon utilisent
-`~/.t3` par défaut. Ils ne touchent jamais à `secrets/`, `clerk-tokens.json`,
-ni aux valeurs d'environnement marquées `sensitive` dans la config.
+`~/.t3` par défaut. La config exportée par le diagnostic est filtrée par
+liste blanche : toute clé inconnue (`serverPassword`, tokens, etc.) est
+remplacée par `<redacted>`; `secrets/` et `clerk-tokens.json` ne sont
+jamais lus.
